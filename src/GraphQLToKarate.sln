@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLToKarate.Application", "GraphQLToKarate.Application\GraphQLToKarate.Application.csproj", "{EAF8C730-6EC6-45DD-8331-DDF93FFE031E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLToKarate.Library", "GraphQLToKarate.Library\GraphQLToKarate.Library.csproj", "{36FC5206-F8D9-40F3-9099-D5407352DF9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQLToKarate.Tests", "..\tests\GraphQLToKarate.Tests\GraphQLToKarate.Tests.csproj", "{A1A010CB-9A80-478D-8959-56C54B6DF10B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAF8C730-6EC6-45DD-8331-DDF93FFE031E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAF8C730-6EC6-45DD-8331-DDF93FFE031E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAF8C730-6EC6-45DD-8331-DDF93FFE031E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAF8C730-6EC6-45DD-8331-DDF93FFE031E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36FC5206-F8D9-40F3-9099-D5407352DF9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36FC5206-F8D9-40F3-9099-D5407352DF9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36FC5206-F8D9-40F3-9099-D5407352DF9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36FC5206-F8D9-40F3-9099-D5407352DF9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1A010CB-9A80-478D-8959-56C54B6DF10B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1A010CB-9A80-478D-8959-56C54B6DF10B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1A010CB-9A80-478D-8959-56C54B6DF10B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1A010CB-9A80-478D-8959-56C54B6DF10B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A9FC539C-54D3-4301-A9EC-AE9FB2DD3054}
+	EndGlobalSection
+EndGlobal
