@@ -20,7 +20,7 @@ jobs:
     - name: ⚗ restore dependencies
       run: dotnet restore src
 
-    - name: 🔨 build
+    - name: 🛠 build
       run: dotnet build src --configuration Release --no-restore
 
     - name: 🧪 run tests
