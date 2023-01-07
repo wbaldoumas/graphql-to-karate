@@ -1,0 +1,29 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: setup .net 7
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: restore dependencies
+      run: dotnet restore src
+
+    - name: build
+      run: dotnet build src --configuration Release --no-restore
+
+    - name: test
+      run: |
+        cd ./tests/GraphQLToKarate.Tests/
+        dotnet test --no-restore
