@@ -20,10 +20,11 @@ jobs:
     - name: restore dependencies
       run: dotnet restore src
 
-    - name: build
+    - name: 🔨 build
       run: dotnet build src --configuration Release --no-restore
 
-    - name: test
+    - name: 🧪 run tests
       run: |
         cd ./tests/GraphQLToKarate.Tests/
-        dotnet test --no-restore --collect:"XPlat Code Coverage"
+        dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        cp TestResults/*/coverage.opencover.xml .
