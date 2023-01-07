@@ -15,13 +15,7 @@ The `graphql-to-karate` team and community take all security bugs in
 `graphql-to-karate`. We appreciate your efforts and responsible disclosure and
 will make every effort to acknowledge your contributions.
 
-Report security bugs by emailing `wbaldoumas.github@gmail.com`.
-
-The lead maintainer will acknowledge your email within 48 hours, and will send a
-more detailed response within 48 hours indicating the next steps in handling
-your report. After the initial reply to your report, the security team will
-endeavor to keep you informed of the progress towards a fix and full
-announcement, and may ask for additional information or guidance.
+[Report a vulnerability](https://github.com/wbaldoumas/graphql-to-karate/security/advisories/new).
 
 ## Disclosure Policy
 
