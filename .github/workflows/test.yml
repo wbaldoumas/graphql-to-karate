@@ -32,5 +32,5 @@ jobs:
     - name: 💌 publish code coverage
       uses: codecov/codecov-action@v3
       with:
-        files: /home/runner/work/graphql-to-karate/graphql-to-karate/tests/GraphQLToKarate.Tests/coverage.json
+        files: /home/runner/work/graphql-to-karate/graphql-to-karate/tests/GraphQLToKarate.Tests/coverage.opencover.xml
         fail_ci_if_error: true
