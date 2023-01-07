@@ -26,4 +26,4 @@ jobs:
     - name: test
       run: |
         cd ./tests/GraphQLToKarate.Tests/
-        dotnet test --no-restore
+        dotnet test --no-restore --collect:"XPlat Code Coverage"
