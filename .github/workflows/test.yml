@@ -12,12 +12,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: setup .net 7
+    - name: 🔨 set up .net 7
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
 
-    - name: restore dependencies
+    - name: ⚗ restore dependencies
       run: dotnet restore src
 
     - name: 🔨 build
@@ -28,3 +28,9 @@ jobs:
         cd ./tests/GraphQLToKarate.Tests/
         dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         cp TestResults/*/coverage.opencover.xml .
+
+    - name: 💌 publish code coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: /home/runner/work/graphql-to-karate/graphql-to-karate/tests/GraphQLToKarate.Tests/coverage.json
+        fail_ci_if_error: true
