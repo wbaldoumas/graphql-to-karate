@@ -85,7 +85,7 @@ var karateObjects = converter.Convert(graphql);
 
 foreach (var karateObject in karateObjects)
 {
-    Console.WriteLine(karateObject.Schema);
+    Console.WriteLine(karateObject);
     Console.WriteLine();
 }
 

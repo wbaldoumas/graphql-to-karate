@@ -11,7 +11,7 @@ internal sealed class KarateObjectTests
     [Test]
     [TestCaseSource(nameof(TestCases))]
     public void Schema(KarateObject karateObject, string expectedSchema) =>
-        karateObject.Schema.Should().Be(expectedSchema);
+        karateObject.ToString().Should().Be(expectedSchema);
 
     private static IEnumerable<TestCaseData> TestCases
     {

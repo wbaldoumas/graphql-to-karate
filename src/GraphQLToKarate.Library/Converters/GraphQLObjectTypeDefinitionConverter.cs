@@ -4,6 +4,7 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
 
+/// <inheritdoc cref="IGraphQLObjectTypeDefinitionConverter"/>
 public sealed class GraphQLObjectTypeDefinitionConverter : IGraphQLObjectTypeDefinitionConverter
 {
     private readonly IGraphQLTypeConverterFactory _graphQLTypeConverterFactory;
@@ -30,6 +31,6 @@ public sealed class GraphQLObjectTypeDefinitionConverter : IGraphQLObjectTypeDef
                 graphQLUserDefinedTypes
             );
 
-        return new KarateObject(graphQLObjectTypeDefinition.Name.StringValue, karateTypes);
+        return new KarateObject(graphQLObjectTypeDefinition.Name.StringValue, karateTypes.ToList());
     }
 }

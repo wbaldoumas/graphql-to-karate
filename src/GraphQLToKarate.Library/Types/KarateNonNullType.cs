@@ -2,6 +2,9 @@
 
 namespace GraphQLToKarate.Library.Types;
 
+/// <summary>
+///     Represents a non-nullable Karate schema type.
+/// </summary>
 internal sealed class KarateNonNullType : KarateTypeBase
 {
     private readonly KarateTypeBase _innerType;
