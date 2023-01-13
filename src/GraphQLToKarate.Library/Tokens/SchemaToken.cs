@@ -1,5 +1,8 @@
 ﻿namespace GraphQLToKarate.Library.Tokens;
 
+/// <summary>
+///     Tokens for use with schema generation.
+/// </summary>
 internal static class SchemaToken
 {
     public const char OpenBrace = '{';

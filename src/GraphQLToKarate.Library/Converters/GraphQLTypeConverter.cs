@@ -5,6 +5,7 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
 
+/// <inheritdoc cref="IGraphQLTypeConverter"/>
 internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
 {
     public KarateTypeBase Convert(

@@ -2,6 +2,9 @@
 
 namespace GraphQLToKarate.Library.Types;
 
+/// <summary>
+///     Represents a list Karate schema type.
+/// </summary>
 internal sealed class KarateListType : KarateTypeBase
 {
     private readonly KarateTypeBase _innerType;
