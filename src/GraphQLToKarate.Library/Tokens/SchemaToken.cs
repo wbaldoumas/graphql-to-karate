@@ -9,6 +9,8 @@ internal static class SchemaToken
     
     public const char CloseBrace = '}';
 
+    public const char Space = ' ';
+
     public const char Comma = ',';
 
     public const string Indent = "  ";
