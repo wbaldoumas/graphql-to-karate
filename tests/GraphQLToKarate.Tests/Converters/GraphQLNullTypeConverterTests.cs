@@ -45,13 +45,19 @@ internal sealed class GraphQLNullTypeConverterTests
         {
             const string testFieldName = "Test";
 
+            var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
+            {
+                GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
+                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+            };
+
             yield return new TestCaseData(
                 testFieldName,
                 new GraphQLNamedType
                 {
                     Name = new GraphQLName(GraphQLToken.Boolean)
                 },
-                new GraphQLUserDefinedTypes(),
+                emptyGraphQLUserDefinedTypes,
                 new KarateNullType(new KarateType(KarateToken.Boolean, testFieldName))
             ).SetName("Nullable Boolean GraphQL type is converted to nullable boolean Karate type.");
 
@@ -61,7 +67,7 @@ internal sealed class GraphQLNullTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Float)
                 },
-                new GraphQLUserDefinedTypes(),
+                emptyGraphQLUserDefinedTypes,
                 new KarateNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Nullable Float GraphQL type is converted to nullable number Karate type.");
 
@@ -72,7 +78,7 @@ internal sealed class GraphQLNullTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Int)
                 },
-                new GraphQLUserDefinedTypes(),
+                emptyGraphQLUserDefinedTypes,
                 new KarateNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Nullable Int GraphQL type is converted to nullable number Karate type.");
 
@@ -82,7 +88,7 @@ internal sealed class GraphQLNullTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.String)
                 },
-                new GraphQLUserDefinedTypes(),
+                emptyGraphQLUserDefinedTypes,
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable String GraphQL type is converted to nullable string Karate type.");
 
@@ -92,7 +98,7 @@ internal sealed class GraphQLNullTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Id)
                 },
-                new GraphQLUserDefinedTypes(),
+                emptyGraphQLUserDefinedTypes,
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable ID GraphQL type is converted to nullable string Karate type.");
 
@@ -106,7 +112,11 @@ internal sealed class GraphQLNullTypeConverterTests
                 },
                 new GraphQLUserDefinedTypes
                 {
-                    EnumTypes = new HashSet<string> { enumTypeName }
+                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
+                    {
+                        { enumTypeName, new GraphQLEnumTypeDefinition() }
+                    },
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
                 },
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable enum GraphQL type is converted to nullable string Karate type.");
@@ -121,8 +131,14 @@ internal sealed class GraphQLNullTypeConverterTests
                 },
                 new GraphQLUserDefinedTypes
                 {
-                    EnumTypes = new HashSet<string> { enumTypeName },
-                    CustomTypes = new HashSet<string> { customTypeName }
+                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
+                    {
+                        { enumTypeName, new GraphQLEnumTypeDefinition() }
+                    },
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
+                    {
+                        { customTypeName, new GraphQLObjectTypeDefinition() }
+                    }
                 },
                 new KarateNullType(new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName))
             ).SetName("Nullable custom GraphQL type is converted to nullable custom Karate type.");
@@ -136,7 +152,7 @@ internal sealed class GraphQLNullTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Boolean)
                     }
                 },
-                new GraphQLUserDefinedTypes(),
+                emptyGraphQLUserDefinedTypes,
                 new KarateNullType(
                     new KarateListType(
                         new KarateNullType(

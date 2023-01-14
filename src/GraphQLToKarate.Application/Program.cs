@@ -29,6 +29,13 @@ var graphql = """
       todos: [[Todo!]]!
     }
 
+    type MoreNesting {
+      id: String!
+      name: String!
+      colors: [Color!]!
+      nestedTodos: [NestedTodo!]!
+    }
+
     union TodoUnion = Todo | SimpleTodo
 
     input TodoInputType {
@@ -50,13 +57,21 @@ var graphql = """
           id: String!,
           "A default value of false"
           isCompleted: Boolean=false
-        ): Todo
+        ): Todo!
 
         "Returns a list (or null) that can contain null values"
         todos(
           "Required argument that is a list that cannot contain null values"
           ids: [String!]!
         ): [Todo]
+
+        nestedTodos(
+          ids: [String!]!
+        ): [[NestedTodo]]
+
+        moreNestedTodos(
+          ids: [String!]!
+        ): [[MoreNesting]]
     }
 
     type Mutation {
@@ -79,15 +94,26 @@ var graphql = """
     }
     """;
 
-var converter = new Converter(new GraphQLObjectTypeDefinitionConverter(new GraphQLTypeConverterFactory()));
+var converter = new Converter(
+    new GraphQLObjectTypeDefinitionConverter(new GraphQLTypeConverterFactory()),
+    new GraphQLQueryFieldConverter()
+);
 
-var karateObjects = converter.Convert(graphql);
+var (karateObjects, graphQLQueryFields) = converter.Convert(graphql);
+
+foreach (var graphQLQueryField in graphQLQueryFields)
+{
+    Console.WriteLine($"{graphQLQueryField.Name}: {graphQLQueryField.ReturnTypeName}");
+    Console.WriteLine(graphQLQueryField.QueryString);
+    Console.WriteLine();
+}
 
 foreach (var karateObject in karateObjects)
 {
+    Console.WriteLine(karateObject.Name);
     Console.WriteLine(karateObject);
     Console.WriteLine();
 }
 
-Console.WriteLine("Done! Press any enter to exit...");
+Console.WriteLine("Done! Press enter to exit...");
 Console.ReadLine();

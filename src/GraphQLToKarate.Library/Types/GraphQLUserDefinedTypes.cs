@@ -1,17 +1,17 @@
-﻿namespace GraphQLToKarate.Library.Types;
+﻿using GraphQLParser.AST;
+
+namespace GraphQLToKarate.Library.Types;
 
 /// <summary>
 ///     Represents the custom user-defined types, enums, etc. within the GraphQL schema.
 /// </summary>
 public sealed class GraphQLUserDefinedTypes
 {
-    /// <summary>
-    ///     A set of user-defined, custom GraphQL type names.
-    /// </summary>
-    public ISet<string> CustomTypes { get; init; } = new HashSet<string>();
+    public required IDictionary<string, GraphQLObjectTypeDefinition> GraphQLObjectTypeDefinitionsByName { get; init; } = new Dictionary<string, GraphQLObjectTypeDefinition>();
 
-    /// <summary>
-    ///     A set of user-defined, custom GraphQL enum names.
-    /// </summary>
-    public ISet<string> EnumTypes { get; init; } = new HashSet<string>();
+    public ICollection<string> GraphQLObjectTypeDefinitionNames => GraphQLObjectTypeDefinitionsByName.Keys;
+
+    public required IDictionary<string, GraphQLEnumTypeDefinition> GraphQLEnumTypeDefinitionsByName { get; init; } = new Dictionary<string, GraphQLEnumTypeDefinition>();
+
+    public ICollection<string> GraphQLEnumTypeDefinitionNames => GraphQLEnumTypeDefinitionsByName.Keys;
 }
