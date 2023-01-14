@@ -11,8 +11,6 @@ public sealed class GraphQLQueryFieldType
 
     public string ReturnTypeName => _queryField.Type.GetTypeName();
 
-    public ASTNodeKind ReturnTypeKind => _queryField.Kind;
-
     public required string QueryString { get; init; }
 
     public GraphQLQueryFieldType(GraphQLFieldDefinition queryField)

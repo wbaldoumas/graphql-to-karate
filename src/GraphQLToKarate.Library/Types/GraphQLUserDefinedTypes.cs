@@ -11,11 +11,7 @@ public sealed class GraphQLUserDefinedTypes
 
     public ICollection<string> GraphQLObjectTypeDefinitionNames => GraphQLObjectTypeDefinitionsByName.Keys;
 
-    public ICollection<GraphQLObjectTypeDefinition> GraphQLObjectTypeDefinitions => GraphQLObjectTypeDefinitionsByName.Values;
-
     public required IDictionary<string, GraphQLEnumTypeDefinition> GraphQLEnumTypeDefinitionsByName { get; init; } = new Dictionary<string, GraphQLEnumTypeDefinition>();
 
     public ICollection<string> GraphQLEnumTypeDefinitionNames => GraphQLEnumTypeDefinitionsByName.Keys;
-
-    public ICollection<GraphQLEnumTypeDefinition> GraphQLEnumTypeDefinitions => GraphQLEnumTypeDefinitionsByName.Values;
 }

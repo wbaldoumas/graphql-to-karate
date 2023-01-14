@@ -63,7 +63,11 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
 
         stringBuilder.Append(new string(SchemaToken.Space, indentationLevel));
         stringBuilder.Append(SchemaToken.CloseBrace);
-        stringBuilder.Append(Environment.NewLine);
+
+        if (indentationLevel > 0)
+        {
+            stringBuilder.Append(Environment.NewLine);
+        }
 
         return stringBuilder.ToString();
     }
