@@ -71,7 +71,7 @@ internal sealed class GraphQLQueryFieldConverterTests
                         },
                         new()
                         {
-                            Name = new GraphQLName("favorite_number"),
+                            Name = new GraphQLName("favoriteNumber"),
                             Type = new GraphQLNamedType
                             {
                                 Name = new GraphQLName("Integer")
@@ -79,7 +79,7 @@ internal sealed class GraphQLQueryFieldConverterTests
                         },
                         new()
                         {
-                            Name = new GraphQLName("favorite_color"),
+                            Name = new GraphQLName("favoriteColor"),
                             Type = new GraphQLNamedType
                             {
                                 Name = new GraphQLName("Color")
@@ -188,11 +188,13 @@ internal sealed class GraphQLQueryFieldConverterTests
                 new GraphQLQueryFieldType(testGraphQLFieldDefinition)
                 {
                     QueryString = """
-                                person {
-                                  id
-                                  name
-                                  favorite_number
-                                  favorite_color
+                                query PersonTest {
+                                  person {
+                                    id
+                                    name
+                                    favoriteNumber
+                                    favoriteColor
+                                  }
                                 }
                                 """
                 }
@@ -200,7 +202,7 @@ internal sealed class GraphQLQueryFieldConverterTests
 
             var testNestedGraphQLFieldDefinition = new GraphQLFieldDefinition
             {
-                Name = new GraphQLName("person_with_friends"),
+                Name = new GraphQLName("personWithFriends"),
                 Type = new GraphQLNamedType
                 {
                     Name = new GraphQLName("PersonWithFriends")
@@ -233,14 +235,16 @@ internal sealed class GraphQLQueryFieldConverterTests
                 new GraphQLQueryFieldType(testNestedGraphQLFieldDefinition)
                 {
                     QueryString = """
-                                person_with_friends {
-                                  id
-                                  name
-                                  friends {
+                                query PersonWithFriendsTest {
+                                  personWithFriends {
                                     id
                                     name
-                                    favorite_number
-                                    favorite_color
+                                    friends {
+                                      id
+                                      name
+                                      favoriteNumber
+                                      favoriteColor
+                                    }
                                   }
                                 }
                                 """
