@@ -23,4 +23,23 @@ internal static class StringExtensions
             str.AsSpan(1).CopyTo(characters[1..]);
         });
     }
+
+    /// <summary>
+    ///     Convert the first character of the given <paramref name="source"/> <see cref="string"/> to uppercase.
+    /// </summary>
+    /// <param name="source">The source <see cref="string"/> to manipulate.</param>
+    /// <returns>The <paramref name="source"/> <see cref="string"/> with its first character converted to uppercase.</returns>
+    public static string FirstCharToUpper(this string source)
+    {
+        if (string.IsNullOrEmpty(source))
+        {
+            return string.Empty;
+        }
+
+        return string.Create(source.Length, source, static (characters, str) =>
+        {
+            characters[0] = char.ToUpperInvariant(str[0]);
+            str.AsSpan(1).CopyTo(characters[1..]);
+        });
+    }
 }

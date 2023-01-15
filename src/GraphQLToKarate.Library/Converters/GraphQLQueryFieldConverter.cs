@@ -23,14 +23,15 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append(new string(SchemaToken.Space, indentationLevel));
+        if (indentationLevel == 0)
+        {
+            stringBuilder.Append($"query {graphQLQueryFieldDefinition.Name.StringValue.FirstCharToUpper()}Test");
+            stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
+        }
+
+        stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
         stringBuilder.Append(graphQLQueryFieldDefinition.Name.StringValue);
-
-        // TODO: handle field arguments
-
-        stringBuilder.Append(SchemaToken.Space);
-        stringBuilder.Append(SchemaToken.OpenBrace);
-        stringBuilder.Append(Environment.NewLine);
+        stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
 
         if (graphQLUserDefinedTypes.GraphQLObjectTypeDefinitionsByName.TryGetValue(
                 graphQLQueryFieldDefinition.Type.GetTypeName(), out var graphQLObjectTypeDefinition))
@@ -51,22 +52,19 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
                 }
                 else
                 {
-                    stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
+                    stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 4));
                     stringBuilder.Append(innerGraphQLFieldDefinition.Name.StringValue);
-
-                    // TODO: handle field arguments
-
                     stringBuilder.Append(Environment.NewLine);
                 }
             }
         }
 
-        stringBuilder.Append(new string(SchemaToken.Space, indentationLevel));
-        stringBuilder.Append(SchemaToken.CloseBrace);
+        stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
+        stringBuilder.Append($"{SchemaToken.CloseBrace}{Environment.NewLine}");
 
-        if (indentationLevel > 0)
+        if (indentationLevel == 0)
         {
-            stringBuilder.Append(Environment.NewLine);
+            stringBuilder.Append(SchemaToken.CloseBrace);
         }
 
         return stringBuilder.ToString();
