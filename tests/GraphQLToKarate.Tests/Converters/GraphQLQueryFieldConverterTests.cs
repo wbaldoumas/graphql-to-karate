@@ -250,6 +250,67 @@ internal sealed class GraphQLQueryFieldConverterTests
                                 """
                 }
             ).SetName("Converter is able to convert nested query.");
+
+            var testGraphQLFieldDefinitionWithArguments = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("personById"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName("Person")
+                },
+                Arguments = new GraphQLArgumentsDefinition
+                {
+                    Items = new List<GraphQLInputValueDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("Int")
+                            }
+                        }
+                    }
+                }
+            };
+
+            yield return new TestCaseData(
+                testGraphQLFieldDefinitionWithArguments,
+                new GraphQLUserDefinedTypes
+                {
+                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
+                    {
+                        {
+                            testGraphQLEnumTypeDefinition.Name.StringValue,
+                            testGraphQLEnumTypeDefinition
+                        }
+                    },
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
+                    {
+                        {
+                            testGraphQLObjectDefinition.Name.StringValue,
+                            testGraphQLObjectDefinition
+                        },
+                        {
+                            testGraphQLObjectDefinitionWithNesting.Name.StringValue,
+                            testGraphQLObjectDefinitionWithNesting
+                        }
+                    }
+                },
+                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithArguments)
+                {
+                    QueryString = """
+                                query PersonByIdTest($id: Int) {
+                                  personById(id: $id) {
+                                    id
+                                    name
+                                    favoriteNumber
+                                    favoriteColor
+                                  }
+                                }
+                                """
+                }
+            ).SetName("Converter is able to convert simple query with arguments.");
         }
     }
 }

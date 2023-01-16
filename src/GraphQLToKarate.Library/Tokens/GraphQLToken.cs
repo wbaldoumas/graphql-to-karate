@@ -21,4 +21,6 @@ internal static class GraphQLToken
     public const string Query = "Query";
 
     public const string Mutation = "Mutation";
+
+    public const char NonNull = '!';
 }
