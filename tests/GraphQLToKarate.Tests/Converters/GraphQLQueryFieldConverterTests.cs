@@ -127,6 +127,135 @@ internal sealed class GraphQLQueryFieldConverterTests
                 }
             };
 
+            var testGraphQLObjectDefinitionWithNestedFieldArguments = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("PersonWithFriendsWithArguments"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("friends"),
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName("Person")
+                                }
+                            },
+                            Arguments = new GraphQLArgumentsDefinition
+                            {
+                                Items = new List<GraphQLInputValueDefinition>
+                                {
+                                    new()
+                                    {
+                                        Name = new GraphQLName("ids"),
+                                        Type = new GraphQLListType
+                                        {
+                                            Type = new GraphQLNamedType
+                                            {
+                                                Name = new GraphQLName("String")
+                                            }
+                                        }
+                                    },
+                                    new()
+                                    {
+                                        Name = new GraphQLName("location"),
+                                        Type = new GraphQLNonNullType
+                                        {
+                                            Type = new GraphQLNamedType
+                                            {
+                                                Name = new GraphQLName("String")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var testGraphQLObjectDefinitionWithScalarFieldArguments = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("PersonWithFavoriteColors"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("favoriteNumber"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("Integer")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("favoriteColors"),
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName("Color")
+                                }
+                            },
+                            Arguments = new GraphQLArgumentsDefinition
+                            {
+                                Items = new List<GraphQLInputValueDefinition>
+                                {
+                                    new()
+                                    {
+                                        Name = new GraphQLName("filter"),
+                                        Type = new GraphQLListType
+                                        {
+                                            Type = new GraphQLNamedType
+                                            {
+                                                Name = new GraphQLName("String")
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
             var testGraphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition()
             {
                 Name = new GraphQLName("Color"),
@@ -162,29 +291,39 @@ internal sealed class GraphQLQueryFieldConverterTests
                 }
             };
 
-            yield return new TestCaseData(
-                testGraphQLFieldDefinition,
-                new GraphQLUserDefinedTypes
+            var testGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
+            {
+                GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
                 {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
                     {
-                        {
-                            testGraphQLEnumTypeDefinition.Name.StringValue, 
-                            testGraphQLEnumTypeDefinition
-                        }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        {
-                            testGraphQLObjectDefinition.Name.StringValue, 
-                            testGraphQLObjectDefinition
-                        },
-                        {
-                            testGraphQLObjectDefinitionWithNesting.Name.StringValue,
-                            testGraphQLObjectDefinitionWithNesting
-                        }
+                        testGraphQLEnumTypeDefinition.Name.StringValue,
+                        testGraphQLEnumTypeDefinition
                     }
                 },
+                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
+                {
+                    {
+                        testGraphQLObjectDefinition.Name.StringValue,
+                        testGraphQLObjectDefinition
+                    },
+                    {
+                        testGraphQLObjectDefinitionWithNestedFieldArguments.Name.StringValue,
+                        testGraphQLObjectDefinitionWithNestedFieldArguments
+                    },
+                    {
+                        testGraphQLObjectDefinitionWithNesting.Name.StringValue,
+                        testGraphQLObjectDefinitionWithNesting
+                    },
+                    {
+                        testGraphQLObjectDefinitionWithScalarFieldArguments.Name.StringValue,
+                        testGraphQLObjectDefinitionWithScalarFieldArguments
+                    }
+                }
+            };
+
+            yield return new TestCaseData(
+                testGraphQLFieldDefinition,
+                testGraphQLUserDefinedTypes,
                 new GraphQLQueryFieldType(testGraphQLFieldDefinition)
                 {
                     QueryString = """
@@ -211,27 +350,7 @@ internal sealed class GraphQLQueryFieldConverterTests
 
             yield return new TestCaseData(
                 testNestedGraphQLFieldDefinition,
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        {
-                            testGraphQLEnumTypeDefinition.Name.StringValue,
-                            testGraphQLEnumTypeDefinition
-                        }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        {
-                            testGraphQLObjectDefinition.Name.StringValue,
-                            testGraphQLObjectDefinition
-                        },
-                        {
-                            testGraphQLObjectDefinitionWithNesting.Name.StringValue,
-                            testGraphQLObjectDefinitionWithNesting
-                        }
-                    }
-                },
+                testGraphQLUserDefinedTypes,
                 new GraphQLQueryFieldType(testNestedGraphQLFieldDefinition)
                 {
                     QueryString = """
@@ -276,27 +395,7 @@ internal sealed class GraphQLQueryFieldConverterTests
 
             yield return new TestCaseData(
                 testGraphQLFieldDefinitionWithArguments,
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        {
-                            testGraphQLEnumTypeDefinition.Name.StringValue,
-                            testGraphQLEnumTypeDefinition
-                        }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        {
-                            testGraphQLObjectDefinition.Name.StringValue,
-                            testGraphQLObjectDefinition
-                        },
-                        {
-                            testGraphQLObjectDefinitionWithNesting.Name.StringValue,
-                            testGraphQLObjectDefinitionWithNesting
-                        }
-                    }
-                },
+                testGraphQLUserDefinedTypes,
                 new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithArguments)
                 {
                     QueryString = """
@@ -311,6 +410,79 @@ internal sealed class GraphQLQueryFieldConverterTests
                                 """
                 }
             ).SetName("Converter is able to convert simple query with arguments.");
+
+            var testGraphQLFieldDefinitionWithNestedArguments = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("personWithFriendsById"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName("PersonWithFriendsWithArguments")
+                },
+                Arguments = new GraphQLArgumentsDefinition
+                {
+                    Items = new List<GraphQLInputValueDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("Int")
+                            }
+                        }
+                    }
+                }
+            };
+
+            var testGraphQLFieldDefinitionWithScalarArguments = new GraphQLFieldDefinition()
+            {
+                Name = new GraphQLName("personWithFavoriteColors"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName("PersonWithFavoriteColors")
+                }
+            };
+
+            yield return new TestCaseData(
+                testGraphQLFieldDefinitionWithNestedArguments,
+                testGraphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithNestedArguments)
+                {
+                    QueryString = """
+                                query PersonWithFriendsByIdTest($id: Int, $ids: [String], $location: String!) {
+                                  personWithFriendsById(id: $id) {
+                                    id
+                                    name
+                                    friends(ids: $ids, location: $location) {
+                                      id
+                                      name
+                                      favoriteNumber
+                                      favoriteColor
+                                    }
+                                  }
+                                }
+                                """
+                }
+            ).SetName("Converter is able to convert simple query with nested arguments.");
+
+
+            yield return new TestCaseData(
+                testGraphQLFieldDefinitionWithScalarArguments,
+                testGraphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithScalarArguments)
+                {
+                    QueryString = """
+                                query PersonWithFavoriteColorsTest($filter: [String]) {
+                                  personWithFavoriteColors {
+                                    id
+                                    name
+                                    favoriteNumber
+                                    favoriteColors(filter: $filter)
+                                  }
+                                }
+                                """
+                }
+            ).SetName("Converter is able to convert simple query with scalar arguments.");
         }
     }
 }

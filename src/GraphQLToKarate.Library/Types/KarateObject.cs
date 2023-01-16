@@ -26,22 +26,22 @@ public sealed class KarateObject
 
     private string GenerateSchemaString()
     {
-        var builder = new StringBuilder();
+        var stringBuilder = new StringBuilder();
 
-        builder.Append(SchemaToken.OpenBrace);
+        stringBuilder.Append(SchemaToken.OpenBrace);
 
         foreach (var karateType in _karateTypes)
         {
-            builder.Append(Environment.NewLine);
-            builder.Append(SchemaToken.Indent);
-            builder.Append($"{karateType.Name}: '{karateType.Schema}'");
-            builder.Append(SchemaToken.Comma);
+            stringBuilder.Append(Environment.NewLine);
+            stringBuilder.Append(SchemaToken.Indent);
+            stringBuilder.Append($"{karateType.Name}: '{karateType.Schema}'");
+            stringBuilder.Append(SchemaToken.Comma);
         }
 
-        builder.Remove(builder.Length - 1, 1);
-        builder.Append(Environment.NewLine);
-        builder.Append(SchemaToken.CloseBrace);
+        stringBuilder.Remove(stringBuilder.Length - 1, 1);
+        stringBuilder.Append(Environment.NewLine);
+        stringBuilder.Append(SchemaToken.CloseBrace);
 
-        return builder.ToString();
+        return stringBuilder.ToString();
     }
 }
