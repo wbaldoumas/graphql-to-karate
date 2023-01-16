@@ -18,4 +18,8 @@ internal static class SchemaToken
     public const char OpenBracket = '[';
 
     public const char CloseBracket = ']';
+
+    public const char OpenParen = '(';
+
+    public const char CloseParen = ')';
 }

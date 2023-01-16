@@ -13,8 +13,5 @@ public sealed class GraphQLQueryFieldType
 
     public required string QueryString { get; init; }
 
-    public GraphQLQueryFieldType(GraphQLFieldDefinition queryField)
-    {
-        _queryField = queryField;
-    }
+    public GraphQLQueryFieldType(GraphQLFieldDefinition queryField) => _queryField = queryField;
 }

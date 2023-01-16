@@ -5,8 +5,7 @@ namespace GraphQLToKarate.Library.Converters;
 
 public interface IGraphQLInputValueDefinitionConverter
 {
-    // I'll need to maintain a set of GraphQLVariableTypeBase in this converter  as state to ensure that
-    // variable name collision does not occur.
+    GraphQLArgumentTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition);
 
-    GraphQLVariableTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition);
+    ICollection<GraphQLArgumentTypeBase> GetConverted();
 }
