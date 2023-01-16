@@ -16,14 +16,14 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
 
         return new GraphQLQueryFieldType(graphQLQueryFieldDefinition)
         {
-            QueryString = ConvertQueryString(graphQLQueryFieldDefinition, graphQLUserDefinedTypes, ref graphQLInputValueDefinitionConverter)
+            QueryString = ConvertQueryString(graphQLQueryFieldDefinition, graphQLUserDefinedTypes, graphQLInputValueDefinitionConverter)
         };
     }
 
     private static string ConvertQueryString(
         GraphQLFieldDefinition graphQLQueryFieldDefinition,
         GraphQLUserDefinedTypes graphQLUserDefinedTypes,
-        ref IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
+        IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         int indentationLevel = 0)
     {
         var stringBuilder = new StringBuilder();
@@ -31,22 +31,7 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
         stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
         stringBuilder.Append(graphQLQueryFieldDefinition.Name.StringValue);
 
-        var graphQLQueryFieldDefinitionHasArguments = graphQLQueryFieldDefinition.Arguments?.Any() ?? false;
-
-        if (graphQLQueryFieldDefinitionHasArguments)
-        {
-            stringBuilder.Append(SchemaToken.OpenParen);
-
-            foreach (var argument in graphQLQueryFieldDefinition.Arguments!)
-            {
-                var graphQLArgumentType = graphQLInputValueDefinitionConverter.Convert(argument);
-
-                stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: ${graphQLArgumentType.VariableName}{SchemaToken.Comma}");
-            }
-
-            stringBuilder.Remove(stringBuilder.Length - 1, 1);
-            stringBuilder.Append(SchemaToken.CloseParen);
-        }
+        HandleArguments(graphQLQueryFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
 
         stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
 
@@ -63,7 +48,7 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
                         ConvertQueryString(
                             innerGraphQLFieldDefinition,
                             graphQLUserDefinedTypes,
-                            ref graphQLInputValueDefinitionConverter,
+                            graphQLInputValueDefinitionConverter,
                             indentationLevel + 2
                         )
                     );
@@ -72,6 +57,9 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
                 {
                     stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 4));
                     stringBuilder.Append(innerGraphQLFieldDefinition.Name.StringValue);
+
+                    HandleArguments(innerGraphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
+
                     stringBuilder.Append(Environment.NewLine);
                 }
             }
@@ -82,30 +70,60 @@ public sealed class GraphQLQueryFieldConverter : IGraphQLQueryFieldConverter
 
         if (indentationLevel == 0)
         {
-            var operationBuilder = new StringBuilder();
-
-            operationBuilder.Append($"query {graphQLQueryFieldDefinition.Name.StringValue.FirstCharToUpper()}Test");
-
-            var graphQLArgumentTypes = graphQLInputValueDefinitionConverter.GetConverted();
-
-            if (graphQLArgumentTypes.Any())
-            {
-                operationBuilder.Append(SchemaToken.OpenParen);
-
-                foreach (var graphQLArgumentType in graphQLArgumentTypes)
-                {
-                    operationBuilder.Append($"${graphQLArgumentType.VariableName}: {graphQLArgumentType.VariableTypeName},");
-                }
-
-                operationBuilder.Remove(operationBuilder.Length - 1, 1);
-                operationBuilder.Append(SchemaToken.CloseParen);
-            }
-
-            operationBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
-
-            stringBuilder.Insert(0, operationBuilder.ToString());
+            stringBuilder.Insert(0, BuildOperation(graphQLQueryFieldDefinition, graphQLInputValueDefinitionConverter));
             stringBuilder.Append(SchemaToken.CloseBrace);
         }
+
+        return stringBuilder.ToString();
+    }
+
+    private static void HandleArguments(
+        IHasArgumentsDefinitionNode graphQLFieldDefinition,
+        IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
+        StringBuilder stringBuilder)
+    {
+        if (!(graphQLFieldDefinition.Arguments?.Any() ?? false))
+        {
+            return;
+        }
+
+        stringBuilder.Append(SchemaToken.OpenParen);
+
+        foreach (var argument in graphQLFieldDefinition.Arguments!)
+        {
+            var graphQLArgumentType = graphQLInputValueDefinitionConverter.Convert(argument);
+
+            stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: ${graphQLArgumentType.VariableName}{SchemaToken.Comma} ");
+        }
+
+        stringBuilder.TrimEnd(2);
+        stringBuilder.Append(SchemaToken.CloseParen);
+    }
+
+    private static string BuildOperation(
+        INamedNode graphQLQueryFieldDefinition,
+        IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter)
+    {
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.Append($"query {graphQLQueryFieldDefinition.Name.StringValue.FirstCharToUpper()}Test");
+
+        var graphQLArgumentTypes = graphQLInputValueDefinitionConverter.GetAllConverted();
+
+        if (graphQLArgumentTypes.Any())
+        {
+            stringBuilder.Append(SchemaToken.OpenParen);
+
+            foreach (var graphQLArgumentType in graphQLArgumentTypes)
+            {
+                stringBuilder.Append($"${graphQLArgumentType.VariableName}: {graphQLArgumentType.VariableTypeName}{SchemaToken.Comma} ");
+            }
+
+            stringBuilder.TrimEnd(2);
+            stringBuilder.Append(SchemaToken.CloseParen);
+        }
+
+        stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
 
         return stringBuilder.ToString();
     }

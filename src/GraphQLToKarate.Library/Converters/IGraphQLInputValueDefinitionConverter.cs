@@ -7,5 +7,5 @@ public interface IGraphQLInputValueDefinitionConverter
 {
     GraphQLArgumentTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition);
 
-    ICollection<GraphQLArgumentTypeBase> GetConverted();
+    ICollection<GraphQLArgumentTypeBase> GetAllConverted();
 }

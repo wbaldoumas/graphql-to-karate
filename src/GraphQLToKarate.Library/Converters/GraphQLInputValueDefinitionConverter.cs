@@ -21,7 +21,7 @@ public class GraphQLInputValueDefinitionConverter : IGraphQLInputValueDefinition
         return graphQLVariableTypeName;
     }
 
-    public ICollection<GraphQLArgumentTypeBase> GetConverted() => _graphQLVariableTypes;
+    public ICollection<GraphQLArgumentTypeBase> GetAllConverted() => _graphQLVariableTypes;
 
     private static GraphQLArgumentTypeBase Convert(
         GraphQLInputValueDefinition graphQLInputValueDefinition,
