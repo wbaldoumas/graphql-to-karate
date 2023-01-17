@@ -9,10 +9,10 @@ namespace GraphQLToKarate.Tests.Converters;
 [TestFixture]
 internal sealed class GraphQLQueryFieldConverterTests
 {
-    private IGraphQLQueryFieldConverter? _subjectUnderTest;
+    private IGraphQLFieldDefinitionConverter? _subjectUnderTest;
 
     [SetUp]
-    public void SetUp() => _subjectUnderTest = new GraphQLQueryFieldConverter();
+    public void SetUp() => _subjectUnderTest = new GraphQLFieldDefinitionDefinitionConverter();
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
@@ -256,6 +256,33 @@ internal sealed class GraphQLQueryFieldConverterTests
                 }
             };
 
+            var testGraphQLInterfaceTypeDefinition = new GraphQLInterfaceTypeDefinition
+            {
+                Name = new GraphQLName("PersonInterface"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        }
+                    }
+                }
+            };
+
             var testGraphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition()
             {
                 Name = new GraphQLName("Color"),
@@ -318,6 +345,10 @@ internal sealed class GraphQLQueryFieldConverterTests
                         testGraphQLObjectDefinitionWithScalarFieldArguments.Name.StringValue,
                         testGraphQLObjectDefinitionWithScalarFieldArguments
                     }
+                },
+                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>
+                {
+                    { testGraphQLInterfaceTypeDefinition.Name.StringValue, testGraphQLInterfaceTypeDefinition }
                 }
             };
 
@@ -483,6 +514,32 @@ internal sealed class GraphQLQueryFieldConverterTests
                                 """
                 }
             ).SetName("Converter is able to convert simple query with scalar arguments.");
+
+
+            var testGraphQLFieldDefinitionWithInterface = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("personInterface"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName("PersonInterface")
+                }
+            };
+
+            yield return new TestCaseData(
+                testGraphQLFieldDefinitionWithInterface,
+                testGraphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithInterface)
+                {
+                    QueryString = """
+                                query PersonInterfaceTest {
+                                  personInterface {
+                                    id
+                                    name
+                                  }
+                                }
+                                """
+                }
+            ).SetName("Converter is able to convert simple query with interface return type.");
         }
     }
 }

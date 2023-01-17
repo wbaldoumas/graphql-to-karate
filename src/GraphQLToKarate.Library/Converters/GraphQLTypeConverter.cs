@@ -24,6 +24,8 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
                 .Contains(graphQLTypeName) => KarateToken.String,
             { } graphQLTypeName when graphQLUserDefinedTypes.GraphQLObjectTypeDefinitionNames
                 .Contains(graphQLTypeName) => $"{graphQLTypeName.FirstCharToLower()}Schema",
+            { } graphQLTypeName when graphQLUserDefinedTypes.GraphQLInterfaceTypeDefinitionNames
+                .Contains(graphQLTypeName) => $"{graphQLTypeName.FirstCharToLower()}Schema",
             _ => throw new ArgumentException(
                 $"Unknown GraphQL type name for GraphQL field {graphQLFieldName}!",
                 nameof(graphQLType)

@@ -5,7 +5,7 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
 
-public class GraphQLInputValueDefinitionConverter : IGraphQLInputValueDefinitionConverter
+internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueDefinitionConverter
 {
     private readonly ICollection<GraphQLArgumentTypeBase> _graphQLVariableTypes = new List<GraphQLArgumentTypeBase>();
     private readonly ISet<string> _reservedVariableNames = new HashSet<string>();
