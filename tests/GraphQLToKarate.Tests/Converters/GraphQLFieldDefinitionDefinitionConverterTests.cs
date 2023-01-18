@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Converters;
 
 [TestFixture]
-internal sealed class GraphQLQueryFieldConverterTests
+internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
 {
     private IGraphQLFieldDefinitionConverter? _subjectUnderTest;
 
@@ -283,6 +283,41 @@ internal sealed class GraphQLQueryFieldConverterTests
                 }
             };
 
+            var testGraphQLInterfaceTypeDefinitionWithNesting = new GraphQLInterfaceTypeDefinition
+            {
+                Name = new GraphQLName("NestedPersonInterface"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("String")
+                            }
+                        },
+                        new ()
+                        {
+                            Name = new GraphQLName("friend"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("PersonInterface")
+                            }
+                        }
+                    }
+                }
+            };
+
             var testGraphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition()
             {
                 Name = new GraphQLName("Color"),
@@ -348,7 +383,14 @@ internal sealed class GraphQLQueryFieldConverterTests
                 },
                 GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>
                 {
-                    { testGraphQLInterfaceTypeDefinition.Name.StringValue, testGraphQLInterfaceTypeDefinition }
+                    {
+                        testGraphQLInterfaceTypeDefinition.Name.StringValue, 
+                        testGraphQLInterfaceTypeDefinition
+                    },
+                    {
+                        testGraphQLInterfaceTypeDefinitionWithNesting.Name.StringValue,
+                        testGraphQLInterfaceTypeDefinitionWithNesting
+                    }
                 }
             };
 
@@ -494,7 +536,7 @@ internal sealed class GraphQLQueryFieldConverterTests
                                 }
                                 """
                 }
-            ).SetName("Converter is able to convert simple query with nested arguments.");
+            ).SetName("Converter is able to convert nested query with nested field arguments.");
 
 
             yield return new TestCaseData(
@@ -513,7 +555,7 @@ internal sealed class GraphQLQueryFieldConverterTests
                                 }
                                 """
                 }
-            ).SetName("Converter is able to convert simple query with scalar arguments.");
+            ).SetName("Converter is able to convert simple query with scalar field arguments.");
 
 
             var testGraphQLFieldDefinitionWithInterface = new GraphQLFieldDefinition
@@ -540,6 +582,35 @@ internal sealed class GraphQLQueryFieldConverterTests
                                 """
                 }
             ).SetName("Converter is able to convert simple query with interface return type.");
+
+            var testGraphQLFieldDefinitionWithNestedInterface = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("nestedPersonInterface"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(testGraphQLInterfaceTypeDefinitionWithNesting.Name)
+                }
+            };
+
+            yield return new TestCaseData(
+                testGraphQLFieldDefinitionWithNestedInterface,
+                testGraphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithNestedInterface)
+                {
+                    QueryString = """
+                                query NestedPersonInterfaceTest {
+                                  nestedPersonInterface {
+                                    id
+                                    name
+                                    friend {
+                                      id
+                                      name
+                                    }
+                                  }
+                                }
+                                """
+                }
+            ).SetName("Converter is able to convert simple query with nested interface return type.");
         }
     }
 }
