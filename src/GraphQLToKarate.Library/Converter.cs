@@ -1,4 +1,5 @@
-﻿using GraphQLParser;
+﻿using System.Diagnostics.CodeAnalysis;
+using GraphQLParser;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Tokens;
@@ -6,6 +7,7 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library;
 
+[ExcludeFromCodeCoverage(Justification = "Temporary code for prototyping")]
 public sealed class Converter
 {
     private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
