@@ -48,7 +48,8 @@ internal sealed class GraphQLNullTypeConverterTests
             var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
             {
                 GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
             };
 
             yield return new TestCaseData(
@@ -116,7 +117,8 @@ internal sealed class GraphQLNullTypeConverterTests
                     {
                         { enumTypeName, new GraphQLEnumTypeDefinition() }
                     },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable enum GraphQL type is converted to nullable string Karate type.");
@@ -138,7 +140,8 @@ internal sealed class GraphQLNullTypeConverterTests
                     GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
                     {
                         { customTypeName, new GraphQLObjectTypeDefinition() }
-                    }
+                    },
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateNullType(new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName))
             ).SetName("Nullable custom GraphQL type is converted to nullable custom Karate type.");

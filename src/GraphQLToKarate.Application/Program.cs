@@ -2,7 +2,15 @@
 using GraphQLToKarate.Library.Converters;
 
 var graphql = """
-    type Todo {
+    interface FooInterface {
+        id: String!
+        name: String!
+        completed: Boolean
+        color: Color
+        colors(filter: [Color!]!): [Color!]!
+    }
+
+    type Todo implements FooInterface {
         id: String!
         name: String!
         completed: Boolean
@@ -20,13 +28,12 @@ var graphql = """
 
     type NestedTodo {
       id: String!
-      todos: [Todo!]!
+      todos: [FooInterface!]!
     }
-
 
     type NestedNestedTodo {
       id: String!
-      todos: [[Todo!]]!
+      todos: [[NestedTodo!]]!
     }
 
     type MoreNesting {
@@ -57,13 +64,13 @@ var graphql = """
           id: String!,
           "A default value of false"
           isCompleted: Boolean=false
-        ): Todo!
+        ): FooInterface!
 
         "Returns a list (or null) that can contain null values"
         todos(
           "Required argument that is a list that cannot contain null values"
           ids: [String!]!
-        ): [Todo]
+        ): [FooInterface]
 
         nestedTodos(
           ids: [String!]!
@@ -95,8 +102,8 @@ var graphql = """
     """;
 
 var converter = new Converter(
-    new GraphQLObjectTypeDefinitionConverter(new GraphQLTypeConverterFactory()),
-    new GraphQLQueryFieldConverter()
+    new GraphQLTypeDefinitionConverter(new GraphQLTypeConverterFactory()),
+    new GraphQLFieldDefinitionDefinitionConverter()
 );
 
 var (karateObjects, graphQLQueryFields) = converter.Convert(graphql);

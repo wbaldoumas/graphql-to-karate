@@ -4,20 +4,20 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
 
-/// <inheritdoc cref="IGraphQLObjectTypeDefinitionConverter"/>
-public sealed class GraphQLObjectTypeDefinitionConverter : IGraphQLObjectTypeDefinitionConverter
+/// <inheritdoc cref="IGraphQLTypeDefinitionConverter"/>
+public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConverter
 {
     private readonly IGraphQLTypeConverterFactory _graphQLTypeConverterFactory;
 
-    public GraphQLObjectTypeDefinitionConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) =>
+    public GraphQLTypeDefinitionConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) =>
         _graphQLTypeConverterFactory = graphQLTypeConverterFactory;
 
-    public KarateObject Convert(
-        GraphQLObjectTypeDefinition graphQLObjectTypeDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes)
+    public KarateObject Convert<T>(
+        T graphQLTypeDefinition,
+        GraphQLUserDefinedTypes graphQLUserDefinedTypes) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode
     {
         var karateTypes =
-            from graphQLFieldDefinition in graphQLObjectTypeDefinition.Fields
+            from graphQLFieldDefinition in graphQLTypeDefinition.Fields
             let converter = graphQLFieldDefinition.Type switch
             {
                 GraphQLNonNullType => _graphQLTypeConverterFactory.CreateGraphQLNonNullTypeConverter(),
@@ -31,6 +31,6 @@ public sealed class GraphQLObjectTypeDefinitionConverter : IGraphQLObjectTypeDef
                 graphQLUserDefinedTypes
             );
 
-        return new KarateObject(graphQLObjectTypeDefinition.Name.StringValue, karateTypes.ToList());
+        return new KarateObject(graphQLTypeDefinition.Name.StringValue, karateTypes.ToList());
     }
 }

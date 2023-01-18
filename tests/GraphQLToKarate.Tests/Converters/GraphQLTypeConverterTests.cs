@@ -44,7 +44,8 @@ internal sealed class GraphQLTypeConverterTests
             var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
             {
                 GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
             };
 
             yield return new TestCaseData(
@@ -112,7 +113,8 @@ internal sealed class GraphQLTypeConverterTests
                     {
                         { enumTypeName, new GraphQLEnumTypeDefinition() }
                     },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateType(KarateToken.String, testFieldName)
             ).SetName("Enum GraphQL type is converted to string Karate type.");
@@ -134,9 +136,36 @@ internal sealed class GraphQLTypeConverterTests
                     GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
                     {
                         { customTypeName, new GraphQLObjectTypeDefinition() }
-                    }
+                    },
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
+            ).SetName("Custom GraphQL type is converted to custom Karate type.");
+
+            const string interfaceTypeName = "TodoInterface";
+
+            yield return new TestCaseData(
+                testFieldName,
+                new GraphQLNamedType
+                {
+                    Name = new GraphQLName(interfaceTypeName)
+                },
+                new GraphQLUserDefinedTypes
+                {
+                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
+                    {
+                        { enumTypeName, new GraphQLEnumTypeDefinition() }
+                    },
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
+                    {
+                        { customTypeName, new GraphQLObjectTypeDefinition() }
+                    },
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>
+                    {
+                        { interfaceTypeName, new GraphQLInterfaceTypeDefinition() }
+                    }
+                },
+                new KarateType($"{interfaceTypeName.FirstCharToLower()}Schema", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
         }
     }

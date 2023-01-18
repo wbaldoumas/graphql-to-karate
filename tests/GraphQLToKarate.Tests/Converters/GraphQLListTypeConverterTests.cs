@@ -49,7 +49,8 @@ internal sealed class GraphQLListTypeConverterTests
             var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
             {
                 GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
             };
 
             yield return new TestCaseData(
@@ -156,7 +157,8 @@ internal sealed class GraphQLListTypeConverterTests
                     {
                         { enumTypeName, new GraphQLEnumTypeDefinition() }
                     },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateListType(
                     new KarateNullType(
@@ -185,7 +187,8 @@ internal sealed class GraphQLListTypeConverterTests
                     GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
                     {
                         { customTypeName, new GraphQLObjectTypeDefinition() }
-                    }
+                    },
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateListType(
                     new KarateNullType(
@@ -314,7 +317,8 @@ internal sealed class GraphQLListTypeConverterTests
                     {
                         { enumTypeName, new GraphQLEnumTypeDefinition() }
                     },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>()
+                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateListType(
                     new KarateNonNullType(
@@ -344,7 +348,8 @@ internal sealed class GraphQLListTypeConverterTests
                     GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
                     {
                         { customTypeName, new GraphQLObjectTypeDefinition() }
-                    }
+                    },
+                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
                 },
                 new KarateListType(
                     new KarateNonNullType(

@@ -10,8 +10,11 @@ internal sealed class KarateObjectTests
 {
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public void Schema(KarateObject karateObject, string expectedSchema) =>
+    public void Schema(KarateObject karateObject, string expectedName, string expectedSchema)
+    {
+        karateObject.Name.Should().Be(expectedName);
         karateObject.ToString().Should().Be(expectedSchema);
+    }
 
     private static IEnumerable<TestCaseData> TestCases
     {
@@ -33,6 +36,7 @@ internal sealed class KarateObjectTests
                         )
                     }
                 ),
+                testKarateObjectName,
                 """
                 {
                   names: '#[] ##string'
@@ -58,6 +62,7 @@ internal sealed class KarateObjectTests
                         )
                     }
                 ),
+                testKarateObjectName,
                 """
                 {
                   id: '#number',

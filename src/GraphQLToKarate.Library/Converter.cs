@@ -1,4 +1,5 @@
-﻿using GraphQLParser;
+﻿using System.Diagnostics.CodeAnalysis;
+using GraphQLParser;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Tokens;
@@ -6,17 +7,18 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library;
 
+[ExcludeFromCodeCoverage(Justification = "Temporary code for prototyping")]
 public sealed class Converter
 {
-    private readonly IGraphQLObjectTypeDefinitionConverter _graphQLObjectTypeDefinitionConverter;
-    private readonly IGraphQLQueryFieldConverter _graphQLQueryFieldConverter;
+    private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
+    private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
 
     public Converter(
-        IGraphQLObjectTypeDefinitionConverter graphQLObjectTypeDefinitionConverter,
-        IGraphQLQueryFieldConverter graphQLQueryFieldConverter)
+        IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
+        IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter)
     {
-        _graphQLObjectTypeDefinitionConverter = graphQLObjectTypeDefinitionConverter;
-        _graphQLQueryFieldConverter = graphQLQueryFieldConverter;
+        _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
+        _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
     }
 
     public (IEnumerable<KarateObject> KarateObjects, IEnumerable<GraphQLQueryFieldType> GraphQLQueryFields) Convert(
@@ -34,16 +36,28 @@ public sealed class Converter
                                  definition.Name.StringValue != GraphQLToken.Mutation)
             .ToDictionary(definition => definition.Name.StringValue);
 
+        var graphQLInterfaceTypeDefinitionsByName = graphQLDocument.Definitions
+            .OfType<GraphQLInterfaceTypeDefinition>()
+            .ToDictionary(definition => definition.Name.StringValue);
+
         var graphQLUserDefinedTypes = new GraphQLUserDefinedTypes
         {
             GraphQLEnumTypeDefinitionsByName = graphQLEnumTypeDefinitionsByName,
-            GraphQLObjectTypeDefinitionsByName = graphQLObjectTypeDefinitionsByName
+            GraphQLObjectTypeDefinitionsByName = graphQLObjectTypeDefinitionsByName,
+            GraphQLInterfaceTypeDefinitionsByName = graphQLInterfaceTypeDefinitionsByName
         };
 
         var karateObjects = graphQLObjectTypeDefinitionsByName.Values.Select(
-            graphQLObjectTypeDefinition => _graphQLObjectTypeDefinitionConverter.Convert(
+            graphQLObjectTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
                 graphQLObjectTypeDefinition,
                 graphQLUserDefinedTypes
+            )
+        ).Concat(
+            graphQLInterfaceTypeDefinitionsByName.Values.Select(
+                graphQLInterfaceTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
+                    graphQLInterfaceTypeDefinition,
+                    graphQLUserDefinedTypes
+                )
             )
         );
 
@@ -52,8 +66,10 @@ public sealed class Converter
             .FirstOrDefault(definition => definition.Name.StringValue == GraphQLToken.Query);
 
         var graphQLQueryFieldTypes = graphQLQueryTypeDefinition!.Fields!.Select(
-            graphQLFieldDefinition =>
-                _graphQLQueryFieldConverter.Convert(graphQLFieldDefinition, graphQLUserDefinedTypes)
+            graphQLFieldDefinition => _graphQLFieldDefinitionConverter.Convert(
+                graphQLFieldDefinition,
+                graphQLUserDefinedTypes
+            )
         );
 
         return (karateObjects, graphQLQueryFieldTypes);
