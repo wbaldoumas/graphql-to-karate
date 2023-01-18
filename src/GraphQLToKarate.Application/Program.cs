@@ -1,7 +1,7 @@
 ﻿using GraphQLToKarate.Library;
 using GraphQLToKarate.Library.Converters;
 
-var graphql = """
+const string graphQLSchema = """
     interface FooInterface {
         id: String!
         name: String!
@@ -103,10 +103,10 @@ var graphql = """
 
 var converter = new Converter(
     new GraphQLTypeDefinitionConverter(new GraphQLTypeConverterFactory()),
-    new GraphQLFieldDefinitionDefinitionConverter()
+    new GraphQLFieldDefinitionConverter()
 );
 
-var (karateObjects, graphQLQueryFields) = converter.Convert(graphql);
+var (karateObjects, graphQLQueryFields) = converter.Convert(graphQLSchema);
 
 foreach (var graphQLQueryField in graphQLQueryFields)
 {

@@ -1,5 +1,6 @@
 ﻿namespace GraphQLToKarate.Library.Converters;
 
+/// <inheritdoc cref="IGraphQLTypeConverterFactory"/>
 public sealed class GraphQLTypeConverterFactory : IGraphQLTypeConverterFactory
 {
     private IGraphQLTypeConverter? _graphQLTypeConverter;

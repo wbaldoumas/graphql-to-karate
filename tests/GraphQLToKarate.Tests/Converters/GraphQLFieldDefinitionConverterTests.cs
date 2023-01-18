@@ -7,12 +7,12 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Converters;
 
 [TestFixture]
-internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
+internal sealed class GraphQLFieldDefinitionConverterTests
 {
     private IGraphQLFieldDefinitionConverter? _subjectUnderTest;
 
     [SetUp]
-    public void SetUp() => _subjectUnderTest = new GraphQLFieldDefinitionDefinitionConverter();
+    public void SetUp() => _subjectUnderTest = new GraphQLFieldDefinitionConverter();
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
@@ -37,16 +37,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
     {
         get
         {
-            var testGraphQLFieldDefinition = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("person"),
-                Type = new GraphQLNamedType
-                {
-                    Name = new GraphQLName("Person")
-                }
-            };
-
-            var testGraphQLObjectDefinition = new GraphQLObjectTypeDefinition
+            var person = new GraphQLObjectTypeDefinition
             {
                 Name = new GraphQLName("Person"),
                 Fields = new GraphQLFieldsDefinition
@@ -89,7 +80,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLObjectDefinitionWithNesting = new GraphQLObjectTypeDefinition
+            var personWithFriends = new GraphQLObjectTypeDefinition
             {
                 Name = new GraphQLName("PersonWithFriends"),
                 Fields = new GraphQLFieldsDefinition
@@ -119,7 +110,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                             {
                                 Type = new GraphQLNamedType
                                 {
-                                    Name = new GraphQLName("Person")
+                                    Name = new GraphQLName(person.Name)
                                 }
                             }
                         }
@@ -127,7 +118,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLObjectDefinitionWithNestedFieldArguments = new GraphQLObjectTypeDefinition
+            var personWithFriendsWithArguments = new GraphQLObjectTypeDefinition
             {
                 Name = new GraphQLName("PersonWithFriendsWithArguments"),
                 Fields = new GraphQLFieldsDefinition
@@ -157,7 +148,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                             {
                                 Type = new GraphQLNamedType
                                 {
-                                    Name = new GraphQLName("Person")
+                                    Name = new GraphQLName(person.Name)
                                 }
                             },
                             Arguments = new GraphQLArgumentsDefinition
@@ -193,7 +184,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLObjectDefinitionWithScalarFieldArguments = new GraphQLObjectTypeDefinition
+            var personWithFavoriteColorsWithArguments = new GraphQLObjectTypeDefinition
             {
                 Name = new GraphQLName("PersonWithFavoriteColors"),
                 Fields = new GraphQLFieldsDefinition
@@ -256,7 +247,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLInterfaceTypeDefinition = new GraphQLInterfaceTypeDefinition
+            var personInterface = new GraphQLInterfaceTypeDefinition
             {
                 Name = new GraphQLName("PersonInterface"),
                 Fields = new GraphQLFieldsDefinition
@@ -283,7 +274,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLInterfaceTypeDefinitionWithNesting = new GraphQLInterfaceTypeDefinition
+            var personInterfaceWithFriend = new GraphQLInterfaceTypeDefinition
             {
                 Name = new GraphQLName("NestedPersonInterface"),
                 Fields = new GraphQLFieldsDefinition
@@ -311,14 +302,14 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                             Name = new GraphQLName("friend"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("PersonInterface")
+                                Name = new GraphQLName(personInterface.Name)
                             }
                         }
                     }
                 }
             };
 
-            var testGraphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition()
+            var colors = new GraphQLEnumTypeDefinition
             {
                 Name = new GraphQLName("Color"),
                 Values = new GraphQLEnumValuesDefinition
@@ -353,51 +344,60 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
+            var graphQLUserDefinedTypes = new GraphQLUserDefinedTypes
             {
                 GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
                 {
                     {
-                        testGraphQLEnumTypeDefinition.Name.StringValue,
-                        testGraphQLEnumTypeDefinition
+                        colors.Name.StringValue,
+                        colors
                     }
                 },
                 GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
                 {
                     {
-                        testGraphQLObjectDefinition.Name.StringValue,
-                        testGraphQLObjectDefinition
+                        person.Name.StringValue,
+                        person
                     },
                     {
-                        testGraphQLObjectDefinitionWithNestedFieldArguments.Name.StringValue,
-                        testGraphQLObjectDefinitionWithNestedFieldArguments
+                        personWithFriendsWithArguments.Name.StringValue,
+                        personWithFriendsWithArguments
                     },
                     {
-                        testGraphQLObjectDefinitionWithNesting.Name.StringValue,
-                        testGraphQLObjectDefinitionWithNesting
+                        personWithFriends.Name.StringValue,
+                        personWithFriends
                     },
                     {
-                        testGraphQLObjectDefinitionWithScalarFieldArguments.Name.StringValue,
-                        testGraphQLObjectDefinitionWithScalarFieldArguments
+                        personWithFavoriteColorsWithArguments.Name.StringValue,
+                        personWithFavoriteColorsWithArguments
                     }
                 },
                 GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>
                 {
                     {
-                        testGraphQLInterfaceTypeDefinition.Name.StringValue, 
-                        testGraphQLInterfaceTypeDefinition
+                        personInterface.Name.StringValue, 
+                        personInterface
                     },
                     {
-                        testGraphQLInterfaceTypeDefinitionWithNesting.Name.StringValue,
-                        testGraphQLInterfaceTypeDefinitionWithNesting
+                        personInterfaceWithFriend.Name.StringValue,
+                        personInterfaceWithFriend
                     }
                 }
             };
 
+            var personQueryFieldDefinition = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("person"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(person.Name)
+                }
+            };
+
             yield return new TestCaseData(
-                testGraphQLFieldDefinition,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testGraphQLFieldDefinition)
+                personQueryFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(personQueryFieldDefinition)
                 {
                     QueryString = """
                                 query PersonTest {
@@ -412,19 +412,19 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             ).SetName("Converter is able to convert simple query.");
 
-            var testNestedGraphQLFieldDefinition = new GraphQLFieldDefinition
+            var personWithFriendsQueryFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("personWithFriends"),
                 Type = new GraphQLNamedType
                 {
-                    Name = new GraphQLName("PersonWithFriends")
+                    Name = new GraphQLName(personWithFriends.Name)
                 }
             };
 
             yield return new TestCaseData(
-                testNestedGraphQLFieldDefinition,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testNestedGraphQLFieldDefinition)
+                personWithFriendsQueryFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(personWithFriendsQueryFieldDefinition)
                 {
                     QueryString = """
                                 query PersonWithFriendsTest {
@@ -443,12 +443,12 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             ).SetName("Converter is able to convert nested query.");
 
-            var testGraphQLFieldDefinitionWithArguments = new GraphQLFieldDefinition
+            var personWithFriendsWithArgumentsGraphQLQueryFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("personById"),
                 Type = new GraphQLNamedType
                 {
-                    Name = new GraphQLName("Person")
+                    Name = new GraphQLName(person.Name)
                 },
                 Arguments = new GraphQLArgumentsDefinition
                 {
@@ -467,9 +467,9 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
             };
 
             yield return new TestCaseData(
-                testGraphQLFieldDefinitionWithArguments,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithArguments)
+                personWithFriendsWithArgumentsGraphQLQueryFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(personWithFriendsWithArgumentsGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
                                 query PersonByIdTest($id: Int) {
@@ -484,7 +484,7 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             ).SetName("Converter is able to convert simple query with arguments.");
 
-            var testGraphQLFieldDefinitionWithNestedArguments = new GraphQLFieldDefinition
+            var personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("personWithFriendsById"),
                 Type = new GraphQLNamedType
@@ -507,19 +507,19 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             };
 
-            var testGraphQLFieldDefinitionWithScalarArguments = new GraphQLFieldDefinition()
+            var personWithFavoriteColorsGraphQLQueryFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("personWithFavoriteColors"),
                 Type = new GraphQLNamedType
                 {
-                    Name = new GraphQLName("PersonWithFavoriteColors")
+                    Name = new GraphQLName(personWithFavoriteColorsWithArguments.Name)
                 }
             };
 
             yield return new TestCaseData(
-                testGraphQLFieldDefinitionWithNestedArguments,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithNestedArguments)
+                personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
                                 query PersonWithFriendsByIdTest($id: Int, $ids: [String], $location: String!) {
@@ -540,9 +540,9 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
 
 
             yield return new TestCaseData(
-                testGraphQLFieldDefinitionWithScalarArguments,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithScalarArguments)
+                personWithFavoriteColorsGraphQLQueryFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(personWithFavoriteColorsGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
                                 query PersonWithFavoriteColorsTest($filter: [String]) {
@@ -558,19 +558,19 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
             ).SetName("Converter is able to convert simple query with scalar field arguments.");
 
 
-            var testGraphQLFieldDefinitionWithInterface = new GraphQLFieldDefinition
+            var personInterfaceQueryGraphQLFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("personInterface"),
                 Type = new GraphQLNamedType
                 {
-                    Name = new GraphQLName("PersonInterface")
+                    Name = new GraphQLName(personInterface.Name)
                 }
             };
 
             yield return new TestCaseData(
-                testGraphQLFieldDefinitionWithInterface,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithInterface)
+                personInterfaceQueryGraphQLFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(personInterfaceQueryGraphQLFieldDefinition)
                 {
                     QueryString = """
                                 query PersonInterfaceTest {
@@ -583,19 +583,19 @@ internal sealed class GraphQLFieldDefinitionDefinitionConverterTests
                 }
             ).SetName("Converter is able to convert simple query with interface return type.");
 
-            var testGraphQLFieldDefinitionWithNestedInterface = new GraphQLFieldDefinition
+            var nestedPersonInterfaceGraphQLQueryFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("nestedPersonInterface"),
                 Type = new GraphQLNamedType
                 {
-                    Name = new GraphQLName(testGraphQLInterfaceTypeDefinitionWithNesting.Name)
+                    Name = new GraphQLName(personInterfaceWithFriend.Name)
                 }
             };
 
             yield return new TestCaseData(
-                testGraphQLFieldDefinitionWithNestedInterface,
-                testGraphQLUserDefinedTypes,
-                new GraphQLQueryFieldType(testGraphQLFieldDefinitionWithNestedInterface)
+                nestedPersonInterfaceGraphQLQueryFieldDefinition,
+                graphQLUserDefinedTypes,
+                new GraphQLQueryFieldType(nestedPersonInterfaceGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
                                 query NestedPersonInterfaceTest {
