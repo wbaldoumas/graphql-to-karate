@@ -6,7 +6,8 @@ using GraphQLToKarate.Library.Extensions;
 
 namespace GraphQLToKarate.Library.Converters;
 
-public sealed class GraphQLFieldDefinitionDefinitionConverter : IGraphQLFieldDefinitionConverter
+/// <inheritdoc cref="IGraphQLFieldDefinitionConverter"/>
+public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionConverter
 {
     public GraphQLQueryFieldType Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
@@ -139,7 +140,7 @@ public sealed class GraphQLFieldDefinitionDefinitionConverter : IGraphQLFieldDef
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder)
     {
-        if (!(graphQLFieldDefinition.Arguments?.Any() ?? false))
+        if (!graphQLFieldDefinition.HasArguments())
         {
             return;
         }
@@ -150,10 +151,10 @@ public sealed class GraphQLFieldDefinitionDefinitionConverter : IGraphQLFieldDef
         {
             var graphQLArgumentType = graphQLInputValueDefinitionConverter.Convert(argument);
 
-            stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: ${graphQLArgumentType.VariableName}{SchemaToken.Comma} ");
+            stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: {graphQLArgumentType.VariableName}{SchemaToken.Comma} ");
         }
 
-        stringBuilder.TrimEnd(2);
+        stringBuilder.TrimEnd(2); // remove trailing comma + space
         stringBuilder.Append(SchemaToken.CloseParen);
     }
 
@@ -174,10 +175,10 @@ public sealed class GraphQLFieldDefinitionDefinitionConverter : IGraphQLFieldDef
 
             foreach (var graphQLArgumentType in graphQLArgumentTypes)
             {
-                operationStringBuilder.Append($"${graphQLArgumentType.VariableName}: {graphQLArgumentType.VariableTypeName}{SchemaToken.Comma} ");
+                operationStringBuilder.Append($"{graphQLArgumentType.VariableName}: {graphQLArgumentType.VariableTypeName}{SchemaToken.Comma} ");
             }
 
-            operationStringBuilder.TrimEnd(2);
+            operationStringBuilder.TrimEnd(2); // remove trailing comma + space
             operationStringBuilder.Append(SchemaToken.CloseParen);
         }
 

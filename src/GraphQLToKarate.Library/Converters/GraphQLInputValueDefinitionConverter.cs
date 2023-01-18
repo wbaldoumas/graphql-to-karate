@@ -5,6 +5,7 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
 
+/// <inheritdoc cref="IGraphQLInputValueDefinitionConverter"/>
 internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueDefinitionConverter
 {
     private readonly ICollection<GraphQLArgumentTypeBase> _graphQLVariableTypes = new List<GraphQLArgumentTypeBase>();
@@ -90,6 +91,6 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
 
         _reservedVariableNames.Add(uniqueInputValueDefinitionName);
 
-        return uniqueInputValueDefinitionName;
+        return $"${uniqueInputValueDefinitionName}";
     }
 }

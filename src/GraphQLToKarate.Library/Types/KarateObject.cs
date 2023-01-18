@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Types;
@@ -38,7 +39,7 @@ public sealed class KarateObject
             stringBuilder.Append(SchemaToken.Comma);
         }
 
-        stringBuilder.Remove(stringBuilder.Length - 1, 1);
+        stringBuilder.TrimEnd(1); // remove trailing comma
         stringBuilder.Append(Environment.NewLine);
         stringBuilder.Append(SchemaToken.CloseBrace);
 
