@@ -1,8 +1,8 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using System.Text;
-using GraphQLToKarate.Library.Extensions;
 
 namespace GraphQLToKarate.Library.Converters;
 
@@ -26,7 +26,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     }
 
     private static string Convert(
-        GraphQLFieldDefinition graphQLQueryFieldDefinition,
+        GraphQLFieldDefinition graphQLFieldDefinition,
         GraphQLUserDefinedTypes graphQLUserDefinedTypes,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         int indentationLevel = 0)
@@ -34,18 +34,20 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         var stringBuilder = new StringBuilder();
 
         stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
-        stringBuilder.Append(graphQLQueryFieldDefinition.Name.StringValue);
+        stringBuilder.Append(graphQLFieldDefinition.Name.StringValue);
 
-        HandleArguments(graphQLQueryFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
+        HandleArguments(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
 
         stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
 
-        var hasFieldsDefinitionNode = GetHasFieldsDefinitionNode(graphQLQueryFieldDefinition, graphQLUserDefinedTypes);
+        var graphQLTypeDefinitionWithFields = graphQLUserDefinedTypes.GetGraphQLTypeDefinitionWithFields(
+            graphQLFieldDefinition.Type.GetTypeName()
+        );
 
-        if (hasFieldsDefinitionNode is not null)
+        if (graphQLTypeDefinitionWithFields is not null)
         {
             HandleFields(
-                hasFieldsDefinitionNode, 
+                graphQLTypeDefinitionWithFields, 
                 graphQLUserDefinedTypes, 
                 graphQLInputValueDefinitionConverter,
                 stringBuilder, 
@@ -58,30 +60,10 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         if (indentationLevel == 0)
         {
-            HandleOperation(graphQLQueryFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
+            HandleOperation(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
         }
 
         return stringBuilder.ToString();
-    }
-
-    private static IHasFieldsDefinitionNode? GetHasFieldsDefinitionNode(
-        GraphQLFieldDefinition graphQLFieldDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes)
-    {
-        var graphQLTypeName = graphQLFieldDefinition.Type.GetTypeName();
-
-        IHasFieldsDefinitionNode? graphQLHasFieldsDefinition = null;
-
-        if (graphQLUserDefinedTypes.GraphQLObjectTypeDefinitionsByName.TryGetValue(graphQLTypeName, out var objectType))
-        {
-            graphQLHasFieldsDefinition = objectType;
-        }
-        else if (graphQLUserDefinedTypes.GraphQLInterfaceTypeDefinitionsByName.TryGetValue(graphQLTypeName, out var interfaceType))
-        {
-            graphQLHasFieldsDefinition = interfaceType;
-        }
-
-        return graphQLHasFieldsDefinition;
     }
 
     private static void HandleFields(
@@ -110,10 +92,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         StringBuilder stringBuilder,
         int indentationLevel)
     {
-        var graphQLTypeName = graphQLFieldDefinition.Type.GetTypeName();
-
-        if (graphQLUserDefinedTypes.GraphQLObjectTypeDefinitionsByName.ContainsKey(graphQLTypeName) ||
-            graphQLUserDefinedTypes.GraphQLInterfaceTypeDefinitionsByName.ContainsKey(graphQLTypeName))
+        if (graphQLUserDefinedTypes.HasGraphQLTypeDefinitionWithFields(graphQLFieldDefinition.Type.GetTypeName()))
         {
             stringBuilder.Append(
                 Convert(
