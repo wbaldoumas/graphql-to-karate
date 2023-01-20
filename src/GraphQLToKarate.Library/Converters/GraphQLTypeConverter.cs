@@ -25,10 +25,7 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
                 KarateToken.String,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLTypeName) =>
                 $"{graphQLTypeName.FirstCharToLower()}Schema",
-            _ => throw new ArgumentException(
-                $"Unknown GraphQL type name for GraphQL field {graphQLFieldName}!",
-                nameof(graphQLType)
-            )
+            _ => KarateToken.Present
         };
 
         return new KarateType(karateTypeSchema, graphQLFieldName);

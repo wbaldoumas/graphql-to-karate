@@ -175,6 +175,16 @@ internal sealed class GraphQLTypeConverterTests
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomAndInterfaceTypeDefinition),
                 new KarateType($"{interfaceTypeName.FirstCharToLower()}Schema", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
+
+            yield return new TestCaseData(
+                testFieldName,
+                new GraphQLNamedType
+                {
+                    Name = new GraphQLName("Unknown")
+                },
+                emptyGraphQLDocumentAdapter,
+                new KarateType(KarateToken.Present, testFieldName)
+            ).SetName("Unknown GraphQL type is converted to present Karate type.");
         }
     }
 }

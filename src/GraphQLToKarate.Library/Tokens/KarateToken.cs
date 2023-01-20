@@ -16,6 +16,8 @@ internal static class KarateToken
 
     public const string Object = "object";
 
+    public const string Present = "present";
+
     public const string Null = "##";
 
     public const string NonNull = "#";
