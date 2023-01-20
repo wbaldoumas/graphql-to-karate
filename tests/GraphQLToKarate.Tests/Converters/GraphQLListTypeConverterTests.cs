@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
@@ -26,14 +27,14 @@ internal sealed class GraphQLListTypeConverterTests
     public void Convert(
         string graphQLFieldName,
         GraphQLType graphQLType,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
         KarateTypeBase expectedKarateType)
     {
         // act
         var karateType = _subjectUnderTest!.Convert(
             graphQLFieldName,
             graphQLType,
-            graphQLUserDefinedTypes
+            graphQLDocumentAdapter
         );
 
         // assert
@@ -46,12 +47,7 @@ internal sealed class GraphQLListTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
-            {
-                GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-            };
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument());
 
             yield return new TestCaseData(
                 testFieldName,
@@ -62,7 +58,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Boolean)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
                         new KarateType(KarateToken.Boolean, testFieldName)
@@ -79,7 +75,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Float)
                     },
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
                         new KarateType(KarateToken.Number, testFieldName)
@@ -97,7 +93,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Int)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
                         new KarateType(KarateToken.Number, testFieldName)
@@ -115,7 +111,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.String)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
                         new KarateType(KarateToken.String, testFieldName)
@@ -132,7 +128,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Id)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
                         new KarateType(KarateToken.String, testFieldName)
@@ -141,6 +137,17 @@ internal sealed class GraphQLListTypeConverterTests
             ).SetName("List of nullable ID GraphQL type is converted to list of nullable string Karate type.");
 
             const string enumTypeName = "Color";
+
+            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -151,15 +158,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(enumTypeName)
                     }
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateListType(
                     new KarateNullType(
                         new KarateType(KarateToken.String, testFieldName)
@@ -168,6 +167,21 @@ internal sealed class GraphQLListTypeConverterTests
             ).SetName("List of nullable enum GraphQL type is converted to list of nullable string Karate type.");
 
             const string customTypeName = "ToDo";
+
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    },
+                    new GraphQLObjectTypeDefinition
+                    {
+                        Name = new GraphQLName(customTypeName)
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -178,18 +192,7 @@ internal sealed class GraphQLListTypeConverterTests
                         Name = new GraphQLName(customTypeName)
                     },
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        { customTypeName, new GraphQLObjectTypeDefinition() }
-                    },
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(
                     new KarateNullType(
                         new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
@@ -209,7 +212,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.Boolean, testFieldName)
@@ -229,7 +232,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.Number, testFieldName)
@@ -250,7 +253,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 }, 
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.Number, testFieldName)
@@ -271,7 +274,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.String, testFieldName)
@@ -291,7 +294,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.String, testFieldName)
@@ -311,15 +314,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.String, testFieldName)
@@ -339,18 +334,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        { customTypeName, new GraphQLObjectTypeDefinition() }
-                    },
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
@@ -373,7 +357,7 @@ internal sealed class GraphQLListTypeConverterTests
                         }
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
                         new KarateListType(

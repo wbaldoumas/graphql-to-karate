@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
@@ -21,14 +22,14 @@ internal sealed class GraphQLTypeConverterTests
     public void Convert(
         string graphQLFieldName,
         GraphQLType graphQLType,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
         KarateTypeBase expectedKarateType)
     {
         // act
         var karateType = _subjectUnderTest!.Convert(
             graphQLFieldName,
             graphQLType,
-            graphQLUserDefinedTypes
+            graphQLDocumentAdapter
         );
 
         // assert
@@ -41,12 +42,7 @@ internal sealed class GraphQLTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
-            {
-                GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-            };
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument());
 
             yield return new TestCaseData(
                 testFieldName,
@@ -54,7 +50,7 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Boolean)
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.Boolean, testFieldName)
             ).SetName("Boolean GraphQL type is converted to boolean Karate type.");
 
@@ -64,7 +60,7 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Float)
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.Number, testFieldName)
             ).SetName("Float GraphQL type is converted to number Karate type.");
 
@@ -74,7 +70,7 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Int)
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.Number, testFieldName)
             ).SetName("Int GraphQL type is converted to number Karate type.");
 
@@ -84,7 +80,7 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.String)
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.String, testFieldName)
             ).SetName("String GraphQL type is converted to string Karate type.");
 
@@ -95,11 +91,22 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(GraphQLToken.Id)
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.String, testFieldName)
             ).SetName("ID GraphQL type is converted to string Karate type.");
 
             const string enumTypeName = "Color";
+
+            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -107,19 +114,26 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(enumTypeName)
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateType(KarateToken.String, testFieldName)
             ).SetName("Enum GraphQL type is converted to string Karate type.");
 
             const string customTypeName = "ToDo";
+
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    },
+                    new GraphQLObjectTypeDefinition
+                    {
+                        Name = new GraphQLName(customTypeName)
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -127,22 +141,30 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(customTypeName)
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        { customTypeName, new GraphQLObjectTypeDefinition() }
-                    },
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
 
             const string interfaceTypeName = "TodoInterface";
+
+            var graphQLDocumentWithEnumAndCustomAndInterfaceTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    },
+                    new GraphQLObjectTypeDefinition
+                    {
+                        Name = new GraphQLName(customTypeName)
+                    },
+                    new GraphQLInterfaceTypeDefinition
+                    {
+                        Name = new GraphQLName(interfaceTypeName)
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -150,21 +172,7 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(interfaceTypeName)
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        { customTypeName, new GraphQLObjectTypeDefinition() }
-                    },
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>
-                    {
-                        { interfaceTypeName, new GraphQLInterfaceTypeDefinition() }
-                    }
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomAndInterfaceTypeDefinition),
                 new KarateType($"{interfaceTypeName.FirstCharToLower()}Schema", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
         }

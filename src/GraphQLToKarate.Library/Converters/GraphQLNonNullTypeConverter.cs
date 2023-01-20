@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Types;
 
@@ -15,7 +16,7 @@ internal sealed class GraphQLNonNullTypeConverter : IGraphQLTypeConverter
     public KarateTypeBase Convert(
         string graphQLFieldName,
         GraphQLType graphQLType,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes)
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var graphQLNonNullType = graphQLType as GraphQLNonNullType;
         var graphQLInnerType = graphQLNonNullType!.Type;
@@ -30,7 +31,7 @@ internal sealed class GraphQLNonNullTypeConverter : IGraphQLTypeConverter
         var karateType = graphQLTypeConverter.Convert(
             graphQLFieldName,
             graphQLInnerType, 
-            graphQLUserDefinedTypes
+            graphQLDocumentAdapter
         );
 
         return new KarateNonNullType(karateType);

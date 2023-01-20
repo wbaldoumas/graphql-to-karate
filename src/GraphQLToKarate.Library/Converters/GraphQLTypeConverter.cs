@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
@@ -11,7 +12,7 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
     public KarateTypeBase Convert(
         string graphQLFieldName,
         GraphQLType graphQLType,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes)
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var karateTypeSchema = (graphQLType as GraphQLNamedType)!.Name.StringValue switch
         {
@@ -20,12 +21,10 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
             GraphQLToken.Int => KarateToken.Number,
             GraphQLToken.Float => KarateToken.Number,
             GraphQLToken.Boolean => KarateToken.Boolean,
-            { } graphQLTypeName when graphQLUserDefinedTypes.GraphQLEnumTypeDefinitionNames
-                .Contains(graphQLTypeName) => KarateToken.String,
-            { } graphQLTypeName when graphQLUserDefinedTypes.GraphQLObjectTypeDefinitionNames
-                .Contains(graphQLTypeName) => $"{graphQLTypeName.FirstCharToLower()}Schema",
-            { } graphQLTypeName when graphQLUserDefinedTypes.GraphQLInterfaceTypeDefinitionNames
-                .Contains(graphQLTypeName) => $"{graphQLTypeName.FirstCharToLower()}Schema",
+            { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => 
+                KarateToken.String,
+            { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLTypeName) =>
+                $"{graphQLTypeName.FirstCharToLower()}Schema",
             _ => throw new ArgumentException(
                 $"Unknown GraphQL type name for GraphQL field {graphQLFieldName}!",
                 nameof(graphQLType)
