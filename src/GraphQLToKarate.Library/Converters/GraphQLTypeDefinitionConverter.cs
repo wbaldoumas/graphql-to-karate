@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Types;
 
@@ -14,7 +15,7 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
 
     public KarateObject Convert<T>(
         T graphQLTypeDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode
+        IGraphQLDocumentAdapter graphQLDocumentAdapter) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode
     {
         var karateTypes =
             from graphQLFieldDefinition in graphQLTypeDefinition.Fields
@@ -28,7 +29,7 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
             select converter.Convert(
                 graphQLFieldDefinition.Name.StringValue,
                 graphQLFieldDefinition.Type,
-                graphQLUserDefinedTypes
+                graphQLDocumentAdapter
             );
 
         return new KarateObject(graphQLTypeDefinition.Name.StringValue, karateTypes.ToList());

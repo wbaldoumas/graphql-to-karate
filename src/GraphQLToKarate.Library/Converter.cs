@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using GraphQLParser;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
@@ -26,10 +27,6 @@ public sealed class Converter
     {
         var graphQLDocument = Parser.Parse(source);
 
-        var graphQLEnumTypeDefinitionsByName = graphQLDocument.Definitions
-            .OfType<GraphQLEnumTypeDefinition>()
-            .ToDictionary(definition => definition.Name.StringValue);
-
         var graphQLObjectTypeDefinitionsByName = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
             .Where(definition => definition.Name.StringValue != GraphQLToken.Query &&
@@ -40,23 +37,18 @@ public sealed class Converter
             .OfType<GraphQLInterfaceTypeDefinition>()
             .ToDictionary(definition => definition.Name.StringValue);
 
-        var graphQLUserDefinedTypes = new GraphQLUserDefinedTypes
-        {
-            GraphQLEnumTypeDefinitionsByName = graphQLEnumTypeDefinitionsByName,
-            GraphQLObjectTypeDefinitionsByName = graphQLObjectTypeDefinitionsByName,
-            GraphQLInterfaceTypeDefinitionsByName = graphQLInterfaceTypeDefinitionsByName
-        };
+        var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument);
 
         var karateObjects = graphQLObjectTypeDefinitionsByName.Values.Select(
             graphQLObjectTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
                 graphQLObjectTypeDefinition,
-                graphQLUserDefinedTypes
+                graphQLDocumentAdapter
             )
         ).Concat(
             graphQLInterfaceTypeDefinitionsByName.Values.Select(
                 graphQLInterfaceTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
                     graphQLInterfaceTypeDefinition,
-                    graphQLUserDefinedTypes
+                    graphQLDocumentAdapter
                 )
             )
         );
@@ -68,7 +60,7 @@ public sealed class Converter
         var graphQLQueryFieldTypes = graphQLQueryTypeDefinition!.Fields!.Select(
             graphQLFieldDefinition => _graphQLFieldDefinitionConverter.Convert(
                 graphQLFieldDefinition,
-                graphQLUserDefinedTypes
+                graphQLDocumentAdapter
             )
         );
 

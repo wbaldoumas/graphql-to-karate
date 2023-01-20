@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Types;
 using NUnit.Framework;
@@ -18,7 +19,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
     [TestCaseSource(nameof(TestCases))]
     public void Convert(
         GraphQLFieldDefinition graphQLQueryFieldDefinition,
-        GraphQLUserDefinedTypes graphQLUeDefinedTypes,
+        IGraphQLDocumentAdapter graphQLUeDefinedTypes,
         GraphQLQueryFieldType expectedGraphQLQueryFieldType)
     {
         // act
@@ -344,46 +345,21 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                 }
             };
 
-            var graphQLUserDefinedTypes = new GraphQLUserDefinedTypes
+            var graphQLDocument = new GraphQLDocument
             {
-                GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
+                Definitions = new List<ASTNode>
                 {
-                    {
-                        colors.Name.StringValue,
-                        colors
-                    }
-                },
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                {
-                    {
-                        person.Name.StringValue,
-                        person
-                    },
-                    {
-                        personWithFriendsWithArguments.Name.StringValue,
-                        personWithFriendsWithArguments
-                    },
-                    {
-                        personWithFriends.Name.StringValue,
-                        personWithFriends
-                    },
-                    {
-                        personWithFavoriteColorsWithArguments.Name.StringValue,
-                        personWithFavoriteColorsWithArguments
-                    }
-                },
-                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>
-                {
-                    {
-                        personInterface.Name.StringValue, 
-                        personInterface
-                    },
-                    {
-                        personInterfaceWithFriend.Name.StringValue,
-                        personInterfaceWithFriend
-                    }
+                    colors,
+                    person,
+                    personWithFriends,
+                    personWithFriendsWithArguments,
+                    personWithFavoriteColorsWithArguments,
+                    personInterface,
+                    personInterfaceWithFriend
                 }
             };
+
+            var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument);
 
             var personQueryFieldDefinition = new GraphQLFieldDefinition
             {
@@ -396,7 +372,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 personQueryFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(personQueryFieldDefinition)
                 {
                     QueryString = """
@@ -423,7 +399,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 personWithFriendsQueryFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(personWithFriendsQueryFieldDefinition)
                 {
                     QueryString = """
@@ -468,7 +444,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 personWithFriendsWithArgumentsGraphQLQueryFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(personWithFriendsWithArgumentsGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
@@ -518,7 +494,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
@@ -541,7 +517,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 personWithFavoriteColorsGraphQLQueryFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(personWithFavoriteColorsGraphQLQueryFieldDefinition)
                 {
                     QueryString = """
@@ -569,7 +545,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 personInterfaceQueryGraphQLFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(personInterfaceQueryGraphQLFieldDefinition)
                 {
                     QueryString = """
@@ -594,7 +570,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
 
             yield return new TestCaseData(
                 nestedPersonInterfaceGraphQLQueryFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 new GraphQLQueryFieldType(nestedPersonInterfaceGraphQLQueryFieldDefinition)
                 {
                     QueryString = """

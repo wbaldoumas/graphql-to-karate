@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -12,12 +13,12 @@ public interface IGraphQLFieldDefinitionConverter
     ///     Convert the given <see cref="GraphQLFieldDefinition"/> of a GraphQL query to a <see cref="GraphQLQueryFieldType"/>.
     /// </summary>
     /// <param name="graphQLFieldDefinition">The query field to convert.</param>
-    /// <param name="graphQLUserDefinedTypes">
-    ///     The other user-defined GraphQL types, used for handling nested types, enums, input types, etc.
+    /// <param name="graphQLDocumentAdapter">
+    ///     The GraphQL document adapter, providing access to user-defined types within the GraphQL document.
     /// </param>
     /// <returns>The converted <see cref="GraphQLQueryFieldType"/>.</returns>
     GraphQLQueryFieldType Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes
+        IGraphQLDocumentAdapter graphQLDocumentAdapter
     );
 }

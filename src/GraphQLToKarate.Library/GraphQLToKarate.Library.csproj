@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Atrea.Extensions" Version="1.3.0" />
     <PackageReference Include="GraphQL-Parser" Version="8.1.0" />
   </ItemGroup>
 

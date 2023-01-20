@@ -3,6 +3,7 @@ using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using System.Text;
+using GraphQLToKarate.Library.Adapters;
 
 namespace GraphQLToKarate.Library.Converters;
 
@@ -11,7 +12,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 {
     public GraphQLQueryFieldType Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes)
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter = new GraphQLInputValueDefinitionConverter();
 
@@ -19,7 +20,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         {
             QueryString = Convert(
                 graphQLFieldDefinition, 
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 graphQLInputValueDefinitionConverter
             )
         };
@@ -27,7 +28,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
     private static string Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         int indentationLevel = 0)
     {
@@ -40,7 +41,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
 
-        var graphQLTypeDefinitionWithFields = graphQLUserDefinedTypes.GetGraphQLTypeDefinitionWithFields(
+        var graphQLTypeDefinitionWithFields = graphQLDocumentAdapter.GetGraphQLTypeDefinitionWithFields(
             graphQLFieldDefinition.Type.GetTypeName()
         );
 
@@ -48,7 +49,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         {
             HandleFields(
                 graphQLTypeDefinitionWithFields, 
-                graphQLUserDefinedTypes, 
+                graphQLDocumentAdapter, 
                 graphQLInputValueDefinitionConverter,
                 stringBuilder, 
                 indentationLevel
@@ -68,7 +69,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
     private static void HandleFields(
         IHasFieldsDefinitionNode hasFieldsDefinitionNode,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
         int indentationLevel)
@@ -77,7 +78,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         {
             HandleField(
                 graphQLFieldDefinition,
-                graphQLUserDefinedTypes,
+                graphQLDocumentAdapter,
                 graphQLInputValueDefinitionConverter,
                 stringBuilder,
                 indentationLevel
@@ -87,17 +88,17 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
     private static void HandleField(
         GraphQLFieldDefinition graphQLFieldDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
         int indentationLevel)
     {
-        if (graphQLUserDefinedTypes.HasGraphQLTypeDefinitionWithFields(graphQLFieldDefinition.Type.GetTypeName()))
+        if (graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLFieldDefinition.Type.GetTypeName()))
         {
             stringBuilder.Append(
                 Convert(
                     graphQLFieldDefinition,
-                    graphQLUserDefinedTypes,
+                    graphQLDocumentAdapter,
                     graphQLInputValueDefinitionConverter,
                     indentationLevel + 2
                 )

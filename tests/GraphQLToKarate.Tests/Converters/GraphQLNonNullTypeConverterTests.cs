@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
@@ -26,14 +27,14 @@ internal sealed class GraphQLNonNullTypeConverterTests
     public void Convert(
         string graphQLFieldName,
         GraphQLType graphQLType,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
         KarateTypeBase expectedKarateType)
     {
         // act
         var karateType = _subjectUnderTest!.Convert(
             graphQLFieldName,
             graphQLType,
-            graphQLUserDefinedTypes
+            graphQLDocumentAdapter
         );
 
         // assert
@@ -46,12 +47,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLUserDefinedTypes = new GraphQLUserDefinedTypes
-            {
-                GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(),
-                GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-            };
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument());
 
             yield return new TestCaseData(
                 testFieldName,
@@ -62,7 +58,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Boolean)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(new KarateType(KarateToken.Boolean, testFieldName))
             ).SetName("Non-nullable Boolean GraphQL type is converted to non-nullable boolean Karate type.");
 
@@ -75,7 +71,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Float)
                     },
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Non-nullable Float GraphQL type is converted to non-nullable number Karate type.");
 
@@ -88,7 +84,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Int)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Non-nullable Int GraphQL type is converted to non-nullable number Karate type.");
 
@@ -101,7 +97,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.String)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Non-nullable String GraphQL type is converted to non-nullable string Karate type.");
 
@@ -114,11 +110,22 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(GraphQLToken.Id)
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Non-nullable ID GraphQL type is converted to non-nullable string Karate type.");
 
             const string enumTypeName = "Color";
+
+            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -129,19 +136,26 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(enumTypeName)
                     }
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>(),
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateNonNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Non-nullable enum GraphQL type is converted to non-nullable string Karate type.");
 
             const string customTypeName = "ToDo";
+
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    new GraphQLEnumTypeDefinition
+                    {
+                        Name = new GraphQLName(enumTypeName),
+                    },
+                    new GraphQLObjectTypeDefinition
+                    {
+                        Name = new GraphQLName(customTypeName)
+                    }
+                }
+            };
 
             yield return new TestCaseData(
                 testFieldName,
@@ -152,18 +166,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         Name = new GraphQLName(customTypeName)
                     },
                 },
-                new GraphQLUserDefinedTypes
-                {
-                    GraphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>
-                    {
-                        { enumTypeName, new GraphQLEnumTypeDefinition() }
-                    },
-                    GraphQLObjectTypeDefinitionsByName = new Dictionary<string, GraphQLObjectTypeDefinition>
-                    {
-                        { customTypeName, new GraphQLObjectTypeDefinition() }
-                    },
-                    GraphQLInterfaceTypeDefinitionsByName = new Dictionary<string, GraphQLInterfaceTypeDefinition>()
-                },
+                new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateNonNullType(
                     new KarateType(
                         $"{customTypeName.FirstCharToLower()}Schema",
@@ -184,7 +187,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                         }
                     }
                 },
-                emptyGraphQLUserDefinedTypes,
+                emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(
                     new KarateListType(
                         new KarateNullType(

@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -12,13 +13,12 @@ public interface IGraphQLTypeDefinitionConverter
     ///     Convert the given <see cref="GraphQLObjectTypeDefinition"/> to a <see cref="KarateObject"/>.
     /// </summary>
     /// <param name="graphQLTypeDefinition">The GraphQL object to convert.</param>
-    /// <param name="graphQLUserDefinedTypes">
-    ///     User-defined GraphQL types, needed for handling nested types, enums, etc. as fields on the
-    ///     GraphQL object being converted.
+    /// <param name="graphQLDocumentAdapter">
+    ///     The GraphQL document adapter, providing access to user-defined types within the GraphQL document.
     /// </param>
     /// <returns></returns>
     KarateObject Convert<T>(
         T graphQLTypeDefinition,
-        GraphQLUserDefinedTypes graphQLUserDefinedTypes
+        IGraphQLDocumentAdapter graphQLDocumentAdapter
     ) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode;
 }
