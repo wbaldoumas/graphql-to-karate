@@ -1,6 +1,6 @@
 ﻿namespace GraphQLToKarate.Library.Types;
 
-internal sealed class GraphQLArgumentType : GraphQLArgumentTypeBase
+public sealed class GraphQLArgumentType : GraphQLArgumentTypeBase
 {
     public GraphQLArgumentType(
         string argumentName,

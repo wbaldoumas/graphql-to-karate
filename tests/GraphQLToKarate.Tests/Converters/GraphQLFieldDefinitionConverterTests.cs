@@ -2,6 +2,7 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using NUnit.Framework;
 
@@ -384,7 +385,8 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     favoriteColor
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
                 }
             ).SetName("Converter is able to convert simple query.");
 
@@ -415,7 +417,8 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     }
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
                 }
             ).SetName("Converter is able to convert nested query.");
 
@@ -456,7 +459,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     favoriteColor
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>
+                    {
+                        new GraphQLArgumentType("id", "$id", GraphQLToken.Int)
+                    }
                 }
             ).SetName("Converter is able to convert simple query with arguments.");
 
@@ -510,7 +517,13 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     }
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>
+                    {
+                        new GraphQLArgumentType("id", "$id", GraphQLToken.Int),
+                        new GraphQLListArgumentType(new GraphQLArgumentType("ids", "$ids", GraphQLToken.String)),
+                        new GraphQLNonNullArgumentType(new GraphQLArgumentType("location", "$location", GraphQLToken.String))
+                    }
                 }
             ).SetName("Converter is able to convert nested query with nested field arguments.");
 
@@ -529,7 +542,13 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     favoriteColors(filter: $filter)
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>
+                    {
+                        new GraphQLListArgumentType(
+                            new GraphQLArgumentType("filter", "$filter", GraphQLToken.String)
+                        )
+                    }
                 }
             ).SetName("Converter is able to convert simple query with scalar field arguments.");
 
@@ -555,7 +574,8 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     name
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
                 }
             ).SetName("Converter is able to convert simple query with interface return type.");
 
@@ -584,7 +604,8 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                     }
                                   }
                                 }
-                                """
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
                 }
             ).SetName("Converter is able to convert simple query with nested interface return type.");
         }
