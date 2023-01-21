@@ -16,13 +16,18 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     {
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter = new GraphQLInputValueDefinitionConverter();
 
+        var queryString = Convert(
+            graphQLFieldDefinition,
+            graphQLDocumentAdapter,
+            graphQLInputValueDefinitionConverter
+        );
+
+        var arguments = graphQLInputValueDefinitionConverter.GetAllConverted();
+
         return new GraphQLQueryFieldType(graphQLFieldDefinition)
         {
-            QueryString = Convert(
-                graphQLFieldDefinition, 
-                graphQLDocumentAdapter,
-                graphQLInputValueDefinitionConverter
-            )
+            QueryString = queryString,
+            Arguments = arguments
         };
     }
 
