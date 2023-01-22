@@ -28,4 +28,24 @@ internal sealed class StringExtensionsTests
     [TestCase("", "")]
     public void FirstCharToUpperTest(string input, string expectedOutput) =>
         input.FirstCharToUpper().Should().Be(expectedOutput);
+
+    [Test]
+    [TestCase("foo", 1, " foo")]
+    [TestCase("foo", 2, "  foo")]
+    [TestCase("foo", 3, "   foo")]
+    [TestCase(
+        """
+        this is
+        a multi-line
+        string
+        """,
+        4,
+        """
+            this is
+            a multi-line
+            string
+        """
+    )]
+    public void IndentTest(string input, int indent, string expectedOutput) =>
+        input.Indent(indent).Should().Be(expectedOutput);
 }

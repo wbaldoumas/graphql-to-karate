@@ -42,7 +42,7 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
                     }
                 },
                 typeof(GraphQLArgumentType),
-                "$age",
+                "age",
                 "Int"
             ).SetName("With Named Type");
 
@@ -59,7 +59,7 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
                     }
                 },
                 typeof(GraphQLListArgumentType),
-                "$hobbies",
+                "hobbies",
                 "[String]"
             ).SetName("With List Type");
 
@@ -76,7 +76,7 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
                     }
                 },
                 typeof(GraphQLNonNullArgumentType),
-                "$email",
+                "email",
                 "String!"
             ).SetName("With Non-Null Type");
 
@@ -99,7 +99,7 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
                     }
                 },
                 typeof(GraphQLNonNullArgumentType),
-                "$address",
+                "address",
                 "[String!]!"
             ).SetName("With Non-Null List Type and Named Type");
         }
@@ -144,8 +144,8 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         var result3 = converter.Convert(inputValueDefinition3);
 
         // assert
-        result1.VariableName.Should().Be("$age");
-        result2.VariableName.Should().Be("$age1");
-        result3.VariableName.Should().Be("$age2");
+        result1.VariableName.Should().Be("age");
+        result2.VariableName.Should().Be("age1");
+        result3.VariableName.Should().Be("age2");
     }
 }

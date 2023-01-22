@@ -9,7 +9,14 @@ public sealed class GraphQLQueryFieldType
 
     public string Name => _queryField.Name.StringValue;
 
+    public string OperationName => $"{Name.FirstCharToUpper()}Test";
+
     public string ReturnTypeName => _queryField.Type.GetTypeName();
+
+    public bool IsListReturnType => _queryField.Type is GraphQLListType or GraphQLNonNullType
+    {
+        Type: GraphQLListType
+    };
 
     public required string QueryString { get; init; }
 
