@@ -1,5 +1,6 @@
 ﻿using GraphQLToKarate.Library;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Features;
 
 const string graphQLSchema = """
     interface FooInterface {
@@ -70,7 +71,7 @@ const string graphQLSchema = """
         todos(
           "Required argument that is a list that cannot contain null values"
           ids: [String!]!
-        ): [FooInterface]
+        ): [FooInterface!]!
 
         nestedTodos(
           ids: [String!]!
@@ -108,17 +109,18 @@ var converter = new Converter(
 
 var (karateObjects, graphQLQueryFields) = converter.Convert(graphQLSchema);
 
-foreach (var graphQLQueryField in graphQLQueryFields)
-{
-    Console.WriteLine($"{graphQLQueryField.Name}: {graphQLQueryField.ReturnTypeName}");
-    Console.WriteLine(graphQLQueryField.QueryString);
-    Console.WriteLine();
-}
+var scenarioBuilder = new ScenarioBuilder();
 
 foreach (var karateObject in karateObjects)
 {
     Console.WriteLine(karateObject.Name);
     Console.WriteLine(karateObject);
+    Console.WriteLine();
+}
+
+foreach (var graphQLQueryField in graphQLQueryFields)
+{
+    Console.WriteLine(scenarioBuilder.Build(graphQLQueryField));
     Console.WriteLine();
 }
 

@@ -462,7 +462,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                 """,
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
-                        new GraphQLArgumentType("id", "$id", GraphQLToken.Int)
+                        new GraphQLArgumentType("id", "id", GraphQLToken.Int)
                     }
                 }
             ).SetName("Converter is able to convert simple query with arguments.");
@@ -520,9 +520,9 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                 """,
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
-                        new GraphQLArgumentType("id", "$id", GraphQLToken.Int),
-                        new GraphQLListArgumentType(new GraphQLArgumentType("ids", "$ids", GraphQLToken.String)),
-                        new GraphQLNonNullArgumentType(new GraphQLArgumentType("location", "$location", GraphQLToken.String))
+                        new GraphQLArgumentType("id", "id", GraphQLToken.Int),
+                        new GraphQLListArgumentType(new GraphQLArgumentType("ids", "ids", GraphQLToken.String)),
+                        new GraphQLNonNullArgumentType(new GraphQLArgumentType("location", "location", GraphQLToken.String))
                     }
                 }
             ).SetName("Converter is able to convert nested query with nested field arguments.");
@@ -546,7 +546,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
                         new GraphQLListArgumentType(
-                            new GraphQLArgumentType("filter", "$filter", GraphQLToken.String)
+                            new GraphQLArgumentType("filter", "filter", GraphQLToken.String)
                         )
                     }
                 }

@@ -136,7 +136,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         {
             var graphQLArgumentType = graphQLInputValueDefinitionConverter.Convert(argument);
 
-            stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: {graphQLArgumentType.VariableName}{SchemaToken.Comma} ");
+            stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: ${graphQLArgumentType.VariableName}{SchemaToken.Comma} ");
         }
 
         stringBuilder.TrimEnd(2); // remove trailing comma + space
@@ -160,7 +160,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
             foreach (var graphQLArgumentType in graphQLArgumentTypes)
             {
-                operationStringBuilder.Append($"{graphQLArgumentType.VariableName}: {graphQLArgumentType.VariableTypeName}{SchemaToken.Comma} ");
+                operationStringBuilder.Append($"${graphQLArgumentType.VariableName}: {graphQLArgumentType.VariableTypeName}{SchemaToken.Comma} ");
             }
 
             operationStringBuilder.TrimEnd(2); // remove trailing comma + space

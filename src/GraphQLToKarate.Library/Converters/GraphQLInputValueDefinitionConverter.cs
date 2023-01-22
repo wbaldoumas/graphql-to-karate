@@ -91,6 +91,6 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
 
         _reservedVariableNames.Add(uniqueInputValueDefinitionName);
 
-        return $"${uniqueInputValueDefinitionName}";
+        return $"{uniqueInputValueDefinitionName}";
     }
 }

@@ -42,4 +42,17 @@ internal static class StringExtensions
             str.AsSpan(1).CopyTo(characters[1..]);
         });
     }
+
+    /// <summary>
+    ///     Indents a <paramref name="source"/> string (including multi-line strings) by the specified <see cref="indent"/> amount.
+    /// </summary>
+    /// <param name="source">The string to manipulate.</param>
+    /// <param name="indent">The amount to indent the string.</param>
+    /// <returns>The source string, indented by the specified <paramref name="indent"/> amount.</returns>
+    public static string Indent(this string source, int indent)
+    {
+        var indentation = new string(' ', indent);
+
+        return indentation + source.Replace(Environment.NewLine, Environment.NewLine + indentation);
+    }
 }
