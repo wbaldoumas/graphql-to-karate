@@ -110,19 +110,9 @@ var converter = new Converter(
 var (karateObjects, graphQLQueryFields) = converter.Convert(graphQLSchema);
 
 var scenarioBuilder = new ScenarioBuilder();
+var featureBuilder = new FeatureBuilder(scenarioBuilder);
 
-foreach (var karateObject in karateObjects)
-{
-    Console.WriteLine(karateObject.Name);
-    Console.WriteLine(karateObject);
-    Console.WriteLine();
-}
-
-foreach (var graphQLQueryField in graphQLQueryFields)
-{
-    Console.WriteLine(scenarioBuilder.Build(graphQLQueryField));
-    Console.WriteLine();
-}
+Console.WriteLine(featureBuilder.Build(karateObjects, graphQLQueryFields));
 
 Console.WriteLine("Done! Press enter to exit...");
 Console.ReadLine();
