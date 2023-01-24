@@ -2,9 +2,12 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
+using GraphQLToKarate.Tests.Mocks;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Converters;
@@ -14,9 +17,13 @@ internal sealed class GraphQLNullTypeConverterTests
 {
     private IGraphQLTypeConverter? _subjectUnderTest;
 
+    private IGraphQLDocumentAdapter? _mockGraphQLDocumentAdapter;
+
     [SetUp]
     public void SetUp()
     {
+        _mockGraphQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
+
         var graphQLTypeConverterFactory = new GraphQLTypeConverterFactory();
 
         _subjectUnderTest = new GraphQLNullTypeConverter(graphQLTypeConverterFactory);
@@ -168,5 +175,22 @@ internal sealed class GraphQLNullTypeConverterTests
                 )
             ).SetName("Nullable list of nullable booleans is converted to nullable list karate type.");
         }
+    }
+
+    [Test]
+    public void Convert_throws_exception_when_unsupported_graphql_type_is_encountered()
+    {
+        // arrange
+        var unsupportedGraphQLType = new UnsupportedGraphQLType();
+
+        // act
+        var act = () => _subjectUnderTest!.Convert(
+            "unsupported",
+            unsupportedGraphQLType,
+            _mockGraphQLDocumentAdapter!
+        );
+
+        // assert
+        act.Should().ThrowExactly<InvalidGraphQLTypeException>();
     }
 }

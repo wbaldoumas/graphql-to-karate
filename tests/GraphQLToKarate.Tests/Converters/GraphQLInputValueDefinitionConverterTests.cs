@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Types;
+using GraphQLToKarate.Tests.Mocks;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Converters;
@@ -9,6 +11,11 @@ namespace GraphQLToKarate.Tests.Converters;
 [TestFixture]
 internal sealed class GraphQLInputValueDefinitionConverterTests
 {
+    private IGraphQLInputValueDefinitionConverter? _subjectUnderTest;
+
+    [SetUp]
+    public void SetUp() => _subjectUnderTest = new GraphQLInputValueDefinitionConverter();
+
     [TestCaseSource(nameof(ConvertTestCases))]
     public void Convert_ReturnsExpectedResult(
         GraphQLInputValueDefinition inputValueDefinition,
@@ -16,11 +23,8 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         string expectedVariableName,
         string expectedVariableTypeName)
     {
-        // arrange
-        var converter = new GraphQLInputValueDefinitionConverter();
-
         // act
-        var result = converter.Convert(inputValueDefinition);
+        var result = _subjectUnderTest!.Convert(inputValueDefinition);
 
         // assert
         result.Should().BeOfType(expectedType);
@@ -136,16 +140,33 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
             }
         };
 
-        var converter = new GraphQLInputValueDefinitionConverter();
-
         // act
-        var result1 = converter.Convert(inputValueDefinition1);
-        var result2 = converter.Convert(inputValueDefinition2);
-        var result3 = converter.Convert(inputValueDefinition3);
+        var result1 = _subjectUnderTest!.Convert(inputValueDefinition1);
+        var result2 = _subjectUnderTest!.Convert(inputValueDefinition2);
+        var result3 = _subjectUnderTest!.Convert(inputValueDefinition3);
 
         // assert
         result1.VariableName.Should().Be("age");
         result2.VariableName.Should().Be("age1");
         result3.VariableName.Should().Be("age2");
+    }
+
+    [Test]
+    public void Convert_throws_exception_when_unsupported_graphql_type_is_encountered()
+    {
+        // arrange
+        var unsupportedGraphQLType = new UnsupportedGraphQLType();
+
+        var graphQLInputValueDefinition = new GraphQLInputValueDefinition
+        {
+            Name = new GraphQLName("unsupported"),
+            Type = unsupportedGraphQLType
+        };
+
+        // act
+        var act = () => _subjectUnderTest!.Convert(graphQLInputValueDefinition);
+
+        // assert
+        act.Should().ThrowExactly<InvalidGraphQLTypeException>();
     }
 }

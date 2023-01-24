@@ -17,6 +17,11 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
         T graphQLTypeDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode
     {
+        if (graphQLTypeDefinition.Fields is null)
+        {
+            return new KarateObject(graphQLTypeDefinition.Name.StringValue, new List<KarateTypeBase>());
+        }
+
         var karateTypes =
             from graphQLFieldDefinition in graphQLTypeDefinition.Fields
             let converter = graphQLFieldDefinition.Type switch

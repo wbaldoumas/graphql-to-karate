@@ -6,7 +6,7 @@ using System.Text;
 namespace GraphQLToKarate.Library.Features;
 
 /// <inheritdoc cref="IScenarioBuilder"/>
-public class ScenarioBuilder : IScenarioBuilder
+public sealed class ScenarioBuilder : IScenarioBuilder
 {
     private const int SingleIndent = 2;
     private const int DoubleIndent = SingleIndent * 2;

@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Exceptions;
 
 namespace GraphQLToKarate.Library.Extensions;
 
@@ -23,6 +24,8 @@ internal static class GraphQLTypeExtensions
                     continue;
                 case GraphQLNamedType namedType:
                     return namedType.Name.StringValue;
+                default:
+                    throw new InvalidGraphQLTypeException();
             }
         }
     }
