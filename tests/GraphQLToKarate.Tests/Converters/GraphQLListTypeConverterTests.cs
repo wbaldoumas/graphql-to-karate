@@ -2,9 +2,12 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
+using GraphQLToKarate.Tests.Mocks;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Converters;
@@ -13,10 +16,13 @@ namespace GraphQLToKarate.Tests.Converters;
 internal sealed class GraphQLListTypeConverterTests
 {
     private IGraphQLTypeConverter? _subjectUnderTest;
+    private IGraphQLDocumentAdapter? _mockGraphQLDocumentAdapter;
 
     [SetUp]
     public void SetUp()
     {
+        _mockGraphQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
+
         var graphQLTypeConverterFactory = new GraphQLTypeConverterFactory();
 
         _subjectUnderTest = new GraphQLListTypeConverter(graphQLTypeConverterFactory);
@@ -252,7 +258,7 @@ internal sealed class GraphQLListTypeConverterTests
                             Name = new GraphQLName(GraphQLToken.Int)
                         }
                     }
-                }, 
+                },
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
@@ -369,5 +375,27 @@ internal sealed class GraphQLListTypeConverterTests
                 )
             ).SetName("List of nullable lists of non-nullable ID GraphQL type is converted to list of nullable lists of non-nullable string Karate type.");
         }
+    }
+
+    [Test]
+    public void Convert_throws_exception_when_unsupported_graphql_type_is_encountered()
+    {
+        // arrange
+        var unsupportedGraphQLType = new UnsupportedGraphQLType();
+        
+        var graphQLListType = new GraphQLListType
+        {
+            Type = unsupportedGraphQLType
+        };
+
+        // act
+        var act = () => _subjectUnderTest!.Convert(
+            "unsupported",
+            graphQLListType,
+            _mockGraphQLDocumentAdapter!
+        );
+
+        // assert
+        act.Should().ThrowExactly<InvalidGraphQLTypeException>();
     }
 }
