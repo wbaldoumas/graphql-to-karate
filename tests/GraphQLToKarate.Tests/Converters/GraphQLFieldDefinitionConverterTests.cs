@@ -4,6 +4,7 @@ using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Converters;
@@ -11,10 +12,20 @@ namespace GraphQLToKarate.Tests.Converters;
 [TestFixture]
 internal sealed class GraphQLFieldDefinitionConverterTests
 {
+    private IGraphQLInputValueDefinitionConverterFactory? _mockGraphQLInputValueDefinitionConverterFactory;
     private IGraphQLFieldDefinitionConverter? _subjectUnderTest;
 
     [SetUp]
-    public void SetUp() => _subjectUnderTest = new GraphQLFieldDefinitionConverter();
+    public void SetUp()
+    {
+        _mockGraphQLInputValueDefinitionConverterFactory = Substitute.For<IGraphQLInputValueDefinitionConverterFactory>();
+
+        _mockGraphQLInputValueDefinitionConverterFactory
+            .Create()
+            .Returns(new GraphQLInputValueDefinitionConverter());
+
+        _subjectUnderTest = new GraphQLFieldDefinitionConverter(_mockGraphQLInputValueDefinitionConverterFactory);
+    }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]

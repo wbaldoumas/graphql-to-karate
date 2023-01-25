@@ -103,8 +103,12 @@ const string graphQLSchema = """
     """;
 
 var converter = new Converter(
-    new GraphQLTypeDefinitionConverter(new GraphQLTypeConverterFactory()),
-    new GraphQLFieldDefinitionConverter()
+    new GraphQLTypeDefinitionConverter(
+        new GraphQLTypeConverterFactory()
+    ),
+    new GraphQLFieldDefinitionConverter(
+        new GraphQLInputValueDefinitionConverterFactory()
+    )
 );
 
 var (karateObjects, graphQLQueryFields) = converter.Convert(graphQLSchema);

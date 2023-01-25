@@ -10,11 +10,17 @@ namespace GraphQLToKarate.Library.Converters;
 /// <inheritdoc cref="IGraphQLFieldDefinitionConverter"/>
 public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionConverter
 {
+    private readonly IGraphQLInputValueDefinitionConverterFactory _graphQLInputValueDefinitionConverterFactory;
+
+    public GraphQLFieldDefinitionConverter(
+        IGraphQLInputValueDefinitionConverterFactory graphQLInputValueDefinitionConverterFactory
+    ) => _graphQLInputValueDefinitionConverterFactory = graphQLInputValueDefinitionConverterFactory;
+
     public GraphQLQueryFieldType Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
-        IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter = new GraphQLInputValueDefinitionConverter();
+        var graphQLInputValueDefinitionConverter = _graphQLInputValueDefinitionConverterFactory.Create();
 
         var queryString = Convert(
             graphQLFieldDefinition,
