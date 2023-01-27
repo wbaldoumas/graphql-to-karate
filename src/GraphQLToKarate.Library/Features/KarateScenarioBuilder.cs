@@ -5,8 +5,8 @@ using System.Text;
 
 namespace GraphQLToKarate.Library.Features;
 
-/// <inheritdoc cref="IScenarioBuilder"/>
-public sealed class ScenarioBuilder : IScenarioBuilder
+/// <inheritdoc cref="IKarateScenarioBuilder"/>
+public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 {
     public string Build(GraphQLQueryFieldType graphQLQueryFieldType)
     {

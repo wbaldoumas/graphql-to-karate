@@ -5,12 +5,12 @@ using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Features;
 
-/// <inheritdoc cref="IFeatureBuilder"/>
-public sealed class FeatureBuilder : IFeatureBuilder
+/// <inheritdoc cref="IKarateFeatureBuilder"/>
+public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
 {
-    private readonly IScenarioBuilder _scenarioBuilder;
+    private readonly IKarateScenarioBuilder _karateScenarioBuilder;
 
-    public FeatureBuilder(IScenarioBuilder scenarioBuilder) => _scenarioBuilder = scenarioBuilder;
+    public KarateFeatureBuilder(IKarateScenarioBuilder karateScenarioBuilder) => _karateScenarioBuilder = karateScenarioBuilder;
 
     public string Build(
         IEnumerable<KarateObject> karateObjects,
@@ -48,7 +48,7 @@ public sealed class FeatureBuilder : IFeatureBuilder
     {
         foreach (var graphQLQueryField in graphQLQueries)
         {
-            yield return _scenarioBuilder.Build(graphQLQueryField);
+            yield return _karateScenarioBuilder.Build(graphQLQueryField);
             yield return string.Empty;
         }
     }

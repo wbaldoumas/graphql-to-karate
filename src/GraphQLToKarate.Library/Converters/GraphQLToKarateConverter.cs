@@ -1,31 +1,34 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using GraphQLParser;
-using GraphQLParser.AST;
+﻿using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
-using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Features;
+using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Tokens;
-using GraphQLToKarate.Library.Types;
 
-namespace GraphQLToKarate.Library;
+namespace GraphQLToKarate.Library.Converters;
 
-[ExcludeFromCodeCoverage(Justification = "Temporary code for prototyping")]
-public sealed class Converter
+/// <inheritdoc cref="IGraphQLToKarateConverter"/>
+public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 {
+    private readonly IGraphQLSchemaParser _graphQLSchemaParser;
     private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
     private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
+    private readonly IKarateFeatureBuilder _karateFeatureBuilder;
 
-    public Converter(
+    public GraphQLToKarateConverter(
+        IGraphQLSchemaParser graphQLSchemaParser,
         IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
-        IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter)
+        IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter, 
+        IKarateFeatureBuilder karateFeatureBuilder)
     {
+        _graphQLSchemaParser = graphQLSchemaParser;
         _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
         _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
+        _karateFeatureBuilder = karateFeatureBuilder;
     }
 
-    public (IEnumerable<KarateObject> KarateObjects, IEnumerable<GraphQLQueryFieldType> GraphQLQueryFields) Convert(
-        string source)
+    public string Convert(string schema)
     {
-        var graphQLDocument = Parser.Parse(source);
+        var graphQLDocument = _graphQLSchemaParser.Parse(schema);
 
         var graphQLObjectTypeDefinitionsByName = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
@@ -64,6 +67,6 @@ public sealed class Converter
             )
         );
 
-        return (karateObjects, graphQLQueryFieldTypes);
+        return _karateFeatureBuilder.Build(karateObjects, graphQLQueryFieldTypes);
     }
 }

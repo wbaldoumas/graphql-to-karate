@@ -5,7 +5,7 @@ namespace GraphQLToKarate.Library.Features;
 /// <summary>
 ///     Builds a Karate API testing feature in string format.
 /// </summary>
-public interface IFeatureBuilder
+public interface IKarateFeatureBuilder
 {
     /// <summary>
     ///     Builds a Karate API testing feature in string format.
