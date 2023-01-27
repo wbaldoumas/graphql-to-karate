@@ -1,6 +1,4 @@
-﻿using GraphQLParser;
-
-namespace GraphQLToKarate.Library.Converters;
+﻿namespace GraphQLToKarate.Library.Converters;
 
 /// <summary>
 ///     Converts GraphQL schemas to Karate features.
