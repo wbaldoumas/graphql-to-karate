@@ -1,22 +1,26 @@
 ﻿using GraphQLParser.AST;
-using GraphQLParser;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Features;
+using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Converters;
 
-public class GraphQLToKarateConverter : IGraphQLToKarateConverter
+/// <inheritdoc cref="IGraphQLToKarateConverter"/>
+public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 {
+    private readonly IGraphQLSchemaParser _graphQLSchemaParser;
     private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
     private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
     private readonly IKarateFeatureBuilder _karateFeatureBuilder;
 
     public GraphQLToKarateConverter(
+        IGraphQLSchemaParser graphQLSchemaParser,
         IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
         IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter, 
         IKarateFeatureBuilder karateFeatureBuilder)
     {
+        _graphQLSchemaParser = graphQLSchemaParser;
         _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
         _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
         _karateFeatureBuilder = karateFeatureBuilder;
@@ -24,7 +28,7 @@ public class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
     public string Convert(string schema)
     {
-        var graphQLDocument = Parser.Parse(schema);
+        var graphQLDocument = _graphQLSchemaParser.Parse(schema);
 
         var graphQLObjectTypeDefinitionsByName = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()

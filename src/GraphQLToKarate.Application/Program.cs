@@ -1,5 +1,6 @@
 ﻿using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Features;
+using GraphQLToKarate.Library.Parsers;
 
 const string graphQLSchema = """
     interface FooInterface {
@@ -101,7 +102,8 @@ const string graphQLSchema = """
     }
     """;
 
-var converter = new GraphQLToKarateConverter(
+var graphQLToKarateConverter = new GraphQLToKarateConverter(
+    new GraphQLSchemaParser(),
     new GraphQLTypeDefinitionConverter(
         new GraphQLTypeConverterFactory()
     ),
@@ -113,7 +115,7 @@ var converter = new GraphQLToKarateConverter(
     )
 );
 
-Console.WriteLine(converter.Convert(graphQLSchema));
+Console.WriteLine(graphQLToKarateConverter.Convert(graphQLSchema));
 
 Console.WriteLine("Done! Press enter to exit...");
 Console.ReadLine();
