@@ -8,12 +8,12 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Features;
 
 [TestFixture]
-internal sealed class ScenarioBuilderTests
+internal sealed class KarateScenarioBuilderTests
 {
-    private IScenarioBuilder? _subjectUnderTest;
+    private IKarateScenarioBuilder? _subjectUnderTest;
 
     [SetUp]
-    public void SetUp() => _subjectUnderTest = new ScenarioBuilder();
+    public void SetUp() => _subjectUnderTest = new KarateScenarioBuilder();
 
     [Test]
     [TestCaseSource(nameof(TestCases))]

@@ -8,18 +8,18 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Features;
 
 [TestFixture]
-internal sealed class FeatureBuilderTests
+internal sealed class KarateFeatureBuilderTests
 {
-    private IScenarioBuilder? _mockScenarioBuilder;
+    private IKarateScenarioBuilder? _mockScenarioBuilder;
 
-    private IFeatureBuilder? _subjectUnderTest;
+    private IKarateFeatureBuilder? _subjectUnderTest;
 
     [SetUp]
     public void SetUp()
     {
-        _mockScenarioBuilder = Substitute.For<IScenarioBuilder>();
+        _mockScenarioBuilder = Substitute.For<IKarateScenarioBuilder>();
 
-        _subjectUnderTest = new FeatureBuilder(_mockScenarioBuilder);
+        _subjectUnderTest = new KarateFeatureBuilder(_mockScenarioBuilder);
     }
 
     [Test]

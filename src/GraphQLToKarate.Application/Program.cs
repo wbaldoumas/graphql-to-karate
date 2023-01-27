@@ -1,5 +1,4 @@
-﻿using GraphQLToKarate.Library;
-using GraphQLToKarate.Library.Converters;
+﻿using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Features;
 
 const string graphQLSchema = """
@@ -102,21 +101,19 @@ const string graphQLSchema = """
     }
     """;
 
-var converter = new Converter(
+var converter = new GraphQLToKarateConverter(
     new GraphQLTypeDefinitionConverter(
         new GraphQLTypeConverterFactory()
     ),
     new GraphQLFieldDefinitionConverter(
         new GraphQLInputValueDefinitionConverterFactory()
+    ),
+    new KarateFeatureBuilder(
+        new KarateScenarioBuilder()
     )
 );
 
-var (karateObjects, graphQLQueryFields) = converter.Convert(graphQLSchema);
-
-var scenarioBuilder = new ScenarioBuilder();
-var featureBuilder = new FeatureBuilder(scenarioBuilder);
-
-Console.WriteLine(featureBuilder.Build(karateObjects, graphQLQueryFields));
+Console.WriteLine(converter.Convert(graphQLSchema));
 
 Console.WriteLine("Done! Press enter to exit...");
 Console.ReadLine();
