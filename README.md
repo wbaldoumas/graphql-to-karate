@@ -33,6 +33,21 @@ TBD.
 
 See the [open issues](https://github.com/wbaldoumas/graphql-to-karate/issues) for a list of proposed features (and known issues).
 
+- [ ] extended type support
+  - [ ] union support
+  - [ ] directive support
+  - [ ] custom scalar support
+  - [ ] custom query name support
+- [ ] logging
+  - [ ] custom verbosity
+- [ ] apps
+  - [ ] command line app
+    - [ ] auto mode
+    - [ ] interactive mode
+  - [ ] web app
+  - [ ] desktop app
+- [ ] user documentation
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. For detailed contributing guidelines, please see [CONTRIBUTING.md](CONTRIBUTING.md).
