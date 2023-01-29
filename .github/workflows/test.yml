@@ -29,8 +29,14 @@ jobs:
         dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         cp TestResults/*/coverage.opencover.xml .
 
+    - name: 🧪 run command line tests
+      run: |
+        cd ./tests/GraphQLToKarate.CommandLine.Tests/
+        dotnet test --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+        cp TestResults/*/coverage.opencover.xml .        
+
     - name: 💌 publish code coverage
       uses: codecov/codecov-action@v3
       with:
-        files: /home/runner/work/graphql-to-karate/graphql-to-karate/tests/GraphQLToKarate.Tests/coverage.opencover.xml
+        files: /home/runner/work/graphql-to-karate/graphql-to-karate/tests/GraphQLToKarate.Tests/coverage.opencover.xml,/home/runner/work/graphql-to-karate/graphql-to-karate/tests/GraphQLToKarate.CommandLine.Tests/coverage.opencover.xml
         fail_ci_if_error: true

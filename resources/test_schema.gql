@@ -1,0 +1,59 @@
+type Anime {
+  id: ID!
+  name: String!
+  description: String
+  episodes: Int
+  status: Status
+  releaseDate: String
+  genre: [Genre]
+}
+
+enum Status {
+  FINISHED
+  AIRING
+  NOT_YET_RELEASED
+}
+
+enum Genre {
+  ACTION
+  ADVENTURE
+  COMEDY
+  DRAMA
+  FANTASY
+  HORROR
+  ROMANCE
+  SCI_FI
+}
+
+interface Character {
+  id: ID!
+  name: String!
+  anime: [Anime]
+}
+
+type Protagonist implements Character {
+  id: ID!
+  name: String!
+  anime: [Anime]
+  age: Int
+}
+
+type Antagonist implements Character {
+  id: ID!
+  name: String!
+  anime: [Anime]
+  goal: String
+}
+
+type Query {
+  anime(id: ID!): Anime
+  animes(status: Status): [Anime]
+  characters(animeId: ID!): [Character]
+}
+
+type Mutation {
+  createAnime(name: String!, description: String, episodes: Int, status: Status, releaseDate: String, genre: [Genre]): Anime
+  updateAnime(id: ID!, name: String, description: String, episodes: Int, status: Status, releaseDate: String, genre: [Genre]): Anime
+  deleteAnime(id: ID!): Boolean
+}
+

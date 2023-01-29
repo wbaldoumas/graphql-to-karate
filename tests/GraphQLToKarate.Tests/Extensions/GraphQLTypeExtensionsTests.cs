@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Extensions;
 
 [TestFixture]
-internal class GraphQLTypeExtensionsTests
+internal sealed class GraphQLTypeExtensionsTests
 {
     [TestCaseSource(nameof(TestCases))]
     public void GetTypeName_should_return_correct_type_name(

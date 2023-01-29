@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\GraphQLToKarate.Library\GraphQLToKarate.Library.csproj" />
+    <ProjectReference Include="..\..\src\GraphQLToKarate.CommandLine\GraphQLToKarate.CommandLine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +29,7 @@
     </PackageReference>
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+    <PackageReference Include="Spectre.Console.Testing" Version="0.46.0" />
   </ItemGroup>
 
 </Project>
