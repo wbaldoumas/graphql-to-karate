@@ -54,4 +54,14 @@ internal sealed class TypeResolverTests
         // assert
         (mockServiceProvider as IDisposable)?.DidNotReceiveWithAnyArgs().Dispose();
     }
+
+    [Test]
+    public void TypeResolver_throws_exception_when_null_ServiceProvider_passed()
+    {
+        // arrange + act
+        var act = () => new TypeResolver(null);
+
+        // assert
+        act.Should().Throw<ArgumentNullException>();
+    }
 }
