@@ -4,16 +4,16 @@ namespace GraphQLToKarate.CommandLine.Infrastructure;
 
 internal sealed class TypeResolver : ITypeResolver, IDisposable
 {
-    private readonly IServiceProvider _provider;
+    private readonly IServiceProvider _serviceProvider;
 
     public TypeResolver(IServiceProvider? provider) =>
-        _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        _serviceProvider = provider ?? throw new ArgumentNullException(nameof(provider));
 
-    public object? Resolve(Type? type) => type is null ? null : _provider.GetService(type);
+    public object? Resolve(Type? type) => type is null ? null : _serviceProvider.GetService(type);
 
     public void Dispose()
     {
-        if (_provider is IDisposable disposable)
+        if (_serviceProvider is IDisposable disposable)
         {
             disposable.Dispose();
         }
