@@ -1,6 +1,5 @@
 ﻿global using GraphQLToKarate.CommandLine.Infrastructure;
 using Spectre.Console.Cli;
-using System.Diagnostics.CodeAnalysis;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 

@@ -19,6 +19,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
     public override async Task<int> ExecuteAsync(CommandContext context, ConvertCommandSettings commandSettings)
     {
         _console.Write(new FigletText("GraphQL-to-Karate").Centered().Color(Color.Fuchsia));
+        _console.WriteLine();
 
         var graphQLSchema = await _file.ReadAllTextAsync(commandSettings.GraphQLSchemaFile!);
 

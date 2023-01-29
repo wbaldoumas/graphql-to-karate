@@ -1,7 +1,6 @@
 ﻿using GraphQLToKarate.CommandLine.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
-using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
