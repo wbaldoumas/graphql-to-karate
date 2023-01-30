@@ -79,7 +79,7 @@ internal sealed class GraphQLListTypeConverterTests
                     Type = new GraphQLNamedType
                     {
                         Name = new GraphQLName(GraphQLToken.Float)
-                    },
+                    }
                 },
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
@@ -150,7 +150,7 @@ internal sealed class GraphQLListTypeConverterTests
                 {
                     new GraphQLEnumTypeDefinition
                     {
-                        Name = new GraphQLName(enumTypeName),
+                        Name = new GraphQLName(enumTypeName)
                     }
                 }
             };
@@ -180,7 +180,7 @@ internal sealed class GraphQLListTypeConverterTests
                 {
                     new GraphQLEnumTypeDefinition
                     {
-                        Name = new GraphQLName(enumTypeName),
+                        Name = new GraphQLName(enumTypeName)
                     },
                     new GraphQLObjectTypeDefinition
                     {
@@ -196,7 +196,7 @@ internal sealed class GraphQLListTypeConverterTests
                     Type = new GraphQLNamedType
                     {
                         Name = new GraphQLName(customTypeName)
-                    },
+                    }
                 },
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(

@@ -8,6 +8,7 @@ using Spectre.Console.Cli;
 using Spectre.Console.Testing;
 using System.IO.Abstractions;
 using GraphQLToKarate.CommandLine.Commands;
+using GraphQLToKarate.Library.Builders;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 
@@ -15,19 +16,26 @@ namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 internal sealed class CommandAppConfiguratorTests
 {
     private IFile? _mockFile;
+    private IFileSystem? _mockFileSystem;
     private IAnsiConsole? _mockAnsiConsole;
     private ConvertCommandSettings? _mockConvertCommandSettings;
+    private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
     private ConvertCommand? _mockConvertCommand;
     private ITypeResolver? _mockTypeResolver;
     private ITypeRegistrar? _mockTypeRegistrar;
-
+    
     [SetUp]
     public void SetUp()
     {
         _mockFile = Substitute.For<IFile>();
+        _mockFileSystem = Substitute.For<IFileSystem>();
+
+        _mockFileSystem.File.Returns(_mockFile);
+
         _mockConvertCommandSettings = new ConvertCommandSettings(_mockFile);
         _mockAnsiConsole = new TestConsole();
-        _mockConvertCommand = new ConvertCommand(_mockAnsiConsole, _mockFile);
+        _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
+        _mockConvertCommand = new ConvertCommand(_mockAnsiConsole, _mockFileSystem, _mockGraphQLToKarateConverterBuilder);
         _mockTypeResolver = Substitute.For<ITypeResolver>();
         _mockTypeRegistrar = Substitute.For<ITypeRegistrar>();
     }

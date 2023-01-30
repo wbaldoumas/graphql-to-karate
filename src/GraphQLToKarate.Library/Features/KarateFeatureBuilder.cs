@@ -21,7 +21,7 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
             string.Empty,
             "Background: Base URL and Schemas",
             "* url baseUrl".Indent(Indent.Single),
-            string.Empty,
+            string.Empty
         };
 
         lines.AddRange(BuildKarateObjects(karateObjects));

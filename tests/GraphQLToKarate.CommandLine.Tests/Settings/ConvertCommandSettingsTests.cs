@@ -23,7 +23,7 @@ internal sealed class ConvertCommandSettingsTests
         // arrange
         _mockFile!.Exists(graphQLSchemaFile).Returns(fileExistsReturn);
 
-        var settings = new ConvertCommandSettings(_mockFile) { GraphQLSchemaFile = graphQLSchemaFile };
+        var settings = new ConvertCommandSettings(_mockFile) { InputFile = graphQLSchemaFile };
 
         // act
         var result = settings.Validate();
@@ -48,25 +48,25 @@ internal sealed class ConvertCommandSettingsTests
                 null,
                 true,
                 "Please provide a valid file path and file name for the GraphQL schema to convert."
-            ).SetName("When GraphQLSchemaFile name is null, settings are invalid.");
+            ).SetName("When InputFile name is null, settings are invalid.");
 
             yield return new TestCaseData(
                 string.Empty,
                 true,
                 "Please provide a valid file path and file name for the GraphQL schema to convert."
-            ).SetName("When GraphQLSchemaFile name is empty, settings are invalid.");
+            ).SetName("When InputFile name is empty, settings are invalid.");
 
             yield return new TestCaseData(
                 "schema.graphql",
                 false,
                 "GraphQL schema file does not exist. Please provide a valid file path and file name for the GraphQL schema to convert."
-            ).SetName("When non-null and non-empty GraphQLSchemaFile name points to file that doesn't exist, settings are invalid.");
+            ).SetName("When non-null and non-empty InputFile name points to file that doesn't exist, settings are invalid.");
 
             yield return new TestCaseData(
                 "schema.graphql",
                 true,
                 null
-            ).SetName("When non-null and non-empty GraphQLSchemaFile name points to file that exists, settings are valid.");
+            ).SetName("When non-null and non-empty InputFile name points to file that exists, settings are valid.");
         }
     }
 }

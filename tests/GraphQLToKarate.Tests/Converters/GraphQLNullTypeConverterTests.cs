@@ -114,7 +114,7 @@ internal sealed class GraphQLNullTypeConverterTests
                 {
                     new GraphQLEnumTypeDefinition
                     {
-                        Name = new GraphQLName(enumTypeName),
+                        Name = new GraphQLName(enumTypeName)
                     }
                 }
             };
@@ -137,7 +137,7 @@ internal sealed class GraphQLNullTypeConverterTests
                 {
                     new GraphQLEnumTypeDefinition
                     {
-                        Name = new GraphQLName(enumTypeName),
+                        Name = new GraphQLName(enumTypeName)
                     },
                     new GraphQLObjectTypeDefinition
                     {
