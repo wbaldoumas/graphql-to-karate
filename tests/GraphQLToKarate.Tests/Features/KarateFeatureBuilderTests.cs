@@ -140,7 +140,7 @@ internal sealed class KarateFeatureBuilderTests
                 """"
             ).SetName("Simple case with one Karate object schema and one query is handled as expected.");
 
-            var otherGraphQLFieldDefinition = new GraphQLFieldDefinition()
+            var otherGraphQLFieldDefinition = new GraphQLFieldDefinition
             {
                 Name = new GraphQLName("user"),
                 Type = new GraphQLNamedType

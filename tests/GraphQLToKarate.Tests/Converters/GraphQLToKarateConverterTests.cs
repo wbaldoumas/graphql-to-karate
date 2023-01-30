@@ -39,12 +39,12 @@ internal sealed class GraphQLToKarateConverterTests
     public void Convert_generates_expected_karate_feature_and_invokes_expected_calls()
     {
         // arrange
-        var todoQueryFieldDefinition = new GraphQLFieldDefinition()
+        var todoQueryFieldDefinition = new GraphQLFieldDefinition
         {
             Name = new GraphQLName("todo")
         };
 
-        var todosQueryFieldDefinition = new GraphQLFieldDefinition()
+        var todosQueryFieldDefinition = new GraphQLFieldDefinition
         {
             Name = new GraphQLName("todos")
         };

@@ -76,7 +76,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                     Type = new GraphQLNamedType
                     {
                         Name = new GraphQLName(GraphQLToken.Float)
-                    },
+                    }
                 },
                 emptyGraphQLDocumentAdapter,
                 new KarateNonNullType(new KarateType(KarateToken.Number, testFieldName))
@@ -129,7 +129,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                 {
                     new GraphQLEnumTypeDefinition
                     {
-                        Name = new GraphQLName(enumTypeName),
+                        Name = new GraphQLName(enumTypeName)
                     }
                 }
             };
@@ -155,7 +155,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                 {
                     new GraphQLEnumTypeDefinition
                     {
-                        Name = new GraphQLName(enumTypeName),
+                        Name = new GraphQLName(enumTypeName)
                     },
                     new GraphQLObjectTypeDefinition
                     {
@@ -171,7 +171,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                     Type = new GraphQLNamedType
                     {
                         Name = new GraphQLName(customTypeName)
-                    },
+                    }
                 },
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateNonNullType(
@@ -215,7 +215,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
         // arrange
         var unsupportedGraphQLType = new UnsupportedGraphQLType();
 
-        var graphQLNonNullType = new GraphQLNonNullType()
+        var graphQLNonNullType = new GraphQLNonNullType
         {
             Type = unsupportedGraphQLType
         };
