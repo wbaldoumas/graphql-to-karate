@@ -15,18 +15,32 @@ internal sealed class ConvertCommandSettings : CommandSettings
     [Description("The path and filename of the file containing the GraphQL schema to convert.")]
     public string? InputFile { get; set; }
 
-    [CommandOption("--of|--output-filename")]
-    [Description("""The name of the output file to write the Karate feature to. Defaults to "graphql.feature".""")]
+    [CommandOption("--output-filename")]
+    [Description("The path and filename of the output file to write the Karate feature to.")]
     [DefaultValue(typeof(string), "graphql.feature")]
     public string? OutputFile { get; set; }
 
+    [CommandOption("--custom-scalar-mapping")]
+    [Description("The path and filename of a JSON file defining mappings of custom scalar values to karate types")]
+    public string? CustomScalarMappingFile { get; set; }
+    
     public override ValidationResult Validate()
     {
         if (string.IsNullOrEmpty(InputFile))
         {
-            return ValidationResult.Error("Please provide a valid file path and file name for the GraphQL schema to convert.");
+            return ValidationResult.Error("Please provide a valid file path and filename for the GraphQL schema to convert.");
         }
 
-        return !_file.Exists(InputFile) ? ValidationResult.Error("GraphQL schema file does not exist. Please provide a valid file path and file name for the GraphQL schema to convert.") : ValidationResult.Success();
+        if (!_file.Exists(InputFile))
+        {
+            return ValidationResult.Error("GraphQL schema file does not exist. Please provide a valid file path and filename for the GraphQL schema to convert.");
+        }
+
+        if (!string.IsNullOrEmpty(CustomScalarMappingFile) && !_file.Exists(CustomScalarMappingFile))
+        {
+            return ValidationResult.Error("Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option.");
+        }
+
+        return  ValidationResult.Success();
     }
 }

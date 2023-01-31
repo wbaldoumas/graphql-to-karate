@@ -3,7 +3,7 @@
 /// <inheritdoc cref="IGraphQLTypeConverterFactory"/>
 public sealed class GraphQLTypeConverterFactory : IGraphQLTypeConverterFactory
 {
-    private IGraphQLTypeConverter? _graphQLTypeConverter;
+    private readonly IGraphQLTypeConverter _graphQLTypeConverter;
 
     private IGraphQLTypeConverter? _graphQLListTypeConverter;
 
@@ -11,7 +11,9 @@ public sealed class GraphQLTypeConverterFactory : IGraphQLTypeConverterFactory
 
     private IGraphQLTypeConverter? _graphQLNullTypeConverter;
 
-    public IGraphQLTypeConverter CreateGraphQLTypeConverter() => _graphQLTypeConverter ??= new GraphQLTypeConverter();
+    public GraphQLTypeConverterFactory(IGraphQLTypeConverter graphQLTypeConverter) => _graphQLTypeConverter = graphQLTypeConverter;
+
+    public IGraphQLTypeConverter CreateGraphQLTypeConverter() => _graphQLTypeConverter;
 
     public IGraphQLTypeConverter CreateGraphQLListTypeConverter() => _graphQLListTypeConverter ??= new GraphQLListTypeConverter(this);
 

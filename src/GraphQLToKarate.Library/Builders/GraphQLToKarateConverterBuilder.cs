@@ -10,7 +10,7 @@ public sealed class GraphQLToKarateConverterBuilder : IGraphQLToKarateConverterB
     public IGraphQLToKarateConverter Build() => new GraphQLToKarateConverter(
         new GraphQLSchemaParser(),
         new GraphQLTypeDefinitionConverter(
-            new GraphQLTypeConverterFactory()
+            new GraphQLTypeConverterFactory(new GraphQLTypeConverter())
         ),
         new GraphQLFieldDefinitionConverter(
             new GraphQLInputValueDefinitionConverterFactory()

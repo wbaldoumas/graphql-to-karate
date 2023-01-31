@@ -24,7 +24,7 @@ internal sealed class GraphQLNullTypeConverterTests
     {
         _mockGraphQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
 
-        var graphQLTypeConverterFactory = new GraphQLTypeConverterFactory();
+        var graphQLTypeConverterFactory = new GraphQLTypeConverterFactory(new GraphQLTypeConverter());
 
         _subjectUnderTest = new GraphQLNullTypeConverter(graphQLTypeConverterFactory);
     }
