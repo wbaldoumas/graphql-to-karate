@@ -15,12 +15,12 @@ internal sealed class ConvertCommandSettings : CommandSettings
     [Description("The path and filename of the file containing the GraphQL schema to convert.")]
     public string? InputFile { get; set; }
 
-    [CommandOption("--of|--output-filename")]
+    [CommandOption("--output-filename")]
     [Description("The path and filename of the output file to write the Karate feature to.")]
     [DefaultValue(typeof(string), "graphql.feature")]
     public string? OutputFile { get; set; }
 
-    [CommandOption("--csm|--custom-scalar-mapping")]
+    [CommandOption("--custom-scalar-mapping")]
     [Description("The path and filename of a JSON file defining mappings of custom scalar values to karate types")]
     public string? CustomScalarMappingFile { get; set; }
     
