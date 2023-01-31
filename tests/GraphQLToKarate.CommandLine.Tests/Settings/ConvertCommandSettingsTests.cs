@@ -17,13 +17,20 @@ internal sealed class ConvertCommandSettingsTests
     [TestCaseSource(nameof(TestCases))]
     public void ConvertSettings_validation_returns_expected_validation_result(
         string? graphQLSchemaFile,
-        bool fileExistsReturn,
+        string? customScalarMappingFile,
+        bool graphQLSchemaFileExistsReturn,
+        bool customScalarMappingFileExistsReturn,
         string? expectedMessage)
     {
         // arrange
-        _mockFile!.Exists(graphQLSchemaFile).Returns(fileExistsReturn);
+        _mockFile!.Exists(graphQLSchemaFile).Returns(graphQLSchemaFileExistsReturn);
+        _mockFile.Exists(customScalarMappingFile).Returns(customScalarMappingFileExistsReturn);
 
-        var settings = new ConvertCommandSettings(_mockFile) { InputFile = graphQLSchemaFile };
+        var settings = new ConvertCommandSettings(_mockFile)
+        {
+            InputFile = graphQLSchemaFile,
+            CustomScalarMappingFile = customScalarMappingFile
+        };
 
         // act
         var result = settings.Validate();
@@ -46,27 +53,59 @@ internal sealed class ConvertCommandSettingsTests
         {
             yield return new TestCaseData(
                 null,
+                "config.json",
                 true,
-                "Please provide a valid file path and file name for the GraphQL schema to convert."
+                true,
+                "Please provide a valid file path and filename for the GraphQL schema to convert."
             ).SetName("When InputFile name is null, settings are invalid.");
 
             yield return new TestCaseData(
                 string.Empty,
+                "config.json",
                 true,
-                "Please provide a valid file path and file name for the GraphQL schema to convert."
+                true,
+                "Please provide a valid file path and filename for the GraphQL schema to convert."
             ).SetName("When InputFile name is empty, settings are invalid.");
 
             yield return new TestCaseData(
                 "schema.graphql",
+                "config.json",
                 false,
-                "GraphQL schema file does not exist. Please provide a valid file path and file name for the GraphQL schema to convert."
+                true,
+                "GraphQL schema file does not exist. Please provide a valid file path and filename for the GraphQL schema to convert."
             ).SetName("When non-null and non-empty InputFile name points to file that doesn't exist, settings are invalid.");
 
             yield return new TestCaseData(
                 "schema.graphql",
+                "customScalarMapping.json",
+                true,
+                false,
+                "Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option."
+            ).SetName("When non-null and non-empty custom scalar mapping filename points to file that doesn't exist, settings are invalid.");
+
+            yield return new TestCaseData(
+                "schema.graphql",
+                null,
+                true,
+                false,
+                null
+            ).SetName("When non-null and non-empty InputFile name points to file that exists, settings are valid (null custom scalar mapping).");
+
+            yield return new TestCaseData(
+                "schema.graphql",
+                string.Empty,
+                true,
+                false,
+                null
+            ).SetName("When non-null and non-empty InputFile name points to file that exists, settings are valid (empty custom scalar mapping).");
+
+            yield return new TestCaseData(
+                "schema.graphql",
+                "customScalarMapping.json",
+                true,
                 true,
                 null
-            ).SetName("When non-null and non-empty InputFile name points to file that exists, settings are valid.");
+            ).SetName("When non-null and non-empty custom scalar mapping filename points to file that exists, settings are valid.");
         }
     }
 }
