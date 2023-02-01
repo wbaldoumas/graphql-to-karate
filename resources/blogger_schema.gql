@@ -35,6 +35,7 @@ type User implements Node {
   email: String!
   createdAt: Date!
   updatedAt: Date!
+  posts: [Post]!
 }
 
 type Comment implements Node {
