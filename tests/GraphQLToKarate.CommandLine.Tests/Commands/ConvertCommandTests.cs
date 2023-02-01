@@ -18,6 +18,7 @@ internal sealed class ConvertCommandTests
     private IAnsiConsole? _mockConsole;
     private IFile? _mockFile;
     private IFileSystem? _mockFileSystem;
+    private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
     private AsyncCommand<ConvertCommandSettings>? _subjectUnderTest;
 
@@ -30,11 +31,17 @@ internal sealed class ConvertCommandTests
 
         _mockFile = Substitute.For<IFile>();
         _mockFileSystem = Substitute.For<IFileSystem>();
+        _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
 
         _mockFileSystem.File.Returns(_mockFile);
 
-        _subjectUnderTest = new ConvertCommand(_mockConsole, _mockFileSystem, _mockGraphQLToKarateConverterBuilder);
+        _subjectUnderTest = new ConvertCommand(
+            _mockConsole,
+            _mockFileSystem,
+            _mockConvertCommandSettingsLoader,
+            _mockGraphQLToKarateConverterBuilder
+        );
     }
 
     [Test]
@@ -49,7 +56,8 @@ internal sealed class ConvertCommandTests
 
         var convertCommandSettings = new ConvertCommandSettings(_mockFile!)
         {
-            InputFile = "schema.graphql"
+            InputFile = "schema.graphql",
+            OutputFile = "graphql.feature"
         };
 
         const string schemaFileContent = "some GraphQL schema";
@@ -60,12 +68,18 @@ internal sealed class ConvertCommandTests
         mockGraphQLToKarateConverter.Convert(Arg.Any<string>()).Returns(karateFeature);
 
         _mockGraphQLToKarateConverterBuilder!
+            .Configure()
             .Build()
             .Returns(mockGraphQLToKarateConverter);
 
-        _mockFile!
-            .ReadAllTextAsync(convertCommandSettings.InputFile)
-            .Returns(schemaFileContent);
+        _mockConvertCommandSettingsLoader!
+            .LoadAsync(convertCommandSettings)
+            .Returns(new LoadedConvertCommandSettings
+            {
+                GraphQLSchema = schemaFileContent,
+                OutputFile = convertCommandSettings.OutputFile!,
+                CustomScalarMapping = new Dictionary<string, string>()
+            });
 
         // act
         var result = await _subjectUnderTest!.ExecuteAsync(commandContext, convertCommandSettings);
@@ -73,10 +87,9 @@ internal sealed class ConvertCommandTests
         // assert
         result.Should().Be(0);
 
-        await _mockFile
-            .ReceivedWithAnyArgs()
-            .ReadAllTextAsync(default!);
-
+        await _mockConvertCommandSettingsLoader!
+            .Received()
+            .LoadAsync(convertCommandSettings);
 
         // initial command implementation just writes the schema to console...
         (_mockConsole as TestConsole)!.Output.Should().Contain("Running GraphQL to Karate conversion...");

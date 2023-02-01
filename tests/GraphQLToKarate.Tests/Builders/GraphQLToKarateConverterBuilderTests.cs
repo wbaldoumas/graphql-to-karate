@@ -9,13 +9,22 @@ namespace GraphQLToKarate.Tests.Builders;
 internal sealed class GraphQLToKarateConverterBuilderTests
 {
     [Test]
-    public void Build_builds_expected_converter()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void Build_builds_expected_converter(bool populateCustomScalarMapping)
     {
         // arrange
+        var customScalarMapping = populateCustomScalarMapping
+            ? new Dictionary<string, string> { { "hello", "world" } }
+            : new Dictionary<string, string>();
+
         var subjectUnderTest = new GraphQLToKarateConverterBuilder();
 
         // act
-        var graphQLToKarateConverter = subjectUnderTest.Build();
+        var graphQLToKarateConverter = subjectUnderTest
+            .Configure()
+            .WithCustomScalarMapping(customScalarMapping)
+            .Build();
 
         // assert
         graphQLToKarateConverter.Should().BeOfType<GraphQLToKarateConverter>();

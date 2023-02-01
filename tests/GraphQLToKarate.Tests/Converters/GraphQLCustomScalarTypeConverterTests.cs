@@ -29,7 +29,7 @@ internal sealed class GraphQLCustomScalarTypeConverterTests
         _customScalarMapping = new Dictionary<string, string>
         {
             { CustomScalarNameLong, KarateToken.Number },
-            { CustomScalarNameTime, KarateToken.String },
+            { CustomScalarNameTime, KarateToken.String }
         };
 
         _subjectUnderTest = new GraphQLCustomScalarTypeConverter(

@@ -10,15 +10,18 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
 {
     private readonly IAnsiConsole _console;
     private readonly IFileSystem _fileSystem;
+    private readonly IConvertCommandSettingsLoader _convertCommandSettingsLoader;
     private readonly IGraphQLToKarateConverterBuilder _graphQLToKarateConverterBuilder;
 
     public ConvertCommand(
         IAnsiConsole console,
         IFileSystem fileSystem,
+        IConvertCommandSettingsLoader convertCommandSettingsLoader,
         IGraphQLToKarateConverterBuilder graphQLToKarateConverterBuilder)
     {
         _console = console;
         _fileSystem = fileSystem;
+        _convertCommandSettingsLoader = convertCommandSettingsLoader;
         _graphQLToKarateConverterBuilder = graphQLToKarateConverterBuilder;
     }
 
@@ -26,24 +29,22 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
     {
         _console.WriteLine("Running GraphQL to Karate conversion...");
 
-        await WriteKarateFeature(
-            commandSettings,
-            await GetKarateFeature(commandSettings)
-        );
+        var loadedCommandSettings = await _convertCommandSettingsLoader.LoadAsync(commandSettings);
+
+        var graphQLToKarateConverter = _graphQLToKarateConverterBuilder
+            .Configure()
+            .WithCustomScalarMapping(loadedCommandSettings.CustomScalarMapping)
+            .Build();
+
+        var karateFeature = graphQLToKarateConverter.Convert(loadedCommandSettings.GraphQLSchema);
+
+        await WriteKarateFeature(commandSettings, karateFeature);
 
         var fullPath = _fileSystem.Path.GetFullPath(commandSettings.OutputFile!);
 
         _console.MarkupLine($"Conversion complete! View the output at [darkturquoise]{fullPath}[/].");
 
         return 0;
-    }
-
-    private async Task<string> GetKarateFeature(ConvertCommandSettings commandSettings)
-    {
-        var graphQLToKarateConverter = _graphQLToKarateConverterBuilder.Build();
-        var graphQLSchema = await _fileSystem.File.ReadAllTextAsync(commandSettings.InputFile!);
-
-        return graphQLToKarateConverter.Convert(graphQLSchema);
     }
 
     private async Task WriteKarateFeature(ConvertCommandSettings commandSettings, string karateFeature)

@@ -23,7 +23,7 @@ internal sealed class ConvertCommandSettings : CommandSettings
     [CommandOption("--custom-scalar-mapping")]
     [Description("The path and filename of a JSON file defining mappings of custom scalar values to karate types")]
     public string? CustomScalarMappingFile { get; set; }
-    
+
     public override ValidationResult Validate()
     {
         if (string.IsNullOrEmpty(InputFile))
