@@ -2,6 +2,9 @@
 
 namespace GraphQLToKarate.Library.Builders;
 
+/// <summary>
+///     A fully configured <see cref="IGraphQLToKarateConverterBuilder"/>.
+/// </summary>
 public interface IConfiguredGraphQLToKarateConverterBuilder
 {
     /// <summary>

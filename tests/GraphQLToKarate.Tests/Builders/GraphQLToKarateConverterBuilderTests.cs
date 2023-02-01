@@ -15,7 +15,10 @@ internal sealed class GraphQLToKarateConverterBuilderTests
         var subjectUnderTest = new GraphQLToKarateConverterBuilder();
 
         // act
-        var graphQLToKarateConverter = subjectUnderTest.Build();
+        var graphQLToKarateConverter = subjectUnderTest
+            .Configure()
+            .WithCustomScalarMapping(new Dictionary<string, string> { { "hello", "world" } })
+            .Build();
 
         // assert
         graphQLToKarateConverter.Should().BeOfType<GraphQLToKarateConverter>();
