@@ -1,0 +1,46 @@
+scalar Date
+
+type Query {
+  posts(limit: Int, offset: Int, status: PostStatus): [Post]
+  post(id: ID!): Post
+  users: [User]
+}
+
+interface Node {
+  id: ID!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+type Post implements Node {
+  id: ID!
+  title: String!
+  body: String!
+  status: PostStatus!
+  createdAt: Date!
+  updatedAt: Date!
+  author: User!
+  comments: [Comment]
+  filteredComments(minLength: Int): [Comment]
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  email: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type Comment implements Node {
+  id: ID!
+  body: String!
+  createdAt: Date!
+  updatedAt: Date!
+  author: User!
+}

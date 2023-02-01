@@ -18,24 +18,31 @@ internal sealed class CommandAppConfiguratorTests
     private IFile? _mockFile;
     private IFileSystem? _mockFileSystem;
     private IAnsiConsole? _mockAnsiConsole;
+    private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private ConvertCommandSettings? _mockConvertCommandSettings;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
     private ConvertCommand? _mockConvertCommand;
     private ITypeResolver? _mockTypeResolver;
     private ITypeRegistrar? _mockTypeRegistrar;
-    
+
     [SetUp]
     public void SetUp()
     {
         _mockFile = Substitute.For<IFile>();
         _mockFileSystem = Substitute.For<IFileSystem>();
-
         _mockFileSystem.File.Returns(_mockFile);
-
         _mockConvertCommandSettings = new ConvertCommandSettings(_mockFile);
         _mockAnsiConsole = new TestConsole();
+        _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
-        _mockConvertCommand = new ConvertCommand(_mockAnsiConsole, _mockFileSystem, _mockGraphQLToKarateConverterBuilder);
+
+        _mockConvertCommand = new ConvertCommand(
+            _mockAnsiConsole,
+            _mockFileSystem,
+            _mockConvertCommandSettingsLoader,
+            _mockGraphQLToKarateConverterBuilder
+        );
+
         _mockTypeResolver = Substitute.For<ITypeResolver>();
         _mockTypeRegistrar = Substitute.For<ITypeRegistrar>();
     }
@@ -52,6 +59,15 @@ internal sealed class CommandAppConfiguratorTests
         _mockTypeRegistrar!
             .Build()
             .Returns(_mockTypeResolver);
+
+        _mockConvertCommandSettingsLoader!
+            .LoadAsync(Arg.Any<ConvertCommandSettings>())
+            .Returns(new LoadedConvertCommandSettings
+            {
+                GraphQLSchema = "some GraphQL schema",
+                OutputFile = "graphql.feature",
+                CustomScalarMapping = new Dictionary<string, string>()
+            });
 
         // act
         var result = await CommandAppConfigurator

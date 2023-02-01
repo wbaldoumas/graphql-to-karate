@@ -15,6 +15,7 @@ internal static class TypeRegistrarConfigurator
         serviceCollection.AddSingleton<IFileSystem, FileSystem>();
         serviceCollection.AddSingleton<IFile, FileWrapper>();
         serviceCollection.AddTransient<ConvertCommandSettings>();
+        serviceCollection.AddTransient<IConvertCommandSettingsLoader, ConvertCommandSettingsLoader>();
         serviceCollection.AddTransient<IGraphQLToKarateConverterBuilder, GraphQLToKarateConverterBuilder>();
 
         return new TypeRegistrar(serviceCollection);
