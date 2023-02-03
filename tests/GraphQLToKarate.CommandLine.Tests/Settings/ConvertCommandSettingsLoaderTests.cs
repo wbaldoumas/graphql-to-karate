@@ -70,7 +70,9 @@ internal sealed class ConvertCommandSettingsLoaderTests
         {
             InputFile = "schema.graphql",
             CustomScalarMappingFile = "config.json",
-            OutputFile = "karate.feature"
+            OutputFile = "karate.feature",
+            BaseUrl = "baseUrl",
+            ExcludeQueries = false
         };
 
         const string someCustomScalarMapping = """
@@ -103,6 +105,8 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.OutputFile.Should().Be(convertCommandSettings.OutputFile);
         loadedConvertCommandSettings.GraphQLSchema.Should().Be(SomeGraphQLSchema);
         loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
+        loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
+        loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
     }
 
     [Test]

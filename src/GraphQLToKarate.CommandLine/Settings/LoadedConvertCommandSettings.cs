@@ -7,4 +7,8 @@ internal sealed class LoadedConvertCommandSettings
     public required IDictionary<string, string> CustomScalarMapping { get; init; }
 
     public required string OutputFile { get; init; }
+
+    public required bool ExcludeQueries { get; init; }
+
+    public required string BaseUrl { get; init; }
 }

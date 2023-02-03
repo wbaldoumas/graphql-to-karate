@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using GraphQLToKarate.Library.Extensions;
+using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 
@@ -9,8 +10,15 @@ namespace GraphQLToKarate.Library.Features;
 public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
 {
     private readonly IKarateScenarioBuilder _karateScenarioBuilder;
+    private readonly KarateFeatureBuilderSettings _karateFeatureBuilderSettings;
 
-    public KarateFeatureBuilder(IKarateScenarioBuilder karateScenarioBuilder) => _karateScenarioBuilder = karateScenarioBuilder;
+    public KarateFeatureBuilder(
+        IKarateScenarioBuilder karateScenarioBuilder,
+        KarateFeatureBuilderSettings karateFeatureBuilderSettings)
+    {
+        _karateScenarioBuilder = karateScenarioBuilder;
+        _karateFeatureBuilderSettings = karateFeatureBuilderSettings;
+    }
 
     public string Build(
         IEnumerable<KarateObject> karateObjects,
@@ -20,12 +28,16 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
             "Feature: Test GraphQL Endpoint with Karate",
             string.Empty,
             "Background: Base URL and Schemas",
-            "* url baseUrl".Indent(Indent.Single),
+            $"* url {_karateFeatureBuilderSettings.BaseUrl}".Indent(Indent.Single),
             string.Empty
         };
 
         lines.AddRange(BuildKarateObjects(karateObjects));
-        lines.AddRange(BuildGraphQLQueries(graphQLQueries));
+
+        if (!_karateFeatureBuilderSettings.ExcludeQueries)
+        {
+            lines.AddRange(BuildGraphQLQueries(graphQLQueries));
+        }
 
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendJoin(Environment.NewLine, lines);
