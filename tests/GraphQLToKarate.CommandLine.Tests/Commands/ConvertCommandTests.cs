@@ -78,7 +78,9 @@ internal sealed class ConvertCommandTests
             {
                 GraphQLSchema = schemaFileContent,
                 OutputFile = convertCommandSettings.OutputFile!,
-                CustomScalarMapping = new Dictionary<string, string>()
+                CustomScalarMapping = new Dictionary<string, string>(),
+                ExcludeQueries = convertCommandSettings.ExcludeQueries,
+                BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl"
             });
 
         // act
