@@ -22,7 +22,9 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
         {
             GraphQLSchema = graphQLSchema,
             CustomScalarMapping = customScalarMapping,
-            OutputFile = convertCommandSettings.OutputFile!
+            OutputFile = convertCommandSettings.OutputFile!,
+            BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
+            ExcludeQueries = convertCommandSettings.ExcludeQueries
         };
     }
 

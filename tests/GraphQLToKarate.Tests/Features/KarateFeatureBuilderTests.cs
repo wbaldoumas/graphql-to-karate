@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Features;
+using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Types;
 using NSubstitute;
 using NUnit.Framework;
@@ -12,22 +13,16 @@ internal sealed class KarateFeatureBuilderTests
 {
     private IKarateScenarioBuilder? _mockScenarioBuilder;
 
-    private IKarateFeatureBuilder? _subjectUnderTest;
-
     [SetUp]
-    public void SetUp()
-    {
-        _mockScenarioBuilder = Substitute.For<IKarateScenarioBuilder>();
-
-        _subjectUnderTest = new KarateFeatureBuilder(_mockScenarioBuilder);
-    }
+    public void SetUp() => _mockScenarioBuilder = Substitute.For<IKarateScenarioBuilder>();
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
-    public void FeatureBuilder_builds_expected_feature(
+    public void FeatureBuilder_builds_expected_feature_when_queries_are_included(
         IEnumerable<KarateObject> karateObjects,
         ICollection<GraphQLQueryFieldType> graphQLQueryFieldTypes,
         IDictionary<string, string> mockScenarioBuilderReturnByGraphQLQueryName,
+        KarateFeatureBuilderSettings karateFeatureBuilderSettings,
         string expectedFeatureString)
     {
         // arrange
@@ -38,8 +33,10 @@ internal sealed class KarateFeatureBuilderTests
                 .Returns(mockScenarioBuilderReturnByGraphQLQueryName[graphQLQueryFieldType.Name]);
         }
 
+        var subjectUnderTest = new KarateFeatureBuilder(_mockScenarioBuilder!, karateFeatureBuilderSettings);
+
         // act
-        var featureString = _subjectUnderTest!.Build(karateObjects, graphQLQueryFieldTypes);
+        var featureString = subjectUnderTest.Build(karateObjects, graphQLQueryFieldTypes);
 
         // assert
         featureString.Should().Be(expectedFeatureString);
@@ -56,6 +53,14 @@ internal sealed class KarateFeatureBuilderTests
                 {
                     Name = new GraphQLName("Todo")
                 }
+            };
+
+            const string baseUrl = "\"https://www.karate-feature-builder-tests/graphql\"";
+
+            var karateFeatureBuilderSettingsWithQueries = new KarateFeatureBuilderSettings
+            {
+                BaseUrl = baseUrl,
+                ExcludeQueries = false
             };
 
             yield return new TestCaseData(
@@ -109,11 +114,12 @@ internal sealed class KarateFeatureBuilderTests
                         """"
                     }
                 },
+                karateFeatureBuilderSettingsWithQueries,
                 """"
                 Feature: Test GraphQL Endpoint with Karate
 
                 Background: Base URL and Schemas
-                  * url baseUrl
+                  * url "https://www.karate-feature-builder-tests/graphql"
 
                   * text todoSchema = """
                       {
@@ -256,11 +262,12 @@ internal sealed class KarateFeatureBuilderTests
                         """"
                     }
                 },
+                karateFeatureBuilderSettingsWithQueries,
                 """"
                 Feature: Test GraphQL Endpoint with Karate
 
                 Background: Base URL and Schemas
-                  * url baseUrl
+                  * url "https://www.karate-feature-builder-tests/graphql"
 
                   * text todoSchema = """
                       {
@@ -344,11 +351,12 @@ internal sealed class KarateFeatureBuilderTests
                 },
                 new List<GraphQLQueryFieldType>(),
                 new Dictionary<string, string>(),
+                karateFeatureBuilderSettingsWithQueries,
                 """"
                 Feature: Test GraphQL Endpoint with Karate
                 
                 Background: Base URL and Schemas
-                  * url baseUrl
+                  * url "https://www.karate-feature-builder-tests/graphql"
                 
                   * text todoSchema = """
                       {
@@ -366,6 +374,77 @@ internal sealed class KarateFeatureBuilderTests
                     """
                 """"
             ).SetName("When only Karate types are present and no queries are, it is handled as expected.");
+
+            yield return new TestCaseData(
+                new List<KarateObject>
+                {
+                    new(
+                        "Todo",
+                        new List<KarateTypeBase>
+                        {
+                            new KarateNonNullType(new KarateType("number", "id")),
+                            new KarateNonNullType(new KarateType("string", "name"))
+                        }
+                    )
+                },
+                new List<GraphQLQueryFieldType>
+                {
+                    new(graphQLFieldDefinition)
+                    {
+                        Arguments = new List<GraphQLArgumentTypeBase>(),
+                        QueryString =
+                        """
+                        query TodoTest {
+                          todo {
+                            id
+                            name
+                          }
+                        }
+                        """
+                    }
+                },
+                new Dictionary<string, string>
+                {
+                    {
+                        graphQLFieldDefinition.Name.StringValue,
+                        """"
+                        Scenario: Perform a todo query and validate the response
+                          * text query = """
+                              query TodoTest {
+                                todo {
+                                  id
+                                  name
+                                }
+                              }
+                            """
+
+                          Given path "/graphql"
+                          And request { query: query, operationName: "TodoTest" }
+                          When method post
+                          Then status 200
+                          And match response.data.todo == todoSchema
+                        """"
+                    }
+                },
+                new KarateFeatureBuilderSettings
+                {
+                    BaseUrl = baseUrl,
+                    ExcludeQueries = true
+                },
+                """"
+                Feature: Test GraphQL Endpoint with Karate
+
+                Background: Base URL and Schemas
+                  * url "https://www.karate-feature-builder-tests/graphql"
+
+                  * text todoSchema = """
+                      {
+                        id: '#number',
+                        name: '#string'
+                      }
+                    """
+                """"
+            ).SetName("Simple case with one Karate object schema and one query is handled as expected when queries are excluded.");
         }
     }
 }

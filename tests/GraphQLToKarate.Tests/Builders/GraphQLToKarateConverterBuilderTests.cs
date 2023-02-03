@@ -24,6 +24,8 @@ internal sealed class GraphQLToKarateConverterBuilderTests
         var graphQLToKarateConverter = subjectUnderTest
             .Configure()
             .WithCustomScalarMapping(customScalarMapping)
+            .WithBaseUrl("https://www.builder-test.com/graphql")
+            .WithExcludeQueriesSetting(false)
             .Build();
 
         // assert
