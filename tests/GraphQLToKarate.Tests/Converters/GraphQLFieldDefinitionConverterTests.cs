@@ -62,7 +62,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("id"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -70,7 +70,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("name"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -105,7 +105,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("id"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -113,7 +113,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("name"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -143,7 +143,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("id"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -151,7 +151,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("name"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -175,7 +175,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                         {
                                             Type = new GraphQLNamedType
                                             {
-                                                Name = new GraphQLName("String")
+                                                Name = new GraphQLName(GraphQLToken.String)
                                             }
                                         }
                                     },
@@ -186,7 +186,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                         {
                                             Type = new GraphQLNamedType
                                             {
-                                                Name = new GraphQLName("String")
+                                                Name = new GraphQLName(GraphQLToken.String)
                                             }
                                         }
                                     }
@@ -209,7 +209,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("id"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -217,7 +217,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("name"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -249,7 +249,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                                         {
                                             Type = new GraphQLNamedType
                                             {
-                                                Name = new GraphQLName("String")
+                                                Name = new GraphQLName(GraphQLToken.String)
                                             }
                                         }
                                     }
@@ -272,7 +272,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("id"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -280,7 +280,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("name"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         }
                     }
@@ -299,7 +299,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("id"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new()
@@ -307,7 +307,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                             Name = new GraphQLName("name"),
                             Type = new GraphQLNamedType
                             {
-                                Name = new GraphQLName("String")
+                                Name = new GraphQLName(GraphQLToken.String)
                             }
                         },
                         new ()
@@ -357,6 +357,231 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                 }
             };
 
+            var blogPost = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BlogPost"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("author"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("Blogger")
+                            }
+                        }
+                    }
+                }
+            };
+
+            var blogger = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("Blogger"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("posts"),
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName(blogPost.Name)
+                                }
+                            },
+                            Arguments = new GraphQLArgumentsDefinition
+                            {
+                                Items = new List<GraphQLInputValueDefinition>
+                                {
+                                    new()
+                                    {
+                                        Name = new GraphQLName("filter"),
+                                        Type = new GraphQLNamedType
+                                        {
+                                            Name = new GraphQLName(GraphQLToken.String)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var bloggerWhoComments = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BloggerWhoComments"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("posts"),
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName("BlogPostWithComments")
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var blogComment = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BlogComment"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("content"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("author"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(bloggerWhoComments.Name)
+                            }
+                        }
+                    }
+                }
+            };
+
+            var blogPostWithComments = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BlogPostWithComments"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("content"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("comments"),
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName(blogComment.Name)
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var bestFriend = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BestFriend"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("bestFriend"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("BestFriend")
+                            }
+                        }
+                    }
+                }
+            };
+
             var graphQLDocument = new GraphQLDocument
             {
                 Definitions = new List<ASTNode>
@@ -367,7 +592,13 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     personWithFriendsWithArguments,
                     personWithFavoriteColorsWithArguments,
                     personInterface,
-                    personInterfaceWithFriend
+                    personInterfaceWithFriend,
+                    blogPost,
+                    blogger,
+                    blogPostWithComments,
+                    bloggerWhoComments,
+                    blogComment,
+                    bestFriend
                 }
             };
 
@@ -619,6 +850,95 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     Arguments = new List<GraphQLArgumentTypeBase>()
                 }
             ).SetName("Converter is able to convert simple query with nested interface return type.");
+
+            var blogPostQueryFieldDefinition = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("blogPost"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(blogPost.Name)
+                }
+            };
+
+            yield return new TestCaseData(
+                blogPostQueryFieldDefinition,
+                graphQLDocumentAdapter,
+                new GraphQLQueryFieldType(blogPostQueryFieldDefinition)
+                {
+                    QueryString = """
+                                query BlogPostTest {
+                                  blogPost {
+                                    id
+                                    author {
+                                      id
+                                      name
+                                    }
+                                  }
+                                }
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
+                }
+            ).SetName("Converter is able to convert query with cyclical types.");
+
+            var blogPostWithCommentsQueryFieldDefinition = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("blogPostWithComments"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(blogPostWithComments.Name)
+                }
+            };
+
+            yield return new TestCaseData(
+                blogPostWithCommentsQueryFieldDefinition,
+                graphQLDocumentAdapter,
+                new GraphQLQueryFieldType(blogPostWithCommentsQueryFieldDefinition)
+                {
+                    QueryString = """
+                                query BlogPostWithCommentsTest {
+                                  blogPostWithComments {
+                                    id
+                                    content
+                                    comments {
+                                      id
+                                      content
+                                      author {
+                                        id
+                                        name
+                                      }
+                                    }
+                                  }
+                                }
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
+                }
+            ).SetName("Converter is able to convert query with non-direct cyclical types.");
+
+            var bestFriendQueryFieldDefinition = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("bestFriend"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(bestFriend.Name)
+                }
+            };
+
+            yield return new TestCaseData(
+                bestFriendQueryFieldDefinition,
+                graphQLDocumentAdapter,
+                new GraphQLQueryFieldType(bestFriendQueryFieldDefinition)
+                {
+                    QueryString = """
+                                query BestFriendTest {
+                                  bestFriend {
+                                    id
+                                    name
+                                  }
+                                }
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>()
+                }
+            ).SetName("Converter is able to convert query with immediate cyclical types.");
         }
     }
 }
