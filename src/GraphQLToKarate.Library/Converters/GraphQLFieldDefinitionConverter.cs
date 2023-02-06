@@ -81,7 +81,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
                 fieldRelationshipsGraph.AddEdge(edge);
 
-                // if adding the child field creates a cyclic graph, skip it.
+                // if adding the child field creates a cyclic graph, remove it and skip it.
                 if (!fieldRelationshipsGraph.IsDirectedAcyclicGraph())
                 {
                     fieldRelationshipsGraph.RemoveEdge(edge);
