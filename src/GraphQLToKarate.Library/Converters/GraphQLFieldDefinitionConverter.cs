@@ -4,6 +4,8 @@ using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using System.Text;
 using GraphQLToKarate.Library.Adapters;
+using QuikGraph;
+using QuikGraph.Algorithms;
 
 namespace GraphQLToKarate.Library.Converters;
 
@@ -22,10 +24,13 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     {
         var graphQLInputValueDefinitionConverter = _graphQLInputValueDefinitionConverterFactory.Create();
 
+        var fieldRelationshipsGraph = new AdjacencyGraph<string, Edge<string>>();
+
         var queryString = Convert(
             graphQLFieldDefinition,
             graphQLDocumentAdapter,
-            graphQLInputValueDefinitionConverter
+            graphQLInputValueDefinitionConverter,
+            ref fieldRelationshipsGraph
         );
 
         var arguments = graphQLInputValueDefinitionConverter.GetAllConverted();
@@ -41,8 +46,13 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         GraphQLFieldDefinition graphQLFieldDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
+        ref AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
         int indentationLevel = 0)
     {
+        var graphQLFieldDefinitionTypeName = graphQLFieldDefinition.Type.GetTypeName();
+
+        fieldRelationshipsGraph.AddVertex(graphQLFieldDefinitionTypeName);
+
         var stringBuilder = new StringBuilder();
 
         stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
@@ -53,18 +63,41 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         stringBuilder.Append($"{SchemaToken.Space}{SchemaToken.OpenBrace}{Environment.NewLine}");
 
         var graphQLTypeDefinitionWithFields = graphQLDocumentAdapter.GetGraphQLTypeDefinitionWithFields(
-            graphQLFieldDefinition.Type.GetTypeName()
+            graphQLFieldDefinitionTypeName
         );
 
         if (graphQLTypeDefinitionWithFields is not null)
         {
-            HandleFields(
-                graphQLTypeDefinitionWithFields, 
-                graphQLDocumentAdapter, 
-                graphQLInputValueDefinitionConverter,
-                stringBuilder, 
-                indentationLevel
-            );
+            foreach (var childGraphQLFieldDefinition in graphQLTypeDefinitionWithFields.Fields!)
+            {
+                var childGraphQLFieldDefinitionTypeName = childGraphQLFieldDefinition.Type.GetTypeName();
+
+                fieldRelationshipsGraph.AddVertex(childGraphQLFieldDefinitionTypeName);
+
+                var edge = new Edge<string>(
+                    graphQLFieldDefinitionTypeName,
+                    childGraphQLFieldDefinitionTypeName
+                );
+
+                fieldRelationshipsGraph.AddEdge(edge);
+
+                // if adding the child field creates a cyclic graph, skip it.
+                if (!fieldRelationshipsGraph.IsDirectedAcyclicGraph())
+                {
+                    fieldRelationshipsGraph.RemoveEdge(edge);
+
+                    continue;
+                }
+
+                HandleField(
+                    childGraphQLFieldDefinition,
+                    graphQLDocumentAdapter,
+                    graphQLInputValueDefinitionConverter,
+                    stringBuilder,
+                    ref fieldRelationshipsGraph,
+                    indentationLevel
+                );
+            }
         }
 
         stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
@@ -78,30 +111,12 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         return stringBuilder.ToString();
     }
 
-    private static void HandleFields(
-        IHasFieldsDefinitionNode hasFieldsDefinitionNode,
-        IGraphQLDocumentAdapter graphQLDocumentAdapter,
-        IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
-        StringBuilder stringBuilder,
-        int indentationLevel)
-    {
-        foreach (var graphQLFieldDefinition in hasFieldsDefinitionNode.Fields!)
-        {
-            HandleField(
-                graphQLFieldDefinition,
-                graphQLDocumentAdapter,
-                graphQLInputValueDefinitionConverter,
-                stringBuilder,
-                indentationLevel
-            );
-        }
-    }
-
     private static void HandleField(
         GraphQLFieldDefinition graphQLFieldDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
+        ref AdjacencyGraph<string, Edge<string>> fieldRelationships,
         int indentationLevel)
     {
         if (graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLFieldDefinition.Type.GetTypeName()))
@@ -111,6 +126,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
                     graphQLFieldDefinition,
                     graphQLDocumentAdapter,
                     graphQLInputValueDefinitionConverter,
+                    ref fieldRelationships,
                     indentationLevel + 2
                 )
             );
