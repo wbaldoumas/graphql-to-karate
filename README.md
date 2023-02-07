@@ -35,10 +35,9 @@ See the [open issues](https://github.com/wbaldoumas/graphql-to-karate/issues) fo
 
 - [ ] extended type support
   - [ ] union support
-  - [ ] directive support
-  - [ ] custom scalar support
+  - [x] custom scalar support
   - [ ] custom query name support
-  - [ ] cyclical types
+  - [x] cyclical types
 - [ ] logging
   - [ ] custom verbosity
 - [ ] apps
