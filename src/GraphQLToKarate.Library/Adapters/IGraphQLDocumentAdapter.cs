@@ -22,6 +22,13 @@ public interface IGraphQLDocumentAdapter
     bool IsGraphQLTypeDefinitionWithFields(string graphQLTypeDefinitionName);
 
     /// <summary>
+    ///     Is the given <paramref name="graphQLTypeDefinitionName"/> a <see cref="GraphQLUnionTypeDefinition"/>?
+    /// </summary>
+    /// <param name="graphQLTypeDefinitionName">The name of the GraphQL type definition to check.</param>
+    /// <returns>Whether the given GraphQL type definition is a <see cref="GraphQLUnionTypeDefinition"/>.</returns>
+    bool IsGraphQLUnionTypeDefinition(string graphQLTypeDefinitionName);
+
+    /// <summary>
     ///     Retrieve the given <paramref name="graphQLTypeDefinitionName"/> as a <see cref="IHasFieldsDefinitionNode"/>.
     /// </summary>
     /// <param name="graphQLTypeDefinitionName">The GraphQL type definition to retrieve.</param>

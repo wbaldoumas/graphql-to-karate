@@ -9,10 +9,13 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
 
     private readonly IDictionary<string, GraphQLEnumTypeDefinition> _graphQLEnumTypeDefinitionsByName;
 
+    private readonly ISet<string> _graphQLUnionTypeDefinitionNames;
+
     public GraphQLDocumentAdapter(GraphQLDocument graphQLDocument)
     {
         _graphQLTypeDefinitionsWithFieldsByName = new Dictionary<string, IHasFieldsDefinitionNode>();
         _graphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>();
+        _graphQLUnionTypeDefinitionNames = new HashSet<string>();
 
         // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
         foreach (var definition in graphQLDocument.Definitions ?? new List<ASTNode>())
@@ -37,6 +40,11 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
                         graphQLInterfaceTypeDefinition
                     );
                     break;
+                case GraphQLUnionTypeDefinition graphQLUnionTypeDefinition:
+                    _graphQLUnionTypeDefinitionNames.Add(
+                        graphQLUnionTypeDefinition.Name.StringValue
+                    );
+                    break;
             }
         }
     }
@@ -46,6 +54,9 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
 
     public bool IsGraphQLTypeDefinitionWithFields(string graphQLTypeDefinitionName) =>
         _graphQLTypeDefinitionsWithFieldsByName.ContainsKey(graphQLTypeDefinitionName);
+
+    public bool IsGraphQLUnionTypeDefinition(string graphQLTypeDefinitionName) =>
+        _graphQLUnionTypeDefinitionNames.Contains(graphQLTypeDefinitionName);
 
     public IHasFieldsDefinitionNode? GetGraphQLTypeDefinitionWithFields(string graphQLTypeDefinitionName) =>
         _graphQLTypeDefinitionsWithFieldsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQLTypeDefinitionWithFields)

@@ -156,6 +156,79 @@ internal sealed class GraphQLDocumentAdapterTests
     }
 
     [Test]
+    [TestCaseSource(nameof(IsGraphQLUnionTypeDefinitionTestCases))]
+    public void IsGraphQLUnionTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        string graphQLTypeDefinitionName,
+        bool expectedResult)
+    {
+        // act + assert
+        graphQLDocumentAdapter
+            .IsGraphQLUnionTypeDefinition(graphQLTypeDefinitionName)
+            .Should()
+            .Be(expectedResult);
+    }
+
+    private static IEnumerable<TestCaseData> IsGraphQLUnionTypeDefinitionTestCases
+    {
+        get
+        {
+            const string unionTypeDefinitionName = "test";
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                unionTypeDefinitionName,
+                false
+            ).SetName("When GraphQL document is empty, union type definition is not found");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLEnumTypeDefinition
+                        {
+                            Name = new GraphQLName("Goodbye")
+                        }
+                    }
+                }),
+                unionTypeDefinitionName,
+                false
+            ).SetName("When GraphQL document is not empty but doesn't have union type definition, union type definition is not found");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLUnionTypeDefinition
+                        {
+                            Name = new GraphQLName("Hello")
+                        }
+                    }
+                }),
+                unionTypeDefinitionName,
+                false
+            ).SetName("When GraphQL document is not empty but doesn't have specific union type definition, union type definition is not found");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLUnionTypeDefinition
+                        {
+                            Name = new GraphQLName(unionTypeDefinitionName)
+                        }
+                    }
+                }),
+                unionTypeDefinitionName,
+                true
+            ).SetName("When GraphQL document has specific union type definition, union type definition is found");
+        }
+    }
+
+    [Test]
     [TestCaseSource(nameof(GetGraphQLTypeDefinitionWithFieldsTestCases))]
     public void GetGraphQLTypeDefinitionWithFields_returns_expected_result(
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
