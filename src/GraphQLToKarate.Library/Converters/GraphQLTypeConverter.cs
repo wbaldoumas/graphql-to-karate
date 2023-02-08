@@ -21,6 +21,8 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
             GraphQLToken.Int => KarateToken.Number,
             GraphQLToken.Float => KarateToken.Number,
             GraphQLToken.Boolean => KarateToken.Boolean,
+            { } graphqlTypeName when graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphqlTypeName) =>
+                KarateToken.Present,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => 
                 KarateToken.String,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLTypeName) =>
