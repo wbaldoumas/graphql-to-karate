@@ -147,7 +147,9 @@ internal sealed class GraphQLTypeConverterTests
 
             const string interfaceTypeName = "TodoInterface";
 
-            var graphQLDocumentWithEnumAndCustomAndInterfaceTypeDefinition = new GraphQLDocument
+            const string unionTypeName = "TodoUnion";
+
+            var populatedGraphQLDocument = new GraphQLDocument
             {
                 Definitions = new List<ASTNode>
                 {
@@ -162,9 +164,15 @@ internal sealed class GraphQLTypeConverterTests
                     new GraphQLInterfaceTypeDefinition
                     {
                         Name = new GraphQLName(interfaceTypeName)
+                    },
+                    new GraphQLUnionTypeDefinition
+                    {
+                        Name = new GraphQLName(unionTypeName)
                     }
                 }
             };
+
+            var populatedGraphQLDocumentAdapter = new GraphQLDocumentAdapter(populatedGraphQLDocument);
 
             yield return new TestCaseData(
                 testFieldName,
@@ -172,7 +180,7 @@ internal sealed class GraphQLTypeConverterTests
                 {
                     Name = new GraphQLName(interfaceTypeName)
                 },
-                new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomAndInterfaceTypeDefinition),
+                new GraphQLDocumentAdapter(populatedGraphQLDocument),
                 new KarateType($"{interfaceTypeName.FirstCharToLower()}Schema", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
 
@@ -185,6 +193,16 @@ internal sealed class GraphQLTypeConverterTests
                 emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.Present, testFieldName)
             ).SetName("Unknown GraphQL type is converted to present Karate type.");
+
+            yield return new TestCaseData(
+                testFieldName,
+                new GraphQLNamedType
+                {
+                    Name = new GraphQLName(unionTypeName)
+                },
+                populatedGraphQLDocumentAdapter,
+                new KarateType(KarateToken.Present, testFieldName)
+            ).SetName("Union GraphQL type as a field is converted to present Karate type.");
         }
     }
 }
