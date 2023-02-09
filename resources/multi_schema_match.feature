@@ -4,7 +4,7 @@ Scenario: Validate Payload
   * def payload = 
     """
       [
-        { "id": "1", "favoriteNumber": 223 },
+        { "id": "one", "favoriteNumber": 223 },
         { "id": 2, name: "will" }
       ]
     """
@@ -26,10 +26,10 @@ Scenario: Validate Payload
     """
 
   * def isValid = 
-  """
+    """
     response => karate.match(response, schema).pass || 
                 karate.match(response, otherSchema).pass
-  """
+    """
   
   # match each
   * match each payload == "#? isValid(_)"
