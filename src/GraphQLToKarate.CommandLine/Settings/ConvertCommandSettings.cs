@@ -2,6 +2,7 @@
 using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.IO.Abstractions;
+using GraphQLToKarate.Library.Mappings;
 
 namespace GraphQLToKarate.CommandLine.Settings;
 
@@ -9,7 +10,13 @@ internal sealed class ConvertCommandSettings : CommandSettings
 {
     private readonly IFile _file;
 
-    public ConvertCommandSettings(IFile file) => _file = file;
+    private readonly ICustomScalarMappingValidator _customScalarMappingValidator;
+
+    public ConvertCommandSettings(IFile file, ICustomScalarMappingValidator customScalarMappingValidator)
+    {
+        _file = file;
+        _customScalarMappingValidator = customScalarMappingValidator;
+    }
 
     [CommandArgument(0, "<GraphQL Schema File>")]
     [Description("The path and filename of the file containing the GraphQL schema to convert.")]
@@ -22,7 +29,7 @@ internal sealed class ConvertCommandSettings : CommandSettings
 
     [CommandOption("--custom-scalar-mapping")]
     [Description("The path and filename of a JSON file defining mappings of custom scalar values to karate types")]
-    public string? CustomScalarMappingFile { get; set; }
+    public string? CustomScalarMapping { get; set; }
 
     [CommandOption("--exclude-queries")]
     [DefaultValue(typeof(bool), "false")]
@@ -44,11 +51,16 @@ internal sealed class ConvertCommandSettings : CommandSettings
             return ValidationResult.Error("GraphQL schema file does not exist. Please provide a valid file path and filename for the GraphQL schema to convert.");
         }
 
-        if (!string.IsNullOrEmpty(CustomScalarMappingFile) && !_file.Exists(CustomScalarMappingFile))
+        if (!IsCustomScalarMappingValid(CustomScalarMapping))
         {
             return ValidationResult.Error("Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option.");
         }
 
         return  ValidationResult.Success();
     }
+
+    private bool IsCustomScalarMappingValid(string? customScalarMapping) =>
+        string.IsNullOrEmpty(customScalarMapping) ||
+        _customScalarMappingValidator.IsTextLoadable(customScalarMapping) ||
+        _customScalarMappingValidator.IsFileLoadable(customScalarMapping);
 }

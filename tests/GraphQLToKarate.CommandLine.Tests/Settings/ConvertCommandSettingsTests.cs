@@ -1,6 +1,7 @@
 ﻿using System.IO.Abstractions;
 using FluentAssertions;
 using GraphQLToKarate.CommandLine.Settings;
+using GraphQLToKarate.Library.Mappings;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -10,26 +11,38 @@ namespace GraphQLToKarate.CommandLine.Tests.Settings;
 internal sealed class ConvertCommandSettingsTests
 {
     private IFile? _mockFile;
+    private ICustomScalarMappingValidator? _mockCustomScalarMappingValidator;
 
     [SetUp]
-    public void SetUp() => _mockFile = Substitute.For<IFile>();
+    public void SetUp()
+    {
+        _mockFile = Substitute.For<IFile>();
+        _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
+    }
 
     [TestCaseSource(nameof(TestCases))]
     public void ConvertSettings_validation_returns_expected_validation_result(
         string? graphQLSchemaFile,
-        string? customScalarMappingFile,
+        string? customScalarMapping,
         bool graphQLSchemaFileExistsReturn,
-        bool customScalarMappingFileExistsReturn,
+        bool customScalarMappingValidatorReturn,
         string? expectedMessage)
     {
         // arrange
         _mockFile!.Exists(graphQLSchemaFile).Returns(graphQLSchemaFileExistsReturn);
-        _mockFile.Exists(customScalarMappingFile).Returns(customScalarMappingFileExistsReturn);
 
-        var settings = new ConvertCommandSettings(_mockFile)
+        _mockCustomScalarMappingValidator!
+            .IsFileLoadable(customScalarMapping!)
+            .Returns(customScalarMappingValidatorReturn);
+
+        _mockCustomScalarMappingValidator!
+            .IsTextLoadable(customScalarMapping!)
+            .Returns(customScalarMappingValidatorReturn);
+
+        var settings = new ConvertCommandSettings(_mockFile, _mockCustomScalarMappingValidator!)
         {
             InputFile = graphQLSchemaFile,
-            CustomScalarMappingFile = customScalarMappingFile
+            CustomScalarMapping = customScalarMapping
         };
 
         // act

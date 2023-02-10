@@ -1,3 +1,5 @@
 {
-  "Date": "string"
+  "Date": "string",
+  "Long": "number",
+  "URL": "string"
 }

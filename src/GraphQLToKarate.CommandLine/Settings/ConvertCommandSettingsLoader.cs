@@ -1,5 +1,5 @@
-﻿using System.IO.Abstractions;
-using System.Text.Json;
+﻿using GraphQLToKarate.Library.Mappings;
+using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Settings;
 
@@ -7,14 +7,19 @@ namespace GraphQLToKarate.CommandLine.Settings;
 internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoader
 {
     private readonly IFile _file;
+    private readonly ICustomScalarMappingLoader _customScalarMappingLoader;
 
-    public ConvertCommandSettingsLoader(IFile file) => _file = file;
+    public ConvertCommandSettingsLoader(IFile file, ICustomScalarMappingLoader customScalarMappingLoader)
+    {
+        _file = file;
+        _customScalarMappingLoader = customScalarMappingLoader;
+    }
 
     public async Task<LoadedConvertCommandSettings> LoadAsync(ConvertCommandSettings convertCommandSettings)
     {
         var graphQLSchema = await _file.ReadAllTextAsync(convertCommandSettings.InputFile!);
 
-        var customScalarMapping = convertCommandSettings.CustomScalarMappingFile is not null
+        var customScalarMapping = convertCommandSettings.CustomScalarMapping is not null
             ? await LoadCustomScalarMapping(convertCommandSettings)
             : new Dictionary<string, string>();
 
@@ -31,10 +36,18 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
     private async Task<IDictionary<string, string>> LoadCustomScalarMapping(
         ConvertCommandSettings convertCommandSettings)
     {
-        var customScalarMappingText = await _file.ReadAllTextAsync(convertCommandSettings.CustomScalarMappingFile!);
+        var customScalarMapping = new Dictionary<string, string>();
 
-        var customScalarMapping = JsonSerializer.Deserialize<IDictionary<string, string>>(customScalarMappingText);
+        if (_customScalarMappingLoader.IsTextLoadable(convertCommandSettings.CustomScalarMapping!))
+        {
+            return _customScalarMappingLoader.LoadFromText(convertCommandSettings.CustomScalarMapping!);
+        }
 
-        return customScalarMapping ?? new Dictionary<string, string>();
+        if (_customScalarMappingLoader.IsFileLoadable(convertCommandSettings.CustomScalarMapping!))
+        {
+            return await _customScalarMappingLoader.LoadFromFileAsync(convertCommandSettings.CustomScalarMapping!);
+        }
+
+        return customScalarMapping;
     }
 }

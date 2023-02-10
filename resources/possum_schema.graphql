@@ -1,0 +1,26 @@
+scalar Date
+scalar URL
+scalar Long
+
+interface Animal {
+  id: ID!
+  name: String!
+  classification: String!
+}
+
+type Possum implements Animal {
+  id: ID!
+  name: String!
+  classification: String!
+  species: String!
+  length(unit: String = "cm"): Float!
+  weight(unit: String = "kg"): Float!
+  dateOfBirth: Date!
+  imageUrl: URL!
+  populationSize: Long!
+}
+
+type Query {
+  possum(id: ID!): Possum
+  possums(species: String, maxWeight: Float, minWeight: Float, populationSize: Long): [Possum]!
+}
