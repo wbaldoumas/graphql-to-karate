@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using GraphQLToKarate.Library.Tokens;
 
-namespace GraphQLToKarate.Library.Loaders;
+namespace GraphQLToKarate.Library.Mappings;
 
 /// <inheritdoc cref="ICustomScalarMappingLoader"/>
 public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
@@ -13,14 +13,14 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
     public CustomScalarMappingLoader(IFile file) => _file = file;
 
-    public async Task<bool> IsFileLoadable(string filePath)
+    public bool IsFileLoadable(string filePath)
     {
         if (!_file.Exists(filePath))
         {
             return false;
         }
 
-        var fileContent = await _file.ReadAllTextAsync(filePath);
+        var fileContent = _file.ReadAllText(filePath);
 
         if (string.IsNullOrWhiteSpace(fileContent))
         {
@@ -46,14 +46,15 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
     public bool IsTextLoadable(string text) => _regex.IsMatch(text);
 
-    public IDictionary<string, string> LoadFromFile(string filePath)
-    {
-        var fileContent = _file.ReadAllText(filePath);
+    public IDictionary<string, string> LoadFromFile(string filePath) =>
+        DeserializeFileContent(_file.ReadAllText(filePath));
 
-        return _regex.IsMatch(fileContent)
-            ? LoadFromText(fileContent)
-            : JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!;
-    }
+    public async Task<IDictionary<string, string>> LoadFromFileAsync(string filePath) =>
+        DeserializeFileContent(await _file.ReadAllTextAsync(filePath));
+
+    private IDictionary<string, string> DeserializeFileContent(string fileContent) => IsTextLoadable(fileContent)
+        ? LoadFromText(fileContent)
+        : JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!;
 
     public IDictionary<string, string> LoadFromText(string text) => text
         .Split(SchemaToken.Comma, StringSplitOptions.TrimEntries)

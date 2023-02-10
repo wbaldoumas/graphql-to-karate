@@ -3,6 +3,7 @@ using GraphQLToKarate.CommandLine.Settings;
 using NSubstitute;
 using NUnit.Framework;
 using System.IO.Abstractions;
+using GraphQLToKarate.Library.Mappings;
 
 namespace GraphQLToKarate.CommandLine.Tests.Settings;
 
@@ -10,13 +11,15 @@ namespace GraphQLToKarate.CommandLine.Tests.Settings;
 internal sealed class ConvertCommandSettingsLoaderTests
 {
     private IFile? _mockFile;
+    private ICustomScalarMappingLoader? _mockCustomScalarMappingLoader;
     private IConvertCommandSettingsLoader? _subjectUnderTest;
 
     [SetUp]
     public void SetUp()
     {
         _mockFile = Substitute.For<IFile>();
-        _subjectUnderTest = new ConvertCommandSettingsLoader(_mockFile);
+        _mockCustomScalarMappingLoader = Substitute.For<ICustomScalarMappingLoader>();
+        _subjectUnderTest = new ConvertCommandSettingsLoader(_mockFile, _mockCustomScalarMappingLoader);
     }
 
     private const string SomeGraphQLSchema = """
@@ -63,33 +66,24 @@ internal sealed class ConvertCommandSettingsLoaderTests
             """;
 
     [Test]
-    public async Task ConvertCommandSettingsLoader_loads_expected_settings_when_custom_scalar_mapping_is_present()
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task ConvertCommandSettingsLoader_loads_expected_settings_when_custom_scalar_mapping_is_present(
+        bool mockCustomScalarMappingLoaderIsFileLoadableReturn)
     {
         // arrange
-        var convertCommandSettings = new ConvertCommandSettings(_mockFile!)
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
         {
             InputFile = "schema.graphql",
-            CustomScalarMappingFile = "config.json",
+            CustomScalarMapping = "config.json",
             OutputFile = "karate.feature",
             BaseUrl = "baseUrl",
             ExcludeQueries = false
         };
 
-        const string someCustomScalarMapping = """
-            {
-              "key1": "value1",
-              "key2": "value2",
-              "key3": "value3"
-            }
-            """;
-
         _mockFile!
             .ReadAllTextAsync(convertCommandSettings.InputFile)
             .Returns(SomeGraphQLSchema);
-
-        _mockFile!
-            .ReadAllTextAsync(convertCommandSettings.CustomScalarMappingFile)
-            .Returns(someCustomScalarMapping);
 
         var expectedCustomScalarMapping = new Dictionary<string, string>
         {
@@ -97,6 +91,27 @@ internal sealed class ConvertCommandSettingsLoaderTests
             { "key2", "value2" },
             { "key3", "value3" }
         };
+
+        _mockCustomScalarMappingLoader!
+            .IsFileLoadable(convertCommandSettings.CustomScalarMapping)
+            .Returns(mockCustomScalarMappingLoaderIsFileLoadableReturn);
+
+        _mockCustomScalarMappingLoader
+            .IsTextLoadable(convertCommandSettings.CustomScalarMapping)
+            .Returns(!mockCustomScalarMappingLoaderIsFileLoadableReturn);
+
+        if (mockCustomScalarMappingLoaderIsFileLoadableReturn)
+        {
+            _mockCustomScalarMappingLoader
+                .LoadFromFileAsync(convertCommandSettings.CustomScalarMapping)
+                .Returns(expectedCustomScalarMapping);
+        }
+        else
+        {
+            _mockCustomScalarMappingLoader
+                .LoadFromText(convertCommandSettings.CustomScalarMapping)
+                .Returns(expectedCustomScalarMapping);
+        }
 
         // act
         var loadedConvertCommandSettings = await _subjectUnderTest!.LoadAsync(convertCommandSettings);
@@ -113,16 +128,50 @@ internal sealed class ConvertCommandSettingsLoaderTests
     public async Task ConvertCommandSettingsLoader_loads_expected_settings_when_custom_scalar_mapping_is_not_present()
     {
         // arrange
-        var convertCommandSettings = new ConvertCommandSettings(_mockFile!)
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
         {
             InputFile = "schema.graphql",
-            CustomScalarMappingFile = null,
+            CustomScalarMapping = null,
             OutputFile = "karate.feature"
         };
 
         _mockFile!
             .ReadAllTextAsync(convertCommandSettings.InputFile)
             .Returns(SomeGraphQLSchema);
+
+        var expectedCustomScalarMapping = new Dictionary<string, string>();
+
+        // act
+        var loadedConvertCommandSettings = await _subjectUnderTest!.LoadAsync(convertCommandSettings);
+
+        // assert
+        loadedConvertCommandSettings.OutputFile.Should().Be(convertCommandSettings.OutputFile);
+        loadedConvertCommandSettings.GraphQLSchema.Should().Be(SomeGraphQLSchema);
+        loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
+    }
+
+    [Test]
+    public async Task ConvertCommandSettingsLoader_loads_expected_settings_when_custom_scalar_mapping_is_invalid()
+    {
+        // arrange
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
+        {
+            InputFile = "schema.graphql",
+            CustomScalarMapping = "nothing to see here",
+            OutputFile = "karate.feature"
+        };
+
+        _mockFile!
+            .ReadAllTextAsync(convertCommandSettings.InputFile)
+            .Returns(SomeGraphQLSchema);
+
+        _mockCustomScalarMappingLoader!
+            .IsFileLoadable(convertCommandSettings.CustomScalarMapping)
+            .Returns(false);
+
+        _mockCustomScalarMappingLoader!
+            .IsTextLoadable(convertCommandSettings.CustomScalarMapping)
+            .Returns(false);
 
         var expectedCustomScalarMapping = new Dictionary<string, string>();
 

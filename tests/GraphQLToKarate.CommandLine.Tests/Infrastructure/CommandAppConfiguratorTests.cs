@@ -9,6 +9,7 @@ using Spectre.Console.Testing;
 using System.IO.Abstractions;
 using GraphQLToKarate.CommandLine.Commands;
 using GraphQLToKarate.Library.Builders;
+using GraphQLToKarate.Library.Mappings;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 
@@ -21,6 +22,7 @@ internal sealed class CommandAppConfiguratorTests
     private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private ConvertCommandSettings? _mockConvertCommandSettings;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
+    private ICustomScalarMappingValidator? _mockCustomScalarMappingValidator;
     private ConvertCommand? _mockConvertCommand;
     private ITypeResolver? _mockTypeResolver;
     private ITypeRegistrar? _mockTypeRegistrar;
@@ -31,7 +33,8 @@ internal sealed class CommandAppConfiguratorTests
         _mockFile = Substitute.For<IFile>();
         _mockFileSystem = Substitute.For<IFileSystem>();
         _mockFileSystem.File.Returns(_mockFile);
-        _mockConvertCommandSettings = new ConvertCommandSettings(_mockFile);
+        _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
+        _mockConvertCommandSettings = new ConvertCommandSettings(_mockFile, _mockCustomScalarMappingValidator);
         _mockAnsiConsole = new TestConsole();
         _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();

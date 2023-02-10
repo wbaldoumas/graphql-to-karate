@@ -9,6 +9,7 @@ using Spectre.Console.Testing;
 using System.IO.Abstractions;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Mappings;
 
 namespace GraphQLToKarate.CommandLine.Tests.Commands;
 
@@ -20,6 +21,7 @@ internal sealed class ConvertCommandTests
     private IFileSystem? _mockFileSystem;
     private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
+    private ICustomScalarMappingValidator? _mockCustomScalarMappingValidator;
     private AsyncCommand<ConvertCommandSettings>? _subjectUnderTest;
 
     [SetUp]
@@ -33,6 +35,7 @@ internal sealed class ConvertCommandTests
         _mockFileSystem = Substitute.For<IFileSystem>();
         _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
+        _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
 
         _mockFileSystem.File.Returns(_mockFile);
 
@@ -54,7 +57,7 @@ internal sealed class ConvertCommandTests
             data: new { }
         );
 
-        var convertCommandSettings = new ConvertCommandSettings(_mockFile!)
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingValidator!)
         {
             InputFile = "schema.graphql",
             OutputFile = "graphql.feature"

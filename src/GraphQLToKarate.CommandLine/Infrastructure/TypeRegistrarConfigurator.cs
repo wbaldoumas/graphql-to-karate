@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 using System.IO.Abstractions;
 using GraphQLToKarate.Library.Builders;
+using GraphQLToKarate.Library.Mappings;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 
@@ -17,6 +18,8 @@ internal static class TypeRegistrarConfigurator
         serviceCollection.AddTransient<ConvertCommandSettings>();
         serviceCollection.AddTransient<IConvertCommandSettingsLoader, ConvertCommandSettingsLoader>();
         serviceCollection.AddTransient<IGraphQLToKarateConverterBuilder, GraphQLToKarateConverterBuilder>();
+        serviceCollection.AddSingleton<ICustomScalarMappingValidator, CustomScalarMappingLoader>();
+        serviceCollection.AddSingleton<ICustomScalarMappingLoader, CustomScalarMappingLoader>();
 
         return new TypeRegistrar(serviceCollection);
     }
