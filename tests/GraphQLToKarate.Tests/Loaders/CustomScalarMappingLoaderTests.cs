@@ -47,6 +47,7 @@ internal sealed class CustomScalarMappingLoaderTests
 
     [Test]
     [TestCase("", false)]
+    [TestCase("some random text xyz {123}", false)]
     [TestCase(CustomScalarMappingAsJson, true)]
     [TestCase(CustomScalarMappingAsText, true)]
     public async Task IsFileLoadable_returns_expected_result_based_on_file_content(
