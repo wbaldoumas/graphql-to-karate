@@ -52,12 +52,9 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
     public async Task<IDictionary<string, string>> LoadFromFileAsync(string filePath) =>
         DeserializeFileContent(await _file.ReadAllTextAsync(filePath));
 
-    private IDictionary<string, string> DeserializeFileContent(string fileContent)
-    {
-        return _regex.IsMatch(fileContent)
-            ? LoadFromText(fileContent)
-            : JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!;
-    }
+    private IDictionary<string, string> DeserializeFileContent(string fileContent) => IsTextLoadable(fileContent)
+        ? LoadFromText(fileContent)
+        : JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!;
 
     public IDictionary<string, string> LoadFromText(string text) => text
         .Split(SchemaToken.Comma, StringSplitOptions.TrimEntries)

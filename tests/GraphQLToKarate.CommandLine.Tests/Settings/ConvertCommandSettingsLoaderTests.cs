@@ -149,4 +149,38 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.GraphQLSchema.Should().Be(SomeGraphQLSchema);
         loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
     }
+
+    [Test]
+    public async Task ConvertCommandSettingsLoader_loads_expected_settings_when_custom_scalar_mapping_is_invalid()
+    {
+        // arrange
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
+        {
+            InputFile = "schema.graphql",
+            CustomScalarMapping = "nothing to see here",
+            OutputFile = "karate.feature"
+        };
+
+        _mockFile!
+            .ReadAllTextAsync(convertCommandSettings.InputFile)
+            .Returns(SomeGraphQLSchema);
+
+        _mockCustomScalarMappingLoader!
+            .IsFileLoadable(convertCommandSettings.CustomScalarMapping)
+            .Returns(false);
+
+        _mockCustomScalarMappingLoader!
+            .IsTextLoadable(convertCommandSettings.CustomScalarMapping)
+            .Returns(false);
+
+        var expectedCustomScalarMapping = new Dictionary<string, string>();
+
+        // act
+        var loadedConvertCommandSettings = await _subjectUnderTest!.LoadAsync(convertCommandSettings);
+
+        // assert
+        loadedConvertCommandSettings.OutputFile.Should().Be(convertCommandSettings.OutputFile);
+        loadedConvertCommandSettings.GraphQLSchema.Should().Be(SomeGraphQLSchema);
+        loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
+    }
 }

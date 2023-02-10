@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using FluentAssertions;
 using GraphQLToKarate.Library.Mappings;
 using NSubstitute;
+using NUnit.Framework;
 
-namespace GraphQLToKarate.Tests.Loaders;
+namespace GraphQLToKarate.Tests.Mappings;
 
 [TestFixture]
 internal sealed class CustomScalarMappingLoaderTests
@@ -102,6 +102,35 @@ internal sealed class CustomScalarMappingLoaderTests
 
         // act
         var customScalarMapping = _subjectUnderTest!.LoadFromFile("some-file-path");
+
+        // assert
+        customScalarMapping.Should().BeEquivalentTo(
+            new Dictionary<string, string>
+            {
+                { "DateTime", "string" },
+                { "Long", "number" },
+                { "URL", "string" }
+            }
+        );
+    }
+
+    [Test]
+    [TestCase(CustomScalarMappingAsJson)]
+    [TestCase(CustomScalarMappingAsText)]
+    public async Task LoadFromFileAsync_returns_expected_result_when_file_exists_and_contains_expected_content(
+        string fileContent)
+    {
+        // arrange
+        _mockFile!
+            .Exists(Arg.Any<string>())
+            .Returns(true);
+
+        _mockFile!
+            .ReadAllTextAsync(Arg.Any<string>())
+            .Returns(fileContent);
+
+        // act
+        var customScalarMapping = await _subjectUnderTest!.LoadFromFileAsync("some-file-path");
 
         // assert
         customScalarMapping.Should().BeEquivalentTo(
