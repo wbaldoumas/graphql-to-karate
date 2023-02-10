@@ -24,4 +24,6 @@ internal static class SchemaToken
     public const char CloseParen = ')';
 
     public const string TripleQuote = "\"\"\"";
+
+    public const char Colon = ':';
 }
