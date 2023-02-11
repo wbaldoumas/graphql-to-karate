@@ -582,6 +582,108 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                 }
             };
 
+            var blogPostWithArguments = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BlogPostWithArguments"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("content"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            },
+                            Arguments = new GraphQLArgumentsDefinition
+                            {
+                                Items = new List<GraphQLInputValueDefinition>
+                                {
+                                    new()
+                                    {
+                                        Name = new GraphQLName("filter"),
+                                        Type = new GraphQLNamedType
+                                        {
+                                            Name = new GraphQLName(GraphQLToken.String)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var blogUnion = new GraphQLUnionTypeDefinition
+            {
+                Name = new GraphQLName("BlogUnion"),
+                Types = new GraphQLUnionMemberTypes
+                {
+                    Items = new List<GraphQLNamedType>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName(blogPost.Name)
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName(blogPostWithComments.Name)
+                        }, 
+                        new()
+                        {
+                            Name = new GraphQLName(blogPostWithArguments.Name)
+                        }
+                    }
+                }
+            };
+
+            var bloggerWithUnionPosts = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName("BloggerWithUnionPosts"),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("id"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("name"),
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName(GraphQLToken.String)
+                            }
+                        },
+                        new()
+                        {
+                            Name = new GraphQLName("posts"),
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName(blogUnion.Name)
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
             var graphQLDocument = new GraphQLDocument
             {
                 Definitions = new List<ASTNode>
@@ -598,7 +700,10 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     blogPostWithComments,
                     bloggerWhoComments,
                     blogComment,
-                    bestFriend
+                    bestFriend,
+                    blogPostWithArguments,
+                    blogUnion,
+                    bloggerWithUnionPosts
                 }
             };
 
@@ -769,7 +874,6 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                 }
             ).SetName("Converter is able to convert nested query with nested field arguments.");
 
-
             yield return new TestCaseData(
                 personWithFavoriteColorsGraphQLQueryFieldDefinition,
                 graphQLDocumentAdapter,
@@ -939,6 +1043,126 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     Arguments = new List<GraphQLArgumentTypeBase>()
                 }
             ).SetName("Converter is able to convert query with immediate cyclical types.");
+
+            var blogUnionQueryFieldDefinition = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("blogUnion"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(blogUnion.Name)
+                }
+            };
+
+            yield return new TestCaseData(
+                blogUnionQueryFieldDefinition,
+                graphQLDocumentAdapter,
+                new GraphQLQueryFieldType(blogUnionQueryFieldDefinition)
+                {
+                    QueryString = """
+                                query BlogUnionTest($filter: String, $filter1: String) {
+                                  blogUnion {
+                                    ... on BlogPost {
+                                      id
+                                      author {
+                                        id
+                                        name
+                                        posts(filter: $filter) {
+                                          id
+                                        }
+                                      }
+                                    }
+                                    ... on BlogPostWithComments {
+                                      id
+                                      content
+                                      comments {
+                                        id
+                                        content
+                                        author {
+                                          id
+                                          name
+                                          posts {
+                                            id
+                                            content
+                                          }
+                                        }
+                                      }
+                                    }
+                                    ... on BlogPostWithArguments {
+                                      id
+                                      content(filter: $filter1)
+                                    }
+                                  }
+                                }
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>
+                    {
+                        new GraphQLArgumentType("filter", "filter", GraphQLToken.String),
+                        new GraphQLArgumentType("filter", "filter1", GraphQLToken.String),
+                    }
+                }
+            ).SetName("Converter is able to convert query with arguments and union return type.");
+
+            var bloggerWithUnionPostsQueryFieldDefinition = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("bloggerWithUnionPosts"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName(bloggerWithUnionPosts.Name)
+                }
+            };
+
+            yield return new TestCaseData(
+                bloggerWithUnionPostsQueryFieldDefinition,
+                graphQLDocumentAdapter,
+                new GraphQLQueryFieldType(bloggerWithUnionPostsQueryFieldDefinition)
+                {
+                    QueryString = """
+                                query BloggerWithUnionPostsTest($filter: String, $filter1: String) {
+                                  bloggerWithUnionPosts {
+                                    id
+                                    name
+                                    posts {
+                                      ... on BlogPost {
+                                        id
+                                        author {
+                                          id
+                                          name
+                                          posts(filter: $filter) {
+                                            id
+                                          }
+                                        }
+                                      }
+                                      ... on BlogPostWithComments {
+                                        id
+                                        content
+                                        comments {
+                                          id
+                                          content
+                                          author {
+                                            id
+                                            name
+                                            posts {
+                                              id
+                                              content
+                                            }
+                                          }
+                                        }
+                                      }
+                                      ... on BlogPostWithArguments {
+                                        id
+                                        content(filter: $filter1)
+                                      }
+                                    }
+                                  }
+                                }
+                                """,
+                    Arguments = new List<GraphQLArgumentTypeBase>
+                    {
+                        new GraphQLArgumentType("filter", "filter", GraphQLToken.String),
+                        new GraphQLArgumentType("filter", "filter1", GraphQLToken.String),
+                    }
+                }
+            ).SetName("Converter is able to convert query with arguments and union return type.");
         }
     }
 }

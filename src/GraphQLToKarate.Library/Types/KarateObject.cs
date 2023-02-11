@@ -33,14 +33,14 @@ public sealed class KarateObject
 
         foreach (var karateType in _karateTypes)
         {
-            stringBuilder.Append(Environment.NewLine);
+            stringBuilder.AppendLine();
             stringBuilder.Append(SchemaToken.Indent);
             stringBuilder.Append($"{karateType.Name}: '{karateType.Schema}'");
             stringBuilder.Append(SchemaToken.Comma);
         }
 
         stringBuilder.TrimEnd(1); // remove trailing comma
-        stringBuilder.Append(Environment.NewLine);
+        stringBuilder.AppendLine();
         stringBuilder.Append(SchemaToken.CloseBrace);
 
         return stringBuilder.ToString();
