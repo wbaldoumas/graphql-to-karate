@@ -277,4 +277,54 @@ internal sealed class GraphQLDocumentAdapterTests
             ).SetName("When has fields type definition name is passed, has fields type definition is returned.");
         }
     }
+
+    [Test]
+    [TestCaseSource(nameof(GetGraphQLUnionTypeDefinitionTestCases))]
+    public void GetGraphQLUnionTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        string graphQLTypeDefinitionName,
+        GraphQLUnionTypeDefinition? expectedResult)
+    {
+        // act + assert
+        graphQLDocumentAdapter
+            .GetGraphQLUnionTypeDefinition(graphQLTypeDefinitionName)
+            .Should()
+            .BeEquivalentTo(expectedResult);
+    }
+
+    private static IEnumerable<TestCaseData> GetGraphQLUnionTypeDefinitionTestCases
+    {
+        get
+        {
+            const string unionTypeDefinitionName = "test";
+            const string otherTypeDefinitionName = "other";
+
+            ASTNode definition = new GraphQLUnionTypeDefinition
+            {
+                Name = new GraphQLName(unionTypeDefinitionName)
+            };
+
+            var graphQLDocumentAdapter = new GraphQLDocumentAdapter(
+                new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        definition
+                    }
+                }
+            );
+
+            yield return new TestCaseData(
+                graphQLDocumentAdapter,
+                otherTypeDefinitionName,
+                null
+            ).SetName("When non-union type definition name is passed, null is returned.");
+
+            yield return new TestCaseData(
+                graphQLDocumentAdapter,
+                unionTypeDefinitionName,
+                definition as GraphQLUnionTypeDefinition
+            ).SetName("When union type definition name is passed, union type definition is returned.");
+        }
+    }
 }
