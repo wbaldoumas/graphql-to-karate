@@ -12,7 +12,7 @@ internal sealed class TypeRegistrarConfiguratorTests
     public void TypeRegistrarConfigurator_configures_expected_TypeRegistrar()
     {
         // arrange + act
-        var typeRegistrar = TypeRegistrarConfigurator.ConfigureTypeRegistrar();
+        var typeRegistrar = TypeRegistrarConfigurator.ConfigureTypeRegistrar(Array.Empty<string>());
         var typeResolver = typeRegistrar.Build();
 
         // assert

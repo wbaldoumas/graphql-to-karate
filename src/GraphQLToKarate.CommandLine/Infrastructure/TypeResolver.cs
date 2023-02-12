@@ -1,21 +1,15 @@
-﻿using Spectre.Console.Cli;
+﻿using Microsoft.Extensions.Hosting;
+using Spectre.Console.Cli;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 
 internal sealed class TypeResolver : ITypeResolver, IDisposable
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly IHost _host;
 
-    public TypeResolver(IServiceProvider? provider) =>
-        _serviceProvider = provider ?? throw new ArgumentNullException(nameof(provider));
+    public TypeResolver(IHost? host) => _host = host ?? throw new ArgumentNullException(nameof(host));
 
-    public object? Resolve(Type? type) => type is null ? null : _serviceProvider.GetService(type);
+    public object? Resolve(Type? type) => type is not null ? _host.Services.GetService(type) : null;
 
-    public void Dispose()
-    {
-        if (_serviceProvider is IDisposable disposable)
-        {
-            disposable.Dispose();
-        }
-    }
+    public void Dispose() => _host.Dispose();
 }

@@ -51,6 +51,7 @@ internal sealed class ConvertCommandSettings : CommandSettings
             return ValidationResult.Error("GraphQL schema file does not exist. Please provide a valid file path and filename for the GraphQL schema to convert.");
         }
 
+        // ReSharper disable once ConvertIfStatementToReturnStatement
         if (!IsCustomScalarMappingValid(CustomScalarMapping))
         {
             return ValidationResult.Error("Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option.");
