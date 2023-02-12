@@ -1,6 +1,7 @@
 type Query {
   allUsers: [User]
   user(id: ID!): User
+  communcation: [Communication]
 }
 
 type User {

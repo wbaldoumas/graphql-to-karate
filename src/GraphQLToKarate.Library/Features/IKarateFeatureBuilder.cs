@@ -1,4 +1,5 @@
-﻿using GraphQLToKarate.Library.Types;
+﻿using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Features;
 
@@ -12,9 +13,11 @@ public interface IKarateFeatureBuilder
     /// </summary>
     /// <param name="karateObjects">The Karate schema objects.</param>
     /// <param name="graphQLQueries">The GraphQL query objects.</param>
+    /// <param name="graphQLDocumentAdapter">The GraphQL document adapter to use.</param>
     /// <returns>The Karate feature as a string.</returns>
     string Build(
         IEnumerable<KarateObject> karateObjects,
-        IEnumerable<GraphQLQueryFieldType> graphQLQueries
+        IEnumerable<GraphQLQueryFieldType> graphQLQueries,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter
     );
 }

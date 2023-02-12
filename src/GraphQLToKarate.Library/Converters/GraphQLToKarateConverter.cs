@@ -67,6 +67,6 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
             )
         );
 
-        return _karateFeatureBuilder.Build(karateObjects, graphQLQueryFieldTypes);
+        return _karateFeatureBuilder.Build(karateObjects, graphQLQueryFieldTypes, graphQLDocumentAdapter);
     }
 }

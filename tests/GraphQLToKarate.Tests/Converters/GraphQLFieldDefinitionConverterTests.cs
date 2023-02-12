@@ -1097,7 +1097,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
                         new GraphQLArgumentType("filter", "filter", GraphQLToken.String),
-                        new GraphQLArgumentType("filter", "filter1", GraphQLToken.String),
+                        new GraphQLArgumentType("filter", "filter1", GraphQLToken.String)
                     }
                 }
             ).SetName("Converter is able to convert query with arguments and union return type.");
@@ -1159,10 +1159,10 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
                         new GraphQLArgumentType("filter", "filter", GraphQLToken.String),
-                        new GraphQLArgumentType("filter", "filter1", GraphQLToken.String),
+                        new GraphQLArgumentType("filter", "filter1", GraphQLToken.String)
                     }
                 }
-            ).SetName("Converter is able to convert query with arguments and union return type.");
+            ).SetName("Converter is able to convert query with arguments and nested union fields.");
         }
     }
 }
