@@ -78,7 +78,7 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
             );
         }
 
-        stringBuilder.TrimEnd(5); // remove trailing newline and " ||"
+        stringBuilder.TrimEnd(Environment.NewLine.Length + 3); // remove trailing newline and " ||"
         stringBuilder.AppendLine();
         stringBuilder.AppendLine(SchemaToken.TripleQuote.Indent(Indent.Double));
     }
