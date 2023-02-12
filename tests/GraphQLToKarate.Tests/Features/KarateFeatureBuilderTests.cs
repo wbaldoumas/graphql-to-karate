@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Types;
@@ -12,9 +13,14 @@ namespace GraphQLToKarate.Tests.Features;
 internal sealed class KarateFeatureBuilderTests
 {
     private IKarateScenarioBuilder? _mockScenarioBuilder;
+    private IGraphQLDocumentAdapter? _mockGraphQLDocumentAdapter;
 
     [SetUp]
-    public void SetUp() => _mockScenarioBuilder = Substitute.For<IKarateScenarioBuilder>();
+    public void SetUp()
+    {
+        _mockScenarioBuilder = Substitute.For<IKarateScenarioBuilder>();
+        _mockGraphQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
+    }
 
     [Test]
     [TestCaseSource(nameof(TestCases))]
@@ -29,14 +35,14 @@ internal sealed class KarateFeatureBuilderTests
         foreach (var graphQLQueryFieldType in graphQLQueryFieldTypes)
         {
             _mockScenarioBuilder!
-                .Build(graphQLQueryFieldType)
+                .Build(graphQLQueryFieldType, _mockGraphQLDocumentAdapter!)
                 .Returns(mockScenarioBuilderReturnByGraphQLQueryName[graphQLQueryFieldType.Name]);
         }
 
         var subjectUnderTest = new KarateFeatureBuilder(_mockScenarioBuilder!, karateFeatureBuilderSettings);
 
         // act
-        var featureString = subjectUnderTest.Build(karateObjects, graphQLQueryFieldTypes);
+        var featureString = subjectUnderTest.Build(karateObjects, graphQLQueryFieldTypes, _mockGraphQLDocumentAdapter!);
 
         // assert
         featureString.Should().Be(expectedFeatureString);

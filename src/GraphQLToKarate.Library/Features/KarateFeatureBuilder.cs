@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
@@ -22,7 +23,8 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
 
     public string Build(
         IEnumerable<KarateObject> karateObjects,
-        IEnumerable<GraphQLQueryFieldType> graphQLQueries)
+        IEnumerable<GraphQLQueryFieldType> graphQLQueries,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var lines = new List<string> {
             "Feature: Test GraphQL Endpoint with Karate",
@@ -36,7 +38,7 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
 
         if (!_karateFeatureBuilderSettings.ExcludeQueries)
         {
-            lines.AddRange(BuildGraphQLQueries(graphQLQueries));
+            lines.AddRange(BuildGraphQLQueries(graphQLQueries, graphQLDocumentAdapter));
         }
 
         var stringBuilder = new StringBuilder();
@@ -56,11 +58,13 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
         }
     }
 
-    private IEnumerable<string> BuildGraphQLQueries(IEnumerable<GraphQLQueryFieldType> graphQLQueries)
+    private IEnumerable<string> BuildGraphQLQueries(
+        IEnumerable<GraphQLQueryFieldType> graphQLQueries, 
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         foreach (var graphQLQueryField in graphQLQueries)
         {
-            yield return _karateScenarioBuilder.Build(graphQLQueryField);
+            yield return _karateScenarioBuilder.Build(graphQLQueryField, graphQLDocumentAdapter);
             yield return string.Empty;
         }
     }

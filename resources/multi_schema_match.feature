@@ -27,8 +27,9 @@ Scenario: Validate Payload
 
   * def isValid = 
     """
-    response => karate.match(response, schema).pass || 
-                karate.match(response, otherSchema).pass
+    response =>
+      karate.match(response, schema).pass ||
+      karate.match(response, otherSchema).pass
     """
   
   # match each

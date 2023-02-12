@@ -140,7 +140,8 @@ internal sealed class GraphQLToKarateConverterTests
         _mockKarateFeatureBuilder!
             .Build(
                 Arg.Any<IEnumerable<KarateObject>>(),
-                Arg.Any<IEnumerable<GraphQLQueryFieldType>>()
+                Arg.Any<IEnumerable<GraphQLQueryFieldType>>(),
+                Arg.Any<IGraphQLDocumentAdapter>()
             )
             .Returns(expectedKarateFeature)
             .AndDoes(callInfo =>
@@ -189,7 +190,8 @@ internal sealed class GraphQLToKarateConverterTests
             .Received(1)
             .Build(
                 Arg.Is<IEnumerable<KarateObject>>(arg => arg.Count() == 2),
-                Arg.Is<IEnumerable<GraphQLQueryFieldType>>(arg => arg.Count() == 2)
+                Arg.Is<IEnumerable<GraphQLQueryFieldType>>(arg => arg.Count() == 2),
+                Arg.Any<IGraphQLDocumentAdapter>()
             );
     }
 }
