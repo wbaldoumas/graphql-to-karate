@@ -1,1 +1,1 @@
-﻿await CompositionRoot.Build().RunAsync(args);
+﻿await CompositionRoot.Build(args).RunAsync(args);
