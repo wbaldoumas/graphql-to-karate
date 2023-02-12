@@ -39,4 +39,20 @@ internal sealed class TypeResolverTests
         // assert
         act.Should().Throw<ArgumentNullException>();
     }
+
+    [Test]
+    public void TypeResolver_properly_disposes_service_provider_when_it_is_disposable()
+    {
+        // arrange
+        var host = Substitute.For<IHost, IDisposable>();
+        var subjectUnderTest = new TypeResolver(host);
+
+        // act
+        subjectUnderTest.Dispose();
+
+        // assert
+        (host as IDisposable)!.Received().Dispose();
+    }
+
+
 }
