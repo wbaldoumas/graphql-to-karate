@@ -11,6 +11,7 @@ internal static class CommandAppConfigurator
 
         commandApp.Configure(configurator =>
         {
+            configurator.SetInterceptor(new LogCommandSettingsInterceptor());
             configurator.AddCommand<ConvertCommand>("convert");
         });
 

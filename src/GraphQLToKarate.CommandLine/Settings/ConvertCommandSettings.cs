@@ -6,7 +6,7 @@ using GraphQLToKarate.Library.Mappings;
 
 namespace GraphQLToKarate.CommandLine.Settings;
 
-internal sealed class ConvertCommandSettings : CommandSettings
+internal sealed class ConvertCommandSettings : LogCommandSettings
 {
     private readonly IFile _file;
 
@@ -19,23 +19,25 @@ internal sealed class ConvertCommandSettings : CommandSettings
     }
 
     [CommandArgument(0, "<GraphQL Schema File>")]
-    [Description("The path and filename of the file containing the GraphQL schema to convert.")]
+    [Description("The path of the GraphQL schema file to convert")]
     public string? InputFile { get; set; }
 
     [CommandOption("--output-file")]
-    [Description("The path and filename of the output file to write the Karate feature to.")]
+    [Description("The path of the output Karate feature file")]
     [DefaultValue(typeof(string), "graphql.feature")]
     public string? OutputFile { get; set; }
 
     [CommandOption("--custom-scalar-mapping")]
-    [Description("The path and filename of a JSON file defining mappings of custom scalar values to karate types")]
+    [Description("The path or string value custom scalar mapping")]
     public string? CustomScalarMapping { get; set; }
 
     [CommandOption("--exclude-queries")]
-    [DefaultValue(typeof(bool), "false")]
+    [Description("Whether to exclude queries or not")]
+    [DefaultValue(typeof(string), "false")]
     public bool ExcludeQueries { get; set; }
 
     [CommandOption("--base-url")]
+    [Description("The base URL to be used in the Karate feature")]
     [DefaultValue(typeof(string), "baseUrl")]
     public string? BaseUrl { get; set; }
 
@@ -57,7 +59,7 @@ internal sealed class ConvertCommandSettings : CommandSettings
             return ValidationResult.Error("Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option.");
         }
 
-        return  ValidationResult.Success();
+        return ValidationResult.Success();
     }
 
     private bool IsCustomScalarMappingValid(string? customScalarMapping) =>
