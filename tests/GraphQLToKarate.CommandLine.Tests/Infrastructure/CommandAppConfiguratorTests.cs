@@ -1,15 +1,14 @@
 ﻿using FluentAssertions;
+using GraphQLToKarate.CommandLine.Commands;
 using GraphQLToKarate.CommandLine.Infrastructure;
 using GraphQLToKarate.CommandLine.Settings;
-using NSubstitute;
-using NUnit.Framework;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.Console.Testing;
-using System.IO.Abstractions;
-using GraphQLToKarate.CommandLine.Commands;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Mappings;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using NUnit.Framework;
+using Spectre.Console.Cli;
+using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 
@@ -18,7 +17,7 @@ internal sealed class CommandAppConfiguratorTests
 {
     private IFile? _mockFile;
     private IFileSystem? _mockFileSystem;
-    private IAnsiConsole? _mockAnsiConsole;
+    private ILogger<ConvertCommand>? _mockLogger;
     private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private ConvertCommandSettings? _mockConvertCommandSettings;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
@@ -35,15 +34,15 @@ internal sealed class CommandAppConfiguratorTests
         _mockFileSystem.File.Returns(_mockFile);
         _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
         _mockConvertCommandSettings = new ConvertCommandSettings(_mockFile, _mockCustomScalarMappingValidator);
-        _mockAnsiConsole = new TestConsole();
+        _mockLogger = Substitute.For<ILogger<ConvertCommand>>();
         _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
 
         _mockConvertCommand = new ConvertCommand(
-            _mockAnsiConsole,
             _mockFileSystem,
             _mockConvertCommandSettingsLoader,
-            _mockGraphQLToKarateConverterBuilder
+            _mockGraphQLToKarateConverterBuilder,
+            _mockLogger
         );
 
         _mockTypeResolver = Substitute.For<ITypeResolver>();
@@ -81,7 +80,5 @@ internal sealed class CommandAppConfiguratorTests
 
         // assert
         result.Should().Be(0);
-
-        (_mockAnsiConsole as TestConsole)!.Output.Should().NotBeEmpty();
     }
 }

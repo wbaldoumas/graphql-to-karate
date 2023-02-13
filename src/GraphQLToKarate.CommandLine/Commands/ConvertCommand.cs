@@ -1,6 +1,6 @@
 ﻿using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
-using Spectre.Console;
+using Microsoft.Extensions.Logging;
 using Spectre.Console.Cli;
 using System.IO.Abstractions;
 
@@ -8,26 +8,26 @@ namespace GraphQLToKarate.CommandLine.Commands;
 
 internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
 {
-    private readonly IAnsiConsole _console;
     private readonly IFileSystem _fileSystem;
     private readonly IConvertCommandSettingsLoader _convertCommandSettingsLoader;
     private readonly IGraphQLToKarateConverterBuilder _graphQLToKarateConverterBuilder;
+    private readonly ILogger<ConvertCommand> _logger;
 
     public ConvertCommand(
-        IAnsiConsole console,
         IFileSystem fileSystem,
         IConvertCommandSettingsLoader convertCommandSettingsLoader,
-        IGraphQLToKarateConverterBuilder graphQLToKarateConverterBuilder)
+        IGraphQLToKarateConverterBuilder graphQLToKarateConverterBuilder,
+        ILogger<ConvertCommand> logger)
     {
-        _console = console;
         _fileSystem = fileSystem;
         _convertCommandSettingsLoader = convertCommandSettingsLoader;
         _graphQLToKarateConverterBuilder = graphQLToKarateConverterBuilder;
+        _logger = logger;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, ConvertCommandSettings commandSettings)
     {
-        _console.WriteLine("Running GraphQL to Karate conversion...");
+        _logger.LogInformation("Running GraphQL to Karate conversion...");
 
         var loadedCommandSettings = await _convertCommandSettingsLoader.LoadAsync(commandSettings);
 
@@ -44,7 +44,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
 
         var fullPath = _fileSystem.Path.GetFullPath(commandSettings.OutputFile!);
 
-        _console.MarkupLine($"Conversion complete! View the output at [darkturquoise]{fullPath}[/].");
+        _logger.LogInformation("Conversion complete! View the output at {fullPath}.", fullPath);
 
         return 0;
     }

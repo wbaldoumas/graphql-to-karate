@@ -1,49 +1,44 @@
 ﻿using FluentAssertions;
 using GraphQLToKarate.CommandLine.Commands;
 using GraphQLToKarate.CommandLine.Settings;
-using NSubstitute;
-using NUnit.Framework;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.Console.Testing;
-using System.IO.Abstractions;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Mappings;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using NUnit.Framework;
+using Spectre.Console.Cli;
+using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Tests.Commands;
 
 [TestFixture]
 internal sealed class ConvertCommandTests
 {
-    private IAnsiConsole? _mockConsole;
     private IFile? _mockFile;
     private IFileSystem? _mockFileSystem;
     private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
     private ICustomScalarMappingValidator? _mockCustomScalarMappingValidator;
+    private ILogger<ConvertCommand>? _mockLogger;
     private AsyncCommand<ConvertCommandSettings>? _subjectUnderTest;
 
     [SetUp]
     public void SetUp()
     {
-        _mockConsole = new TestConsole()
-            .Colors(ColorSystem.Standard)
-            .EmitAnsiSequences();
-
         _mockFile = Substitute.For<IFile>();
         _mockFileSystem = Substitute.For<IFileSystem>();
         _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
         _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
-
+        _mockLogger = Substitute.For<ILogger<ConvertCommand>>();
         _mockFileSystem.File.Returns(_mockFile);
 
         _subjectUnderTest = new ConvertCommand(
-            _mockConsole,
             _mockFileSystem,
             _mockConvertCommandSettingsLoader,
-            _mockGraphQLToKarateConverterBuilder
+            _mockGraphQLToKarateConverterBuilder,
+            _mockLogger
         );
     }
 
@@ -95,8 +90,5 @@ internal sealed class ConvertCommandTests
         await _mockConvertCommandSettingsLoader!
             .Received()
             .LoadAsync(convertCommandSettings);
-
-        // initial command implementation just writes the schema to console...
-        (_mockConsole as TestConsole)!.Output.Should().Contain("Running GraphQL to Karate conversion...");
     }
 }
