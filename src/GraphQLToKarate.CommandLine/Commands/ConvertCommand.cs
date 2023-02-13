@@ -16,7 +16,8 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
     public ConvertCommand(
         IFileSystem fileSystem,
         IConvertCommandSettingsLoader convertCommandSettingsLoader,
-        IGraphQLToKarateConverterBuilder graphQLToKarateConverterBuilder, ILogger<ConvertCommand> logger)
+        IGraphQLToKarateConverterBuilder graphQLToKarateConverterBuilder,
+        ILogger<ConvertCommand> logger)
     {
         _fileSystem = fileSystem;
         _convertCommandSettingsLoader = convertCommandSettingsLoader;
