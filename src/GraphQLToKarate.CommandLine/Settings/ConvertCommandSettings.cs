@@ -3,6 +3,7 @@ using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.IO.Abstractions;
 using GraphQLToKarate.Library.Mappings;
+using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.CommandLine.Settings;
 
@@ -40,6 +41,11 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [Description("The base URL to be used in the Karate feature")]
     [DefaultValue(typeof(string), "baseUrl")]
     public string? BaseUrl { get; set; }
+
+    [CommandOption("--query-name")]
+    [Description("The name of the GraphQL query type")]
+    [DefaultValue(typeof(string), GraphQLToken.Query)]
+    public string? QueryName { get; set; }
 
     public override ValidationResult Validate()
     {

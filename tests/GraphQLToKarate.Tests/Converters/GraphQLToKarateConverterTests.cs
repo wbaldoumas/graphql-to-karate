@@ -4,6 +4,8 @@ using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
+using GraphQLToKarate.Library.Settings;
+using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using NSubstitute;
 using NUnit.Framework;
@@ -31,7 +33,8 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLSchemaParser,
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
-            _mockKarateFeatureBuilder
+            _mockKarateFeatureBuilder,
+            new GraphQLToKarateConverterSettings()
         );
     }
 
@@ -66,7 +69,7 @@ internal sealed class GraphQLToKarateConverterTests
 
         var graphQLQuery = new GraphQLObjectTypeDefinition
         {
-            Name = new GraphQLName("Query"),
+            Name = new GraphQLName(GraphQLToken.Query),
             Fields = new GraphQLFieldsDefinition
             {
                 Items = new List<GraphQLFieldDefinition>

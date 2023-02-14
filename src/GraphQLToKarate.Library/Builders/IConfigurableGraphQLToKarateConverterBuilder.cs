@@ -28,4 +28,13 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     /// <param name="excludeQueriesSetting">Whether to exclude queries in the generated Karate feature or not.</param>
     /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given excluded queries setting.</returns>
     IConfigurableGraphQLToKarateConverterBuilder WithExcludeQueriesSetting(bool excludeQueriesSetting);
+
+
+    /// <summary>
+    ///    Configure the converter with the given <paramref name="queryName"/>. This allows the user to specify a
+    ///    non-default query name.
+    /// </summary>
+    /// <param name="queryName">The name of the query type.</param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given query name.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithQueryName(string queryName);
 }

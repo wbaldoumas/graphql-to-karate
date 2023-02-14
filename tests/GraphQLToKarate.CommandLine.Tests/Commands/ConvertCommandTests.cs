@@ -4,6 +4,7 @@ using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Mappings;
+using GraphQLToKarate.Library.Tokens;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
@@ -78,7 +79,8 @@ internal sealed class ConvertCommandTests
                 OutputFile = convertCommandSettings.OutputFile!,
                 CustomScalarMapping = new Dictionary<string, string>(),
                 ExcludeQueries = convertCommandSettings.ExcludeQueries,
-                BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl"
+                BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
+                QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query
             });
 
         // act

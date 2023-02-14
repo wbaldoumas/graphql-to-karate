@@ -4,6 +4,7 @@ using GraphQLToKarate.CommandLine.Infrastructure;
 using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Mappings;
+using GraphQLToKarate.Library.Tokens;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
@@ -70,7 +71,8 @@ internal sealed class CommandAppConfiguratorTests
                 OutputFile = "graphql.feature",
                 CustomScalarMapping = new Dictionary<string, string>(),
                 ExcludeQueries = false,
-                BaseUrl = "baseUrl"
+                BaseUrl = "baseUrl",
+                QueryName = GraphQLToken.Query
             });
 
         // act

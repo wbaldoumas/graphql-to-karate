@@ -6,7 +6,7 @@ namespace GraphQLToKarate.Library.Tokens;
 ///     Contains tokens for each of the available GraphQL types.
 /// </summary>
 [ExcludeFromCodeCoverage]
-internal static class GraphQLToken
+public static class GraphQLToken
 {
     public const string Id = "ID";
 

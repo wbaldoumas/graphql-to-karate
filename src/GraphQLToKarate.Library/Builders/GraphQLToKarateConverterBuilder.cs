@@ -2,6 +2,7 @@
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
+using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Builders;
 
@@ -15,6 +16,8 @@ public sealed class GraphQLToKarateConverterBuilder :
     private bool _excludeQueriesSetting;
 
     private string _baseUrl = "baseUrl";
+
+    private string _queryName = GraphQLToken.Query;
 
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder();
 
@@ -42,6 +45,13 @@ public sealed class GraphQLToKarateConverterBuilder :
         return this;
     }
 
+    public IConfigurableGraphQLToKarateConverterBuilder WithQueryName(string queryName)
+    {
+        _queryName = queryName;
+
+        return this;
+    }
+
     public IGraphQLToKarateConverter Build() => new GraphQLToKarateConverter(
         new GraphQLSchemaParser(),
         new GraphQLTypeDefinitionConverter(
@@ -57,6 +67,11 @@ public sealed class GraphQLToKarateConverterBuilder :
                 BaseUrl = _baseUrl,
                 ExcludeQueries = _excludeQueriesSetting
             }
-        )
+        ),
+        new GraphQLToKarateConverterSettings
+        {
+            ExcludeQueries = _excludeQueriesSetting,
+            QueryName = _queryName
+        }
     );
 }
