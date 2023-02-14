@@ -2,6 +2,7 @@
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
+using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -13,17 +14,20 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
     private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
     private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
     private readonly IKarateFeatureBuilder _karateFeatureBuilder;
+    private readonly GraphQLToKarateConverterSettings _graphQLToKarateConverterSettings;
 
     public GraphQLToKarateConverter(
         IGraphQLSchemaParser graphQLSchemaParser,
         IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
         IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter, 
-        IKarateFeatureBuilder karateFeatureBuilder)
+        IKarateFeatureBuilder karateFeatureBuilder, 
+        GraphQLToKarateConverterSettings graphQLToKarateConverterSettings)
     {
         _graphQLSchemaParser = graphQLSchemaParser;
         _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
         _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
         _karateFeatureBuilder = karateFeatureBuilder;
+        _graphQLToKarateConverterSettings = graphQLToKarateConverterSettings;
     }
 
     public string Convert(string schema)
@@ -32,8 +36,8 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
         var graphQLObjectTypeDefinitionsByName = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
-            .Where(definition => definition.Name.StringValue != GraphQLToken.Query &&
-                                 definition.Name.StringValue != GraphQLToken.Mutation)
+            .Where(definition => !definition.Name.StringValue.Equals(_graphQLToKarateConverterSettings.QueryName, StringComparison.OrdinalIgnoreCase) &&
+                                 !definition.Name.StringValue.Equals(GraphQLToken.Mutation, StringComparison.OrdinalIgnoreCase))
             .ToDictionary(definition => definition.Name.StringValue);
 
         var graphQLInterfaceTypeDefinitionsByName = graphQLDocument.Definitions
@@ -58,7 +62,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
         var graphQLQueryTypeDefinition = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
-            .FirstOrDefault(definition => definition.Name.StringValue == GraphQLToken.Query);
+            .FirstOrDefault(definition => definition.Name.StringValue.Equals(_graphQLToKarateConverterSettings.QueryName, StringComparison.OrdinalIgnoreCase));
 
         var graphQLQueryFieldTypes = graphQLQueryTypeDefinition!.Fields!.Select(
             graphQLFieldDefinition => _graphQLFieldDefinitionConverter.Convert(

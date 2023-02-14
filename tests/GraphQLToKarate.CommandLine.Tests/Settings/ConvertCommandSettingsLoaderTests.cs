@@ -4,6 +4,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System.IO.Abstractions;
 using GraphQLToKarate.Library.Mappings;
+using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.CommandLine.Tests.Settings;
 
@@ -78,7 +79,8 @@ internal sealed class ConvertCommandSettingsLoaderTests
             CustomScalarMapping = "config.json",
             OutputFile = "karate.feature",
             BaseUrl = "baseUrl",
-            ExcludeQueries = false
+            ExcludeQueries = false,
+            QueryName = GraphQLToken.Query
         };
 
         _mockFile!
@@ -122,6 +124,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
         loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
+        loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
     }
 
     [Test]
