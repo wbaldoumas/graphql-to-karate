@@ -13,4 +13,6 @@ internal sealed class LoadedConvertCommandSettings
     public required string BaseUrl { get; init; }
 
     public required string QueryName { get; init; }
+
+    public required ISet<string> TypeFilter { get; init; }
 }

@@ -4,6 +4,9 @@ using System.Globalization;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 
+/// <summary>
+///     Converts a log-level string into a <see cref="LogEventLevel"/>.
+/// </summary>
 internal sealed class LogLevelVerbosityConverter : TypeConverter
 {
     private readonly Dictionary<string, LogEventLevel> _logLevelLookup;

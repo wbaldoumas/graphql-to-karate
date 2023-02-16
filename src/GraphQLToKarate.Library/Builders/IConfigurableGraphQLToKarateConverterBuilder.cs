@@ -37,4 +37,12 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     /// <param name="queryName">The name of the query type.</param>
     /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given query name.</returns>
     IConfigurableGraphQLToKarateConverterBuilder WithQueryName(string queryName);
+
+    /// <summary>
+    ///    Configure the converter with the given <paramref name="typeFilter"/>. This allows the user to specify
+    ///    which GraphQL types to include in the output, if they'd like to filter them.
+    /// </summary>
+    /// <param name="typeFilter">The type filter to use.</param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given type filter.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithTypeFilter(ISet<string> typeFilter);
 }

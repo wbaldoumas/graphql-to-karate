@@ -40,12 +40,18 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [CommandOption("--base-url")]
     [Description("The base URL to be used in the Karate feature")]
     [DefaultValue(typeof(string), "baseUrl")]
-    public string? BaseUrl { get; set; }
+    public string? BaseUrl { get; set; } = "baseUrl";
 
     [CommandOption("--query-name")]
     [Description("The name of the GraphQL query type")]
     [DefaultValue(typeof(string), GraphQLToken.Query)]
-    public string? QueryName { get; set; }
+    public string? QueryName { get; set; } = GraphQLToken.Query;
+
+    [CommandOption("--type-filter")]
+    [Description("A comma-separated list of GraphQL types to include in the Karate feature")]
+    [TypeConverter(typeof(TypeFilterConverter))]
+    [DefaultValue(typeof(string), "")]
+    public ISet<string> TypeFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     public override ValidationResult Validate()
     {
