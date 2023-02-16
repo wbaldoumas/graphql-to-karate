@@ -72,7 +72,8 @@ internal sealed class CommandAppConfiguratorTests
                 CustomScalarMapping = new Dictionary<string, string>(),
                 ExcludeQueries = false,
                 BaseUrl = "baseUrl",
-                QueryName = GraphQLToken.Query
+                QueryName = GraphQLToken.Query,
+                TypeFilter = new HashSet<string>()
             });
 
         // act

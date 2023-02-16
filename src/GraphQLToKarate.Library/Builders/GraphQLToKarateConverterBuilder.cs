@@ -19,6 +19,8 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private string _queryName = GraphQLToken.Query;
 
+    private ISet<string> _typeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder();
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
@@ -52,6 +54,13 @@ public sealed class GraphQLToKarateConverterBuilder :
         return this;
     }
 
+    public IConfigurableGraphQLToKarateConverterBuilder WithTypeFilter(ISet<string> typeFilter)
+    {
+        _typeFilter = typeFilter;
+
+        return this;
+    }
+
     public IGraphQLToKarateConverter Build() => new GraphQLToKarateConverter(
         new GraphQLSchemaParser(),
         new GraphQLTypeDefinitionConverter(
@@ -71,7 +80,8 @@ public sealed class GraphQLToKarateConverterBuilder :
         new GraphQLToKarateConverterSettings
         {
             ExcludeQueries = _excludeQueriesSetting,
-            QueryName = _queryName
+            QueryName = _queryName,
+            TypeFilter = _typeFilter
         }
     );
 }

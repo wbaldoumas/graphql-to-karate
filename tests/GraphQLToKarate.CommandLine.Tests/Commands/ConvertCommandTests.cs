@@ -80,7 +80,8 @@ internal sealed class ConvertCommandTests
                 CustomScalarMapping = new Dictionary<string, string>(),
                 ExcludeQueries = convertCommandSettings.ExcludeQueries,
                 BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
-                QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query
+                QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
+                TypeFilter = convertCommandSettings.TypeFilter
             });
 
         // act

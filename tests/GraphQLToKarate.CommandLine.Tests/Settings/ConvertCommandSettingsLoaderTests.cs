@@ -80,7 +80,11 @@ internal sealed class ConvertCommandSettingsLoaderTests
             OutputFile = "karate.feature",
             BaseUrl = "baseUrl",
             ExcludeQueries = false,
-            QueryName = GraphQLToken.Query
+            QueryName = GraphQLToken.Query,
+            TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Hello"
+            }
         };
 
         _mockFile!
@@ -125,6 +129,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
+        loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
     }
 
     [Test]
@@ -151,6 +156,10 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.OutputFile.Should().Be(convertCommandSettings.OutputFile);
         loadedConvertCommandSettings.GraphQLSchema.Should().Be(SomeGraphQLSchema);
         loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
+        loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
+        loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
+        loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
+        loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
     }
 
     [Test]
@@ -185,5 +194,9 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.OutputFile.Should().Be(convertCommandSettings.OutputFile);
         loadedConvertCommandSettings.GraphQLSchema.Should().Be(SomeGraphQLSchema);
         loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
+        loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
+        loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
+        loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
+        loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
     }
 }

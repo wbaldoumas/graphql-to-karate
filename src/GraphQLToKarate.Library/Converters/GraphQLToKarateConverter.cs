@@ -36,12 +36,28 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
         var graphQLObjectTypeDefinitionsByName = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
-            .Where(definition => !definition.Name.StringValue.Equals(_graphQLToKarateConverterSettings.QueryName, StringComparison.OrdinalIgnoreCase) &&
-                                 !definition.Name.StringValue.Equals(GraphQLToken.Mutation, StringComparison.OrdinalIgnoreCase))
+            .Where(definition =>
+                !definition.Name.StringValue.Equals(
+                    _graphQLToKarateConverterSettings.QueryName,
+                    StringComparison.OrdinalIgnoreCase
+                ) &&
+                !definition.Name.StringValue.Equals(
+                    GraphQLToken.Mutation,
+                    StringComparison.OrdinalIgnoreCase
+                ) &&
+                (
+                    !_graphQLToKarateConverterSettings.TypeFilter.Any() ||
+                    _graphQLToKarateConverterSettings.TypeFilter.Contains(definition.Name.StringValue)
+                )
+            )
             .ToDictionary(definition => definition.Name.StringValue);
 
         var graphQLInterfaceTypeDefinitionsByName = graphQLDocument.Definitions
             .OfType<GraphQLInterfaceTypeDefinition>()
+            .Where(definition =>
+                !_graphQLToKarateConverterSettings.TypeFilter.Any() ||
+                _graphQLToKarateConverterSettings.TypeFilter.Contains(definition.Name.StringValue)
+            )
             .ToDictionary(definition => definition.Name.StringValue);
 
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument);
