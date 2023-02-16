@@ -140,7 +140,8 @@ internal sealed class ConvertCommandSettingsLoaderTests
         {
             InputFile = "schema.graphql",
             CustomScalarMapping = null,
-            OutputFile = "karate.feature"
+            OutputFile = "karate.feature",
+            QueryName = null
         };
 
         _mockFile!
@@ -158,7 +159,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.CustomScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
         loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
-        loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
+        loadedConvertCommandSettings.QueryName.Should().Be(GraphQLToken.Query);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
     }
 
