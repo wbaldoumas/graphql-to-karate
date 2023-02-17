@@ -35,46 +35,56 @@ internal sealed class GraphQLDocumentAdapterTests
             ).SetName("When GraphQL document is empty, enum type definition is not found");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLObjectTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName("Goodbye")
+                            new GraphQLObjectTypeDefinition
+                            {
+                                Name = new GraphQLName("Goodbye")
+                            }
                         }
                     }
-                }),
+                ),
                 enumTypeDefinitionName,
                 false
-            ).SetName("When GraphQL document is not empty but doesn't have enum type definitions, enum type definition is not found");
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have enum type definitions, enum type definition is not found"
+            );
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLEnumTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName("Hello")
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("Hello")
+                            }
                         }
                     }
-                }),
+                ),
                 enumTypeDefinitionName,
                 false
-            ).SetName("When GraphQL document is not empty but doesn't have specific enum type definition, enum type definition is not found");
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have specific enum type definition, enum type definition is not found"
+            );
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLEnumTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName(enumTypeDefinitionName)
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName(enumTypeDefinitionName)
+                            }
                         }
                     }
-                }),
+                ),
                 enumTypeDefinitionName,
                 true
             ).SetName("When GraphQL document has specific enum type definitions, enum type definition is found");
@@ -108,50 +118,61 @@ internal sealed class GraphQLDocumentAdapterTests
             ).SetName("When GraphQL document is empty, has fields type definition is not found");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLEnumTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName("Goodbye")
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("Goodbye")
+                            }
                         }
                     }
-                }),
-                hasFieldsTypeDefinitionName,
-                false
-            ).SetName("When GraphQL document is not empty but doesn't have has fields type definitions, has fields type definition is not found");
-
-            yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
-                    {
-                        new GraphQLObjectTypeDefinition
-                        {
-                            Name = new GraphQLName("Hello")
-                        }
-                    }
-                }),
+                ),
                 hasFieldsTypeDefinitionName,
                 false
             ).SetName(
-                "When GraphQL document is not empty but doesn't have specific has fields type definition, has fields type definition is not found");
+                "When GraphQL document is not empty but doesn't have has fields type definitions, has fields type definition is not found"
+            );
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLObjectTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName(hasFieldsTypeDefinitionName)
+                            new GraphQLObjectTypeDefinition
+                            {
+                                Name = new GraphQLName("Hello")
+                            }
                         }
                     }
-                }),
+                ),
+                hasFieldsTypeDefinitionName,
+                false
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have specific has fields type definition, has fields type definition is not found"
+            );
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLObjectTypeDefinition
+                            {
+                                Name = new GraphQLName(hasFieldsTypeDefinitionName)
+                            }
+                        }
+                    }
+                ),
                 hasFieldsTypeDefinitionName,
                 true
-            ).SetName("When GraphQL document has specific has fields type definitions, has fields type definition is found");
+            ).SetName(
+                "When GraphQL document has specific has fields type definitions, has fields type definition is found"
+            );
         }
     }
 
@@ -182,46 +203,56 @@ internal sealed class GraphQLDocumentAdapterTests
             ).SetName("When GraphQL document is empty, union type definition is not found");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLEnumTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName("Goodbye")
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("Goodbye")
+                            }
                         }
                     }
-                }),
+                ),
                 unionTypeDefinitionName,
                 false
-            ).SetName("When GraphQL document is not empty but doesn't have union type definition, union type definition is not found");
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have union type definition, union type definition is not found"
+            );
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLUnionTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName("Hello")
+                            new GraphQLUnionTypeDefinition
+                            {
+                                Name = new GraphQLName("Hello")
+                            }
                         }
                     }
-                }),
+                ),
                 unionTypeDefinitionName,
                 false
-            ).SetName("When GraphQL document is not empty but doesn't have specific union type definition, union type definition is not found");
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have specific union type definition, union type definition is not found"
+            );
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
                     {
-                        new GraphQLUnionTypeDefinition
+                        Definitions = new List<ASTNode>
                         {
-                            Name = new GraphQLName(unionTypeDefinitionName)
+                            new GraphQLUnionTypeDefinition
+                            {
+                                Name = new GraphQLName(unionTypeDefinitionName)
+                            }
                         }
                     }
-                }),
+                ),
                 unionTypeDefinitionName,
                 true
             ).SetName("When GraphQL document has specific union type definition, union type definition is found");
@@ -292,6 +323,20 @@ internal sealed class GraphQLDocumentAdapterTests
             .BeEquivalentTo(expectedResult);
     }
 
+    [Test]
+    [TestCaseSource(nameof(GetGraphQLEnumTypeDefinitionTestCases))]
+    public void GetGraphQLEnumTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        string graphQLTypeDefinitionName,
+        GraphQLEnumTypeDefinition? expectedResult)
+    {
+        // act + assert
+        graphQLDocumentAdapter
+            .GetGraphQLEnumTypeDefinition(graphQLTypeDefinitionName)
+            .Should()
+            .BeEquivalentTo(expectedResult);
+    }
+
     private static IEnumerable<TestCaseData> GetGraphQLUnionTypeDefinitionTestCases
     {
         get
@@ -325,6 +370,76 @@ internal sealed class GraphQLDocumentAdapterTests
                 unionTypeDefinitionName,
                 definition as GraphQLUnionTypeDefinition
             ).SetName("When union type definition name is passed, union type definition is returned.");
+        }
+    }
+
+    private static IEnumerable<TestCaseData> GetGraphQLEnumTypeDefinitionTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                "test",
+                null
+            ).SetName("When GraphQL document is empty, enum type definition is not found");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("Goodbye")
+                            }
+                        }
+                    }
+                ),
+                "test",
+                null
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have enum type definition, enum type definition is not found"
+            );
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("Hello")
+                            }
+                        }
+                    }
+                ),
+                "test",
+                null
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have specific enum type definition, enum type definition is not found"
+            );
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("test")
+                            }
+                        }
+                    }
+                ),
+                "test",
+                new GraphQLEnumTypeDefinition
+                {
+                    Name = new GraphQLName("test")
+                }
+            ).SetName("When GraphQL document has specific enum type definition, enum type definition is found");
         }
     }
 }
