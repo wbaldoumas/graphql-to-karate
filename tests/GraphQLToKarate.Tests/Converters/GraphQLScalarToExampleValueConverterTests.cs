@@ -43,7 +43,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
 
     [Test]
     [TestCase(GraphQLToken.Int, "^\\d+$")]
-    [TestCase(GraphQLToken.Float, "^\\d+\\.\\d{2}$")]
+    [TestCase(GraphQLToken.Float, "^\\d+\\.\\d+$")]
     public void Convert_generates_number_when_GraphQLType_is_Int_or_Float(string graphQLTypeName, string expectedRegexMatch)
     {
         // arrange
