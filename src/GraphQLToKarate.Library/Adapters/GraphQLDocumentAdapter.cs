@@ -68,4 +68,9 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         _graphQLUnionTypeDefinitionsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQlUnionTypeDefinition)
             ? graphQlUnionTypeDefinition
             : null;
+
+    public GraphQLEnumTypeDefinition? GetGraphQLEnumTypeDefinition(string graphQLTypeDefinitionName) =>
+        _graphQLEnumTypeDefinitionsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQLEnumTypeDefinition)
+            ? graphQLEnumTypeDefinition
+            : null;
 }

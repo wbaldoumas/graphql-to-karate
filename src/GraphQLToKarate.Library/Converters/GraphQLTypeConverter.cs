@@ -14,14 +14,14 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
         GraphQLType graphQLType,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
-        var karateTypeSchema = (graphQLType as GraphQLNamedType)!.Name.StringValue switch
+        var karateTypeSchema = graphQLType.GetTypeName() switch
         {
             GraphQLToken.Id => KarateToken.String,
             GraphQLToken.String => KarateToken.String,
             GraphQLToken.Int => KarateToken.Number,
             GraphQLToken.Float => KarateToken.Number,
             GraphQLToken.Boolean => KarateToken.Boolean,
-            { } graphqlTypeName when graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphqlTypeName) =>
+            { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLTypeName) =>
                 KarateToken.Present,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => 
                 KarateToken.String,
