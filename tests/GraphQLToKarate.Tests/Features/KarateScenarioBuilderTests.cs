@@ -78,7 +78,8 @@ internal sealed class KarateScenarioBuilderTests
                 null,
                 """"
                 Scenario: Perform a todo query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoTest {
                         todo {
                           id
@@ -126,7 +127,8 @@ internal sealed class KarateScenarioBuilderTests
                 null,
                 """"
                 Scenario: Perform a todo query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoTest($id: String!, $isCompleted: Boolean, $filter: [Color!]!) {
                         todo(id: $id, isCompleted: $isCompleted) {
                           id
@@ -138,7 +140,8 @@ internal sealed class KarateScenarioBuilderTests
                       }
                     """
 
-                  * text variables = """
+                  * text variables =
+                    """
                       {
                         "id": <some value>
                         "isCompleted": <some value>
@@ -183,7 +186,8 @@ internal sealed class KarateScenarioBuilderTests
                 null,
                 """"
                 Scenario: Perform a todo query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoTest {
                         todo {
                           id
@@ -232,7 +236,8 @@ internal sealed class KarateScenarioBuilderTests
                 null,
                 """"
                 Scenario: Perform a todo query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoTest {
                         todo {
                           id
@@ -303,7 +308,8 @@ internal sealed class KarateScenarioBuilderTests
                 },
                 """"
                 Scenario: Perform a todoUnion query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoUnionTest {
                         todoUnion {
                           ... on Todo {
