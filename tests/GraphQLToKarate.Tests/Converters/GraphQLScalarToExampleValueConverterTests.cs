@@ -171,4 +171,24 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
         // assert
         act.Should().Throw<InvalidGraphQLTypeException>();
     }
+
+    [Test]
+    public void Convert_throws_exception_when_GraphQLType_is_not_a_scalar()
+    {
+        // arrange
+        var graphQLType = new GraphQLNamedType
+        {
+            Name = new GraphQLName("MyType")
+        };
+
+        _mockGraphQLDocumentAdapter!
+            .IsGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .Returns(false);
+
+        // act
+        var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
+
+        // assert
+        exampleValue.Should().Be("<some value>");
+    }
 }
