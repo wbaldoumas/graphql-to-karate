@@ -7,12 +7,12 @@ using NUnit.Framework;
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 
 [TestFixture]
-internal sealed class TypeFilterConverterTests
+internal sealed class StringToSetConverterTests
 {
     private TypeConverter? _subjectUnderTest;
 
     [SetUp]
-    public void SetUp() => _subjectUnderTest = new TypeFilterConverter();
+    public void SetUp() => _subjectUnderTest = new StringToSetConverter();
 
     [Test]
     public void ConvertFrom_should_return_expected_ISet_of_strings_when_given_valid_input()

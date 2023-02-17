@@ -21,6 +21,8 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private ISet<string> _typeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+    private ISet<string> _operationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder();
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
@@ -61,6 +63,13 @@ public sealed class GraphQLToKarateConverterBuilder :
         return this;
     }
 
+    public IConfigurableGraphQLToKarateConverterBuilder WithOperationFilter(ISet<string> operationFilter)
+    {
+        _operationFilter = operationFilter;
+
+        return this;
+    }
+
     public IGraphQLToKarateConverter Build() => new GraphQLToKarateConverter(
         new GraphQLSchemaParser(),
         new GraphQLTypeDefinitionConverter(
@@ -81,7 +90,8 @@ public sealed class GraphQLToKarateConverterBuilder :
         {
             ExcludeQueries = _excludeQueriesSetting,
             QueryName = _queryName,
-            TypeFilter = _typeFilter
+            TypeFilter = _typeFilter,
+            OperationFilter = _operationFilter
         }
     );
 }

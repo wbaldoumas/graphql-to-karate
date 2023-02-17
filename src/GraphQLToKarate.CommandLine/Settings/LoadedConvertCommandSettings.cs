@@ -15,4 +15,6 @@ internal sealed class LoadedConvertCommandSettings
     public required string QueryName { get; init; }
 
     public required ISet<string> TypeFilter { get; init; }
+
+    public required ISet<string> OperationFilter { get; init; }
 }

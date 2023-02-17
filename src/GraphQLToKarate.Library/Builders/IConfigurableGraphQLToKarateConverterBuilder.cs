@@ -45,4 +45,12 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     /// <param name="typeFilter">The type filter to use.</param>
     /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given type filter.</returns>
     IConfigurableGraphQLToKarateConverterBuilder WithTypeFilter(ISet<string> typeFilter);
+
+    /// <summary>
+    ///    Configure the converter with the given <paramref name="operationFilter"/>. This allows the user to specify
+    ///    which GraphQL query operations to include in the output, if they'd like to filter them.
+    /// </summary>
+    /// <param name="operationFilter">The operation filter to use.</param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given operation filter.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithOperationFilter(ISet<string> operationFilter);
 }

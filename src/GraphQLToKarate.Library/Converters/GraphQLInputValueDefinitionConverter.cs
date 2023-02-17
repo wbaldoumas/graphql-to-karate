@@ -9,7 +9,7 @@ namespace GraphQLToKarate.Library.Converters;
 internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueDefinitionConverter
 {
     private readonly ICollection<GraphQLArgumentTypeBase> _graphQLVariableTypes = new List<GraphQLArgumentTypeBase>();
-    private readonly ISet<string> _reservedVariableNames = new HashSet<string>();
+    private readonly ISet<string> _reservedVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     public GraphQLArgumentTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition)
     {
