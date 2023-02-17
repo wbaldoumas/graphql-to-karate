@@ -103,7 +103,8 @@ internal sealed class KarateFeatureBuilderTests
                         graphQLFieldDefinition.Name.StringValue,
                         """"
                         Scenario: Perform a todo query and validate the response
-                          * text query = """
+                          * text query =
+                            """
                               query TodoTest {
                                 todo {
                                   id
@@ -127,7 +128,8 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
 
-                  * text todoSchema = """
+                  * text todoSchema =
+                    """
                       {
                         id: '#number',
                         name: '#string'
@@ -135,7 +137,8 @@ internal sealed class KarateFeatureBuilderTests
                     """
 
                 Scenario: Perform a todo query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoTest {
                         todo {
                           id
@@ -227,7 +230,8 @@ internal sealed class KarateFeatureBuilderTests
                         graphQLFieldDefinition.Name.StringValue,
                         """"
                         Scenario: Perform a todo query and validate the response
-                          * text query = """
+                          * text query =
+                            """
                               query TodoTest {
                                 todo {
                                   id
@@ -247,7 +251,8 @@ internal sealed class KarateFeatureBuilderTests
                         otherGraphQLFieldDefinition.Name.StringValue,
                         """"
                         Scenario: Perform a user query and validate the response
-                          * text query = """
+                          * text query =
+                            """
                               query UserTest {
                                 user {
                                   id
@@ -275,14 +280,16 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
 
-                  * text todoSchema = """
+                  * text todoSchema =
+                    """
                       {
                         id: '#number',
                         name: '#string'
                       }
                     """
 
-                  * text userSchema = """
+                  * text userSchema =
+                    """
                       {
                         id: '#number',
                         name: '#string',
@@ -291,7 +298,8 @@ internal sealed class KarateFeatureBuilderTests
                     """
 
                 Scenario: Perform a todo query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query TodoTest {
                         todo {
                           id
@@ -307,7 +315,8 @@ internal sealed class KarateFeatureBuilderTests
                   And match response.data.todo == todoSchema
 
                 Scenario: Perform a user query and validate the response
-                  * text query = """
+                  * text query =
+                    """
                       query UserTest {
                         user {
                           id
@@ -364,14 +373,16 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
                 
-                  * text todoSchema = """
+                  * text todoSchema =
+                    """
                       {
                         id: '#number',
                         name: '#string'
                       }
                     """
                 
-                  * text userSchema = """
+                  * text userSchema =
+                    """
                       {
                         id: '#number',
                         name: '#string',
@@ -415,7 +426,8 @@ internal sealed class KarateFeatureBuilderTests
                         graphQLFieldDefinition.Name.StringValue,
                         """"
                         Scenario: Perform a todo query and validate the response
-                          * text query = """
+                          * text query =
+                            """
                               query TodoTest {
                                 todo {
                                   id
@@ -443,7 +455,8 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
 
-                  * text todoSchema = """
+                  * text todoSchema =
+                    """
                       {
                         id: '#number',
                         name: '#string'

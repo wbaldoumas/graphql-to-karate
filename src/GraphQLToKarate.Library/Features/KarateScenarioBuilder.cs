@@ -11,7 +11,7 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 {
     public string Build(
         GraphQLQueryFieldType graphQLQueryFieldType,
-        IGraphQLDocumentAdapter graphqlDocumentAdapter)
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var stringBuilder = new StringBuilder();
 
@@ -19,16 +19,17 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 
         BuildQueryString(graphQLQueryFieldType.QueryString, stringBuilder);
         BuildVariablesString(graphQLQueryFieldType.Arguments, stringBuilder);
-        BuildUnionValidation(graphQLQueryFieldType.ReturnTypeName, graphqlDocumentAdapter, stringBuilder);
+        BuildUnionValidation(graphQLQueryFieldType.ReturnTypeName, graphQLDocumentAdapter, stringBuilder);
         BuildKarateRequest(graphQLQueryFieldType, stringBuilder);
-        BuildKarateAssert(graphQLQueryFieldType, graphqlDocumentAdapter,  stringBuilder);
+        BuildKarateAssert(graphQLQueryFieldType, graphQLDocumentAdapter,  stringBuilder);
 
         return stringBuilder.ToString();
     }
 
     private static void BuildQueryString(string queryString, StringBuilder stringBuilder)
     {
-        stringBuilder.AppendLine($"* text query = {SchemaToken.TripleQuote}".Indent(Indent.Single));
+        stringBuilder.AppendLine($"* text query =".Indent(Indent.Single));
+        stringBuilder.AppendLine($"{SchemaToken.TripleQuote}".Indent(Indent.Double));
         stringBuilder.AppendLine(queryString.Indent(Indent.Triple));
         stringBuilder.AppendLine($"{SchemaToken.TripleQuote}".Indent(Indent.Double));
     }
@@ -42,7 +43,8 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         }
 
         stringBuilder.AppendLine();
-        stringBuilder.AppendLine($"* text variables = {SchemaToken.TripleQuote}".Indent(Indent.Single));
+        stringBuilder.AppendLine($"* text variables =".Indent(Indent.Single));
+        stringBuilder.AppendLine($"{SchemaToken.TripleQuote}".Indent(Indent.Double));
         stringBuilder.AppendLine("{".Indent(Indent.Triple));
 
         foreach (var argumentVariable in arguments)

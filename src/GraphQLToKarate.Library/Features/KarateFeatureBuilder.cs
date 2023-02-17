@@ -51,7 +51,8 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
     {
         foreach (var karateObject in karateObjects)
         {
-            yield return $"* text {karateObject.Name.FirstCharToLower()}Schema = {SchemaToken.TripleQuote}".Indent(Indent.Single);
+            yield return $"* text {karateObject.Name.FirstCharToLower()}Schema =".Indent(Indent.Single);
+            yield return SchemaToken.TripleQuote.Indent(Indent.Double);
             yield return karateObject.ToString().Indent(Indent.Triple);
             yield return SchemaToken.TripleQuote.Indent(Indent.Double);
             yield return string.Empty;
