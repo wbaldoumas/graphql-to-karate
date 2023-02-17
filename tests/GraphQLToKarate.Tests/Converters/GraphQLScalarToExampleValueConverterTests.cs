@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Converters;
 
 [TestFixture]
-public class GraphQLScalarToExampleValueConverterTests
+internal sealed class GraphQLScalarToExampleValueConverterTests
 {
     private GraphQLScalarToExampleValueConverter? _subjectUnderTest;
     private IGraphQLDocumentAdapter? _mockGraphQLDocumentAdapter;
