@@ -77,7 +77,7 @@ internal sealed class GraphQLToKarateConverterTests
         {
             QueryName = GraphQLToken.Query,
             ExcludeQueries = false,
-            TypeFilter = new HashSet<string>()
+            TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         };
 
         var subjectUnderTest = new GraphQLToKarateConverter(
@@ -307,6 +307,178 @@ internal sealed class GraphQLToKarateConverterTests
             );
     }
 
+    [Test]
+    public void Convert_only_invokes_GraphQLFieldDefinitionConverter_for_Todo_query_in_OperationFilter_setting()
+    {
+        // arrange
+        _mockGraphQLSchemaParser!
+            .Parse(SomeSchemaString)
+            .Returns(TestGraphQLDocument);
+
+        _mockGraphQLTypeDefinitionConverter!
+            .Convert(Arg.Any<GraphQLObjectTypeDefinition>(), Arg.Any<GraphQLDocumentAdapter>())
+            .Returns(TestKarateObject);
+
+        _mockGraphQLTypeDefinitionConverter!
+            .Convert(Arg.Any<GraphQLInterfaceTypeDefinition>(), Arg.Any<GraphQLDocumentAdapter>())
+            .Returns(OtherTestKarateObject);
+
+        _mockGraphQLFieldDefinitionConverter!
+            .Convert(
+                Arg.Is<GraphQLFieldDefinition>(
+                    arg => arg.Name.StringValue == TodoQueryFieldDefinition.Name.StringValue
+                ),
+                Arg.Any<GraphQLDocumentAdapter>()
+            )
+            .Returns(TodoQueryFieldType);
+
+        _mockKarateFeatureBuilder!
+            .Build(
+                Arg.Any<IEnumerable<KarateObject>>(),
+                Arg.Any<IEnumerable<GraphQLQueryFieldType>>(),
+                Arg.Any<IGraphQLDocumentAdapter>()
+            )
+            .Returns(ExpectedKarateFeature)
+            .AndDoes(ForceEnumerationOfMockedEnumerables);
+
+        var settings = new GraphQLToKarateConverterSettings
+        {
+            QueryName = GraphQLToken.Query,
+            TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                TodoQueryFieldDefinition.Name.StringValue
+            },
+            ExcludeQueries = false
+        };
+
+        var subjectUnderTest = new GraphQLToKarateConverter(
+            _mockGraphQLSchemaParser,
+            _mockGraphQLTypeDefinitionConverter,
+            _mockGraphQLFieldDefinitionConverter,
+            _mockKarateFeatureBuilder,
+            settings
+        );
+
+        // act
+        var karateFeature = subjectUnderTest.Convert(SomeSchemaString);
+
+        // assert
+        karateFeature.Should().Be(ExpectedKarateFeature);
+
+        _mockGraphQLSchemaParser
+            .Received(1)
+            .Parse(SomeSchemaString);
+
+        _mockGraphQLTypeDefinitionConverter
+            .Received(1)
+            .Convert(GraphQLObjectTypeDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLTypeDefinitionConverter
+            .Received(1)
+            .Convert(GraphQLInterfaceTypeDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLFieldDefinitionConverter
+            .Received(1)
+            .Convert(TodoQueryFieldDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLFieldDefinitionConverter
+            .DidNotReceive()
+            .Convert(TodosQueryFieldDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockKarateFeatureBuilder
+            .Received(1)
+            .Build(
+                Arg.Is<IEnumerable<KarateObject>>(arg => arg.Count() == 2),
+                Arg.Is<IEnumerable<GraphQLQueryFieldType>>(arg => arg.Count() == 1),
+                Arg.Any<IGraphQLDocumentAdapter>()
+            );
+    }
+
+    [Test]
+    public void Convert_only_invokes_GraphQLFieldDefinitionConverter_for_Todos_query_in_OperationFilter_setting()
+    {
+        // arrange
+        _mockGraphQLSchemaParser!
+            .Parse(SomeSchemaString)
+            .Returns(TestGraphQLDocument);
+
+        _mockGraphQLTypeDefinitionConverter!
+            .Convert(Arg.Any<GraphQLObjectTypeDefinition>(), Arg.Any<GraphQLDocumentAdapter>())
+            .Returns(TestKarateObject);
+
+        _mockGraphQLTypeDefinitionConverter!
+            .Convert(Arg.Any<GraphQLInterfaceTypeDefinition>(), Arg.Any<GraphQLDocumentAdapter>())
+            .Returns(OtherTestKarateObject);
+
+        _mockGraphQLFieldDefinitionConverter!
+            .Convert(
+                Arg.Is<GraphQLFieldDefinition>(
+                    arg => arg.Name.StringValue == TodosQueryFieldDefinition.Name.StringValue
+                ),
+                Arg.Any<GraphQLDocumentAdapter>()
+            )
+            .Returns(TodosQueryFieldType);
+
+        _mockKarateFeatureBuilder!
+            .Build(
+                Arg.Any<IEnumerable<KarateObject>>(),
+                Arg.Any<IEnumerable<GraphQLQueryFieldType>>(),
+                Arg.Any<IGraphQLDocumentAdapter>()
+            )
+            .Returns(ExpectedKarateFeature)
+            .AndDoes(ForceEnumerationOfMockedEnumerables);
+
+        var settings = new GraphQLToKarateConverterSettings
+        {
+            QueryName = GraphQLToken.Query,
+            TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                TodosQueryFieldDefinition.Name.StringValue
+            },
+            ExcludeQueries = false
+        };
+
+        var subjectUnderTest = new GraphQLToKarateConverter(
+            _mockGraphQLSchemaParser,
+            _mockGraphQLTypeDefinitionConverter,
+            _mockGraphQLFieldDefinitionConverter,
+            _mockKarateFeatureBuilder,
+            settings
+        );
+
+        // act
+        var karateFeature = subjectUnderTest.Convert(SomeSchemaString);
+
+        // assert
+        karateFeature.Should().Be(ExpectedKarateFeature);
+
+        _mockGraphQLSchemaParser
+            .Received(1)
+            .Parse(SomeSchemaString);
+
+        _mockGraphQLTypeDefinitionConverter
+            .Received(1)
+            .Convert(GraphQLObjectTypeDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLTypeDefinitionConverter
+            .Received(1)
+            .Convert(GraphQLInterfaceTypeDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLFieldDefinitionConverter
+            .DidNotReceive()
+            .Convert(TodoQueryFieldDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockKarateFeatureBuilder
+            .Received(1)
+            .Build(
+                Arg.Is<IEnumerable<KarateObject>>(arg => arg.Count() == 2),
+                Arg.Is<IEnumerable<GraphQLQueryFieldType>>(arg => arg.Count() == 1),
+                Arg.Any<IGraphQLDocumentAdapter>()
+            );
+    }
+
     private static void ForceEnumerationOfMockedEnumerables(CallInfo callInfo)
     {
         var karateObjects = callInfo.ArgAt<IEnumerable<KarateObject>>(0);
@@ -329,7 +501,8 @@ internal sealed class GraphQLToKarateConverterTests
 
     private static readonly KarateObject TestKarateObject = new("TestKarateObject", new List<KarateTypeBase>());
 
-    private static readonly KarateObject OtherTestKarateObject = new("OtherTestKarateObject", new List<KarateTypeBase>());
+    private static readonly KarateObject OtherTestKarateObject =
+        new("OtherTestKarateObject", new List<KarateTypeBase>());
 
     private static readonly GraphQLFieldDefinition TodoQueryFieldDefinition = new()
     {

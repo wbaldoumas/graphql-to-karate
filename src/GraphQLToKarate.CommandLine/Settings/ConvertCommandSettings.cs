@@ -49,9 +49,15 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
 
     [CommandOption("--type-filter")]
     [Description("A comma-separated list of GraphQL types to include in the Karate feature")]
-    [TypeConverter(typeof(TypeFilterConverter))]
+    [TypeConverter(typeof(StringToSetConverter))]
     [DefaultValue(typeof(string), "")]
     public ISet<string> TypeFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    [CommandOption("--operation-filter")]
+    [Description("A comma-separated list of GraphQL query operations to include in the Karate feature")]
+    [TypeConverter(typeof(StringToSetConverter))]
+    [DefaultValue(typeof(string), "")]
+    public ISet<string> OperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     public override ValidationResult Validate()
     {

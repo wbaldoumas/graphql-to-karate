@@ -38,6 +38,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
             .WithExcludeQueriesSetting(commandSettings.ExcludeQueries)
             .WithQueryName(loadedCommandSettings.QueryName)
             .WithTypeFilter(loadedCommandSettings.TypeFilter)
+            .WithOperationFilter(loadedCommandSettings.OperationFilter)
             .Build();
 
         var karateFeature = graphQLToKarateConverter.Convert(loadedCommandSettings.GraphQLSchema);

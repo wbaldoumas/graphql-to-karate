@@ -84,6 +84,10 @@ internal sealed class ConvertCommandSettingsLoaderTests
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "Hello"
+            },
+            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "World"
             }
         };
 
@@ -130,6 +134,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
+        loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
     }
 
     [Test]
@@ -161,6 +166,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(GraphQLToken.Query);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
+        loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
     }
 
     [Test]
@@ -199,5 +205,6 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
+        loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
     }
 }

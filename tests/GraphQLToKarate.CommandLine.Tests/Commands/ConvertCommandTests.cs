@@ -81,7 +81,8 @@ internal sealed class ConvertCommandTests
                 ExcludeQueries = convertCommandSettings.ExcludeQueries,
                 BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
                 QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
-                TypeFilter = convertCommandSettings.TypeFilter
+                TypeFilter = convertCommandSettings.TypeFilter,
+                OperationFilter = convertCommandSettings.OperationFilter
             });
 
         // act

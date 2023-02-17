@@ -19,8 +19,8 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
     public GraphQLToKarateConverter(
         IGraphQLSchemaParser graphQLSchemaParser,
         IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
-        IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter, 
-        IKarateFeatureBuilder karateFeatureBuilder, 
+        IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter,
+        IKarateFeatureBuilder karateFeatureBuilder,
         GraphQLToKarateConverterSettings graphQLToKarateConverterSettings)
     {
         _graphQLSchemaParser = graphQLSchemaParser;
@@ -78,14 +78,22 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
         var graphQLQueryTypeDefinition = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
-            .FirstOrDefault(definition => definition.Name.StringValue.Equals(_graphQLToKarateConverterSettings.QueryName, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(definition =>
+                definition.Name.StringValue.Equals(_graphQLToKarateConverterSettings.QueryName,
+                    StringComparison.OrdinalIgnoreCase));
 
-        var graphQLQueryFieldTypes = graphQLQueryTypeDefinition!.Fields!.Select(
-            graphQLFieldDefinition => _graphQLFieldDefinitionConverter.Convert(
-                graphQLFieldDefinition,
-                graphQLDocumentAdapter
+        var graphQLQueryFieldTypes = graphQLQueryTypeDefinition!.Fields!
+            .Where(graphQLFieldDefinition => !_graphQLToKarateConverterSettings.OperationFilter.Any() ||
+                                             _graphQLToKarateConverterSettings.OperationFilter.Contains(
+                                                 graphQLFieldDefinition.Name.StringValue
+                                             )
             )
-        );
+            .Select(
+                graphQLFieldDefinition => _graphQLFieldDefinitionConverter.Convert(
+                    graphQLFieldDefinition,
+                    graphQLDocumentAdapter
+                )
+            );
 
         return _karateFeatureBuilder.Build(karateObjects, graphQLQueryFieldTypes, graphQLDocumentAdapter);
     }

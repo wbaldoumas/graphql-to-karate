@@ -6,7 +6,7 @@ namespace GraphQLToKarate.CommandLine.Infrastructure;
 /// <summary>
 ///     Converts a comma-separated string into an ISet of strings, trimming whitespace.
 /// </summary>
-internal sealed class TypeFilterConverter : TypeConverter
+internal sealed class StringToSetConverter : TypeConverter
 {
     public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
     {
@@ -17,8 +17,8 @@ internal sealed class TypeFilterConverter : TypeConverter
 
         return stringValue
             .Split(',')
-            .Select(type => type.Trim())
-            .Where(type => !string.IsNullOrEmpty(type))
+            .Select(item => item.Trim())
+            .Where(item => !string.IsNullOrEmpty(item))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
     }
 }

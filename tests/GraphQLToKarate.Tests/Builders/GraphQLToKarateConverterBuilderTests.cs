@@ -28,6 +28,7 @@ internal sealed class GraphQLToKarateConverterBuilderTests
             .WithExcludeQueriesSetting(false)
             .WithQueryName("Hello")
             .WithTypeFilter(new HashSet<string> { "Test" })
+            .WithOperationFilter(new HashSet<string> { "todos" })
             .Build();
 
         // assert

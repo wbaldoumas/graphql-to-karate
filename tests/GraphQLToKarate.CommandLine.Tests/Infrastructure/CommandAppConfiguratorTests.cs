@@ -73,7 +73,8 @@ internal sealed class CommandAppConfiguratorTests
                 ExcludeQueries = false,
                 BaseUrl = "baseUrl",
                 QueryName = GraphQLToken.Query,
-                TypeFilter = new HashSet<string>()
+                TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+                OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             });
 
         // act
