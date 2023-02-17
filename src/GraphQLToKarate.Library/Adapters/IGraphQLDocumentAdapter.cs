@@ -41,4 +41,11 @@ public interface IGraphQLDocumentAdapter
     /// <param name="graphQLTypeDefinitionName">The GraphQL type definition to retrieve.</param>
     /// <returns>The <see cref="GraphQLUnionTypeDefinition"/> or null if one doesn't exist.</returns>
     GraphQLUnionTypeDefinition? GetGraphQLUnionTypeDefinition(string graphQLTypeDefinitionName);
+
+    /// <summary>
+    ///     Retrieve the given <paramref name="graphQLTypeDefinitionName"/> as a <see cref="GraphQLEnumTypeDefinition"/>.
+    /// </summary>
+    /// <param name="graphQLTypeDefinitionName">The GraphQL type definition to retrieve.</param>
+    /// <returns>The <see cref="GraphQLEnumTypeDefinition"/> or null if one doesn't exist.</returns>
+    GraphQLEnumTypeDefinition? GetGraphQLEnumTypeDefinition(string graphQLTypeDefinitionName);
 }
