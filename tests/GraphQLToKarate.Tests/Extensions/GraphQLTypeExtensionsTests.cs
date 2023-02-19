@@ -70,4 +70,20 @@ internal sealed class GraphQLTypeExtensionsTests
         // assert
         act.Should().ThrowExactly<InvalidGraphQLTypeException>();
     }
+
+    [Test]
+    public void NameValue_should_return_correct_name_value()
+    {
+        // arrange
+        var namedNode = new GraphQLNamedType
+        {
+            Name = new GraphQLName("NamedType")
+        };
+
+        // act
+        var result = namedNode.NameValue();
+
+        // assert
+        result.Should().Be("NamedType");
+    }
 }

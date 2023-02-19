@@ -45,6 +45,8 @@ internal static class StringExtensions
 
     /// <summary>
     ///     Indents a <paramref name="source"/> string (including multi-line strings) by the specified <see cref="indent"/> amount.
+    ///
+    ///     This is different than <see cref="string.PadLeft(int)"/> in that it properly indents strings that span multiple lines.
     /// </summary>
     /// <param name="source">The string to manipulate.</param>
     /// <param name="indent">The amount to indent the string.</param>

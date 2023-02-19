@@ -2,6 +2,7 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using NSubstitute;
@@ -70,7 +71,7 @@ internal sealed class GraphQlTypeDefinitionConverterTests
         }
 
         var expectedKarateObject = new KarateObject(
-            graphQLObjectTypeDefinition.Name.StringValue,
+            graphQLObjectTypeDefinition.NameValue(),
             karateTypesByFieldDefinitionName.Values.ToList()
         );
 
@@ -107,29 +108,29 @@ internal sealed class GraphQlTypeDefinitionConverterTests
                 new Dictionary<string, KarateTypeBase>
                 {
                     {
-                        NonNullGraphQLFieldDefinition.Name.StringValue,
+                        NonNullGraphQLFieldDefinition.NameValue(),
                         new KarateNonNullType(
                             new KarateType(
                                 KarateToken.Number,
-                                NonNullGraphQLFieldDefinition.Name.StringValue
+                                NonNullGraphQLFieldDefinition.NameValue()
                             )
                         )
                     },
                     {
-                        NullGraphQLFieldDefinition.Name.StringValue,
+                        NullGraphQLFieldDefinition.NameValue(),
                         new KarateNullType(
                             new KarateType(
                                 KarateToken.String,
-                                NullGraphQLFieldDefinition.Name.StringValue
+                                NullGraphQLFieldDefinition.NameValue()
                             )
                         )
                     },
                     {
-                        ListGraphQLFieldDefinition.Name.StringValue,
+                        ListGraphQLFieldDefinition.NameValue(),
                         new KarateListType(
                             new KarateType(
                                 KarateToken.Boolean,
-                                ListGraphQLFieldDefinition.Name.StringValue
+                                ListGraphQLFieldDefinition.NameValue()
                             )
                         )
                     }

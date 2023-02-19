@@ -1,6 +1,7 @@
 ﻿using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Exceptions;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -19,7 +20,7 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
     {
         if (graphQLTypeDefinition.Fields is null)
         {
-            return new KarateObject(graphQLTypeDefinition.Name.StringValue, new List<KarateTypeBase>());
+            return new KarateObject(graphQLTypeDefinition.NameValue(), new List<KarateTypeBase>());
         }
 
         var karateTypes =
@@ -32,11 +33,11 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
                 _ => throw new InvalidGraphQLTypeException()
             }
             select converter.Convert(
-                graphQLFieldDefinition.Name.StringValue,
+                graphQLFieldDefinition.NameValue(),
                 graphQLFieldDefinition.Type,
                 graphQLDocumentAdapter
             );
 
-        return new KarateObject(graphQLTypeDefinition.Name.StringValue, karateTypes.ToList());
+        return new KarateObject(graphQLTypeDefinition.NameValue(), karateTypes.ToList());
     }
 }

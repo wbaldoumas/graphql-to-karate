@@ -50,8 +50,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
-        stringBuilder.Append(graphQLFieldDefinition.Name.StringValue);
+        stringBuilder.Append(graphQLFieldDefinition.NameValue().Indent(indentationLevel + 2));
 
         HandleArguments(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
 
@@ -75,8 +74,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
             indentationLevel
         );
 
-        stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 2));
-        stringBuilder.AppendLine($"{SchemaToken.CloseBrace}");
+        stringBuilder.AppendLine($"{SchemaToken.CloseBrace}".Indent(indentationLevel + 2));
 
         if (indentationLevel == 0)
         {
@@ -135,8 +133,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         {
             var graphQLTypeName = graphQLNamedType.GetTypeName();
 
-            stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 4));
-            stringBuilder.AppendLine($"... on {graphQLTypeName} {SchemaToken.OpenBrace}");
+            stringBuilder.AppendLine($"... on {graphQLTypeName} {SchemaToken.OpenBrace}".Indent(indentationLevel + 4));
 
             var innerUnionTypeDefinitionWithFields = graphQLDocumentAdapter.GetGraphQLTypeDefinitionWithFields(
                 graphQLTypeName
@@ -152,8 +149,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
                 indentationLevel + 2
             );
 
-            stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 4));
-            stringBuilder.AppendLine($"{SchemaToken.CloseBrace}");
+            stringBuilder.AppendLine($"{SchemaToken.CloseBrace}".Indent(indentationLevel + 4));
         }
     }
 
@@ -223,8 +219,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         }
         else
         {
-            stringBuilder.Append(new string(SchemaToken.Space, indentationLevel + 4));
-            stringBuilder.Append(graphQLFieldDefinition.Name.StringValue);
+            stringBuilder.Append(graphQLFieldDefinition.NameValue().Indent(indentationLevel + 4));
 
             HandleArguments(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
 
@@ -262,7 +257,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     {
         var operationStringBuilder = new StringBuilder();
 
-        operationStringBuilder.Append($"query {graphQLQueryFieldDefinition.Name.StringValue.FirstCharToUpper()}Test");
+        operationStringBuilder.Append($"query {graphQLQueryFieldDefinition.NameValue().FirstCharToUpper()}Test");
 
         var graphQLArgumentTypes = graphQLInputValueDefinitionConverter.GetAllConverted();
 

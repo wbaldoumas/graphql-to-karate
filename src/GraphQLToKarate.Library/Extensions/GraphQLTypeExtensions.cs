@@ -23,10 +23,17 @@ internal static class GraphQLTypeExtensions
                     graphQLType = graphQLListType.Type;
                     continue;
                 case GraphQLNamedType namedType:
-                    return namedType.Name.StringValue;
+                    return namedType.NameValue();
                 default:
                     throw new InvalidGraphQLTypeException();
             }
         }
     }
+
+    /// <summary>
+    ///     Convenience method for accessing named node string values.
+    /// </summary>
+    /// <param name="namedNode">The node to retrieve the name value of</param>
+    /// <returns>The string value of the node's name</returns>
+    public static string NameValue(this INamedNode namedNode) => namedNode.Name.StringValue;
 }

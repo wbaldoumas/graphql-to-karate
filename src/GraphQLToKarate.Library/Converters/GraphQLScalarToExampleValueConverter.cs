@@ -51,6 +51,6 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLToExampleVa
 
         var index = _random.Next(0, graphQLEnumTypeDefinition.Values.Count);
 
-        return graphQLEnumTypeDefinition.Values[index].Name.StringValue;
+        return graphQLEnumTypeDefinition.Values[index].NameValue();
     }
 }

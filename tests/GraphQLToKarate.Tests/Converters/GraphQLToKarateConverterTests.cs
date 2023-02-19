@@ -2,6 +2,7 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
@@ -49,7 +50,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodoQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodoQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -58,7 +59,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodosQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodosQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -138,7 +139,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodoQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodoQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -147,7 +148,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodosQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodosQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -168,7 +169,7 @@ internal sealed class GraphQLToKarateConverterTests
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                GraphQLObjectTypeDefinition.Name.StringValue
+                GraphQLObjectTypeDefinition.NameValue()
             }
         };
 
@@ -230,7 +231,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodoQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodoQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -239,7 +240,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodosQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodosQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -259,7 +260,7 @@ internal sealed class GraphQLToKarateConverterTests
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                GraphQLInterfaceTypeDefinition.Name.StringValue
+                GraphQLInterfaceTypeDefinition.NameValue()
             },
             ExcludeQueries = false
         };
@@ -326,7 +327,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodoQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodoQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -347,7 +348,7 @@ internal sealed class GraphQLToKarateConverterTests
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
             OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                TodoQueryFieldDefinition.Name.StringValue
+                TodoQueryFieldDefinition.NameValue()
             },
             ExcludeQueries = false
         };
@@ -414,7 +415,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLFieldDefinitionConverter!
             .Convert(
                 Arg.Is<GraphQLFieldDefinition>(
-                    arg => arg.Name.StringValue == TodosQueryFieldDefinition.Name.StringValue
+                    arg => arg.NameValue() == TodosQueryFieldDefinition.NameValue()
                 ),
                 Arg.Any<GraphQLDocumentAdapter>()
             )
@@ -435,7 +436,7 @@ internal sealed class GraphQLToKarateConverterTests
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
             OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                TodosQueryFieldDefinition.Name.StringValue
+                TodosQueryFieldDefinition.NameValue()
             },
             ExcludeQueries = false
         };
