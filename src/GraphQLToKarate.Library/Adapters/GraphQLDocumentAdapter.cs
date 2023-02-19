@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Extensions;
 
 namespace GraphQLToKarate.Library.Adapters;
 
@@ -24,25 +25,25 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             {
                 case GraphQLEnumTypeDefinition graphQLEnumTypeDefinition:
                     _graphQLEnumTypeDefinitionsByName.Add(
-                        graphQLEnumTypeDefinition.Name.StringValue,
+                        graphQLEnumTypeDefinition.NameValue(),
                         graphQLEnumTypeDefinition
                     );
                     break;
                 case GraphQLObjectTypeDefinition graphQLObjectTypeDefinition:
                     _graphQLTypeDefinitionsWithFieldsByName.Add(
-                        graphQLObjectTypeDefinition.Name.StringValue,
+                        graphQLObjectTypeDefinition.NameValue(),
                         graphQLObjectTypeDefinition
                     );
                     break;
                 case GraphQLInterfaceTypeDefinition graphQLInterfaceTypeDefinition:
                     _graphQLTypeDefinitionsWithFieldsByName.Add(
-                        graphQLInterfaceTypeDefinition.Name.StringValue,
+                        graphQLInterfaceTypeDefinition.NameValue(),
                         graphQLInterfaceTypeDefinition
                     );
                     break;
                 case GraphQLUnionTypeDefinition graphQLUnionTypeDefinition:
                     _graphQLUnionTypeDefinitionsByName.Add(
-                        graphQLUnionTypeDefinition.Name.StringValue,
+                        graphQLUnionTypeDefinition.NameValue(),
                         graphQLUnionTypeDefinition
                     );
                     break;

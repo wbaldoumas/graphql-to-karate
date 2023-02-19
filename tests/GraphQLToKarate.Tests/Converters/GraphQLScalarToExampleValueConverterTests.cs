@@ -3,6 +3,7 @@ using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Exceptions;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using NSubstitute;
 using NUnit.Framework;
@@ -104,11 +105,11 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
         };
 
         _mockGraphQLDocumentAdapter!
-            .IsGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .IsGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns(true);
 
         _mockGraphQLDocumentAdapter
-            .GetGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .GetGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns(graphQLEnumType);
 
         // act
@@ -128,11 +129,11 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
         };
 
         _mockGraphQLDocumentAdapter!
-            .IsGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .IsGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns(true);
 
         _mockGraphQLDocumentAdapter
-            .GetGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .GetGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns((GraphQLEnumTypeDefinition?) null);
 
         // act
@@ -158,11 +159,11 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
         };
 
         _mockGraphQLDocumentAdapter!
-            .IsGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .IsGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns(true);
 
         _mockGraphQLDocumentAdapter
-            .GetGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .GetGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns(graphQLEnumType);
 
         // act
@@ -182,7 +183,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
         };
 
         _mockGraphQLDocumentAdapter!
-            .IsGraphQLEnumTypeDefinition(graphQLType.Name.StringValue)
+            .IsGraphQLEnumTypeDefinition(graphQLType.NameValue())
             .Returns(false);
 
         // act

@@ -76,7 +76,7 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         foreach (var graphQLUnionType in graphQLUnionTypeDefinition.Types!)
         {
             stringBuilder.AppendLine(
-                $"karate.match(response, {graphQLUnionType.Name.StringValue.FirstCharToLower()}Schema).pass ||".Indent(Indent.Triple)
+                $"karate.match(response, {graphQLUnionType.NameValue().FirstCharToLower()}Schema).pass ||".Indent(Indent.Triple)
             );
         }
 

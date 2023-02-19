@@ -13,7 +13,7 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
 
     public GraphQLArgumentTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition)
     {
-        var graphQLArgumentName = graphQLInputValueDefinition.Name.StringValue;
+        var graphQLArgumentName = graphQLInputValueDefinition.NameValue();
         var graphQLVariableName = GetNonReservedVariableName(graphQLArgumentName);
         var graphQLVariableTypeName = Convert(graphQLInputValueDefinition, graphQLArgumentName, graphQLVariableName);
 
@@ -69,16 +69,14 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
     private static GraphQLArgumentTypeBase GetGraphQLInnerVariableType(
         GraphQLType graphQLType,
         string graphQLArgumentName,
-        string graphQLVariableName)
+        string graphQLVariableName
+    ) => graphQLType switch
     {
-        return graphQLType switch
-        {
-            GraphQLListType => GetGraphQLListVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
-            GraphQLNamedType => GetGraphQLNamedVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
-            GraphQLNonNullType => GetGraphQLNonNullVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
-            _ => throw new InvalidGraphQLTypeException()
-        };
-    }
+        GraphQLListType => GetGraphQLListVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
+        GraphQLNamedType => GetGraphQLNamedVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
+        GraphQLNonNullType => GetGraphQLNonNullVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
+        _ => throw new InvalidGraphQLTypeException()
+    };
 
     private string GetNonReservedVariableName(string inputValueDefinitionName, int nameIndex = 1)
     {

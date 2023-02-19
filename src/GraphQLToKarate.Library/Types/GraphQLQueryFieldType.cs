@@ -7,7 +7,7 @@ public sealed class GraphQLQueryFieldType
 {
     private readonly GraphQLFieldDefinition _queryField;
 
-    public string Name => _queryField.Name.StringValue;
+    public string Name => _queryField.NameValue();
 
     public string OperationName => $"{Name.FirstCharToUpper()}Test";
 

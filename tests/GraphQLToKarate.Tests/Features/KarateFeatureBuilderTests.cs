@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Types;
@@ -100,7 +101,7 @@ internal sealed class KarateFeatureBuilderTests
                 new Dictionary<string, string>
                 {
                     {
-                        graphQLFieldDefinition.Name.StringValue,
+                        graphQLFieldDefinition.NameValue(),
                         """"
                         Scenario: Perform a todo query and validate the response
                           * text query =
@@ -227,7 +228,7 @@ internal sealed class KarateFeatureBuilderTests
                 new Dictionary<string, string>
                 {
                     {
-                        graphQLFieldDefinition.Name.StringValue,
+                        graphQLFieldDefinition.NameValue(),
                         """"
                         Scenario: Perform a todo query and validate the response
                           * text query =
@@ -248,7 +249,7 @@ internal sealed class KarateFeatureBuilderTests
                         """"
                     },
                     {
-                        otherGraphQLFieldDefinition.Name.StringValue,
+                        otherGraphQLFieldDefinition.NameValue(),
                         """"
                         Scenario: Perform a user query and validate the response
                           * text query =
@@ -423,7 +424,7 @@ internal sealed class KarateFeatureBuilderTests
                 new Dictionary<string, string>
                 {
                     {
-                        graphQLFieldDefinition.Name.StringValue,
+                        graphQLFieldDefinition.NameValue(),
                         """"
                         Scenario: Perform a todo query and validate the response
                           * text query =
