@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -12,8 +13,12 @@ public interface IGraphQLInputValueDefinitionConverter
     ///     Convert the given <see cref="GraphQLInputValueDefinition"/> to a <see cref="GraphQLArgumentTypeBase"/>.
     /// </summary>
     /// <param name="graphQLInputValueDefinition">The input value definition to convert.</param>
+    /// <param name="graphQLDocumentAdapter">The adapter to use for accessing the GraphQL document.</param>
     /// <returns>The converted GraphQL argument type.</returns>
-    GraphQLArgumentTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition);
+    GraphQLArgumentTypeBase Convert(
+        GraphQLInputValueDefinition graphQLInputValueDefinition,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter
+    );
 
     ICollection<GraphQLArgumentTypeBase> GetAllConverted();
 }

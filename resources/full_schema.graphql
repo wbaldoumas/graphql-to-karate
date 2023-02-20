@@ -1,0 +1,56 @@
+type Query {
+  user(id: ID!): User
+  users(filter: UserFilterInput): [User!]
+  search(query: String!): [SearchResult!]
+  article(id: ID!): Article
+  articles(input: ArticleInput): [Article!]
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  email: String!
+  age: Int
+  address: Address
+  friends(limit: Int, offset: Int): [User!]
+}
+
+type Address {
+  street: String!
+  city: String!
+  state: String!
+  zip: String!
+}
+
+interface Node {
+  id: ID!
+}
+
+type Article implements Node {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+union SearchResult = User | Article
+
+input ArticleInput {
+  titleContains: String
+  contentContains: String
+  authorId: ID
+}
+
+input AddressFilterInput {
+  streetContains: String
+  cityContains: String
+  stateEquals: String
+  zipEquals: String
+}
+
+input UserFilterInput {
+  nameContains: String
+  emailContains: String
+  ageGreaterThan: Int
+  ageLessThan: Int
+  address: AddressFilterInput
+}

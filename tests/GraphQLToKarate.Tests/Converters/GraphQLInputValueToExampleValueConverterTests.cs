@@ -188,7 +188,7 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
                                 Name = new GraphQLName(nestedGraphQLInputObjectTypeDefinition.Name)
                             }
                         }
-                    },
+                    }
                 }
             }
         };

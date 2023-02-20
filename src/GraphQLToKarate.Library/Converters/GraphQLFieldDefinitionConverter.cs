@@ -52,7 +52,12 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         stringBuilder.Append(graphQLFieldDefinition.NameValue().Indent(indentationLevel + 2));
 
-        HandleArguments(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
+        HandleArguments(
+            graphQLFieldDefinition, 
+            graphQLInputValueDefinitionConverter, 
+            graphQLDocumentAdapter, 
+            stringBuilder
+        );
 
         stringBuilder.AppendLine($"{SchemaToken.Space}{SchemaToken.OpenBrace}");
 
@@ -221,7 +226,12 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         {
             stringBuilder.Append(graphQLFieldDefinition.NameValue().Indent(indentationLevel + 4));
 
-            HandleArguments(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
+            HandleArguments(
+                graphQLFieldDefinition, 
+                graphQLInputValueDefinitionConverter, 
+                graphQLDocumentAdapter,
+                stringBuilder
+            );
 
             stringBuilder.AppendLine();
         }
@@ -230,6 +240,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     private static void HandleArguments(
         IHasArgumentsDefinitionNode graphQLFieldDefinition,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
+        IGraphQLDocumentAdapter graphqlDocumentAdapter,
         StringBuilder stringBuilder)
     {
         if (!graphQLFieldDefinition.HasArguments())
@@ -241,7 +252,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         foreach (var argument in graphQLFieldDefinition.Arguments!)
         {
-            var graphQLArgumentType = graphQLInputValueDefinitionConverter.Convert(argument);
+            var graphQLArgumentType = graphQLInputValueDefinitionConverter.Convert(argument, graphqlDocumentAdapter);
 
             stringBuilder.Append($"{graphQLArgumentType.ArgumentName}: ${graphQLArgumentType.VariableName}{SchemaToken.Comma} ");
         }

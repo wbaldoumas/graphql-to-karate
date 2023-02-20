@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Types;
@@ -10,16 +11,30 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
 {
     private readonly ICollection<GraphQLArgumentTypeBase> _graphQLVariableTypes = new List<GraphQLArgumentTypeBase>();
     private readonly ISet<string> _reservedVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    private readonly IGraphQLInputValueToExampleValueConverter _graphQLInputValueToExampleValue;
 
-    public GraphQLArgumentTypeBase Convert(GraphQLInputValueDefinition graphQLInputValueDefinition)
+    public GraphQLInputValueDefinitionConverter(
+        IGraphQLInputValueToExampleValueConverter graphQLInputValueToExampleValue
+    ) => _graphQLInputValueToExampleValue = graphQLInputValueToExampleValue;
+
+    public GraphQLArgumentTypeBase Convert(
+        GraphQLInputValueDefinition graphQLInputValueDefinition,
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var graphQLArgumentName = graphQLInputValueDefinition.NameValue();
         var graphQLVariableName = GetNonReservedVariableName(graphQLArgumentName);
-        var graphQLVariableTypeName = Convert(graphQLInputValueDefinition, graphQLArgumentName, graphQLVariableName);
+        var exampleValue = _graphQLInputValueToExampleValue.Convert(graphQLInputValueDefinition, graphQLDocumentAdapter);
 
-        _graphQLVariableTypes.Add(graphQLVariableTypeName);
+        var graphQLArgument = Convert(
+            graphQLInputValueDefinition, 
+            graphQLArgumentName, 
+            graphQLVariableName,
+            exampleValue
+        );
 
-        return graphQLVariableTypeName;
+        _graphQLVariableTypes.Add(graphQLArgument);
+
+        return graphQLArgument;
     }
 
     public ICollection<GraphQLArgumentTypeBase> GetAllConverted() => _graphQLVariableTypes;
@@ -27,29 +42,32 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
     private static GraphQLArgumentTypeBase Convert(
         GraphQLInputValueDefinition graphQLInputValueDefinition,
         string graphQLArgumentName,
-        string graphQLVariableName
+        string graphQLVariableName,
+        string exampleValue
     ) => graphQLInputValueDefinition.Type switch
     {
-        GraphQLNamedType => GetGraphQLNamedVariableType(graphQLInputValueDefinition.Type, graphQLArgumentName, graphQLVariableName),
-        GraphQLListType => GetGraphQLListVariableType(graphQLInputValueDefinition.Type, graphQLArgumentName, graphQLVariableName),
-        GraphQLNonNullType => GetGraphQLNonNullVariableType(graphQLInputValueDefinition.Type, graphQLArgumentName, graphQLVariableName),
+        GraphQLNamedType => GetGraphQLNamedVariableType(graphQLInputValueDefinition.Type, graphQLArgumentName, graphQLVariableName, exampleValue),
+        GraphQLListType => GetGraphQLListVariableType(graphQLInputValueDefinition.Type, graphQLArgumentName, graphQLVariableName, exampleValue),
+        GraphQLNonNullType => GetGraphQLNonNullVariableType(graphQLInputValueDefinition.Type, graphQLArgumentName, graphQLVariableName, exampleValue),
         _ => throw new InvalidGraphQLTypeException()
     };
 
     private static GraphQLArgumentTypeBase GetGraphQLNamedVariableType(
         GraphQLType graphQLType,
         string graphQLArgumentName,
-        string graphQLVariableName
-    ) => new GraphQLArgumentType(graphQLArgumentName, graphQLVariableName, graphQLType.GetTypeName());
+        string graphQLVariableName,
+        string exampleValue
+    ) => new GraphQLArgumentType(graphQLArgumentName, graphQLVariableName, graphQLType.GetTypeName(), exampleValue);
 
     private static GraphQLArgumentTypeBase GetGraphQLListVariableType(
         GraphQLType graphQLType,
         string graphQLArgumentName,
-        string graphQLVariableName)
+        string graphQLVariableName,
+        string exampleValue)
     {
         var graphQLListType = graphQLType as GraphQLListType;
         var graphQLInnerType = graphQLListType!.Type;
-        var graphQLInnerVariableType = GetGraphQLInnerVariableType(graphQLInnerType, graphQLArgumentName, graphQLVariableName);
+        var graphQLInnerVariableType = GetGraphQLInnerVariableType(graphQLInnerType, graphQLArgumentName, graphQLVariableName, exampleValue);
 
         return new GraphQLListArgumentType(graphQLInnerVariableType);
     }
@@ -57,11 +75,12 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
     private static GraphQLArgumentTypeBase GetGraphQLNonNullVariableType(
         GraphQLType graphQLType,
         string graphQLArgumentName,
-        string graphQLVariableName)
+        string graphQLVariableName,
+        string exampleValue)
     {
         var graphQLNonNullType = graphQLType as GraphQLNonNullType;
         var graphQLInnerType = graphQLNonNullType!.Type;
-        var graphQLInnerVariableType = GetGraphQLInnerVariableType(graphQLInnerType, graphQLArgumentName, graphQLVariableName);
+        var graphQLInnerVariableType = GetGraphQLInnerVariableType(graphQLInnerType, graphQLArgumentName, graphQLVariableName, exampleValue);
 
         return new GraphQLNonNullArgumentType(graphQLInnerVariableType);
     }
@@ -69,12 +88,13 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
     private static GraphQLArgumentTypeBase GetGraphQLInnerVariableType(
         GraphQLType graphQLType,
         string graphQLArgumentName,
-        string graphQLVariableName
+        string graphQLVariableName,
+        string exampleValue
     ) => graphQLType switch
     {
-        GraphQLListType => GetGraphQLListVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
-        GraphQLNamedType => GetGraphQLNamedVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
-        GraphQLNonNullType => GetGraphQLNonNullVariableType(graphQLType, graphQLArgumentName, graphQLVariableName),
+        GraphQLListType => GetGraphQLListVariableType(graphQLType, graphQLArgumentName, graphQLVariableName, exampleValue),
+        GraphQLNamedType => GetGraphQLNamedVariableType(graphQLType, graphQLArgumentName, graphQLVariableName, exampleValue),
+        GraphQLNonNullType => GetGraphQLNonNullVariableType(graphQLType, graphQLArgumentName, graphQLVariableName, exampleValue),
         _ => throw new InvalidGraphQLTypeException()
     };
 

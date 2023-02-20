@@ -76,7 +76,11 @@ public sealed class GraphQLToKarateConverterBuilder :
             new GraphQLTypeConverterFactory(_graphQLTypeConverter ?? new GraphQLTypeConverter())
         ),
         new GraphQLFieldDefinitionConverter(
-            new GraphQLInputValueDefinitionConverterFactory()
+            new GraphQLInputValueDefinitionConverterFactory(
+                new GraphQLInputValueToExampleValueConverter(
+                    new GraphQLScalarToExampleValueConverter()
+                )
+            )
         ),
         new KarateFeatureBuilder(
             new KarateScenarioBuilder(),
