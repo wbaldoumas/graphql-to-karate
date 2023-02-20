@@ -49,8 +49,11 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 
         foreach (var argumentVariable in arguments)
         {
-            stringBuilder.AppendLine($"\"{argumentVariable.VariableName}\": <some value>".Indent(Indent.Quadruple));
+            stringBuilder.AppendLine($"\"{argumentVariable.VariableName}\": {argumentVariable.ExampleValue},".Indent(Indent.Quadruple));
         }
+
+        stringBuilder.TrimEnd(Environment.NewLine.Length + 1); // remove trailing comma
+        stringBuilder.AppendLine();
 
         stringBuilder.AppendLine("}".Indent(Indent.Triple));
         stringBuilder.AppendLine($"{SchemaToken.TripleQuote}".Indent(Indent.Double));

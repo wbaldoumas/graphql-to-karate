@@ -16,4 +16,6 @@ internal sealed class GraphQLNonNullArgumentType : GraphQLArgumentTypeBase
     public override string VariableName => _innerType.VariableName;
 
     public override string VariableTypeName => $"{_innerType.VariableTypeName}{GraphQLToken.NonNull}";
+
+    public override string ExampleValue => _innerType.ExampleValue;
 }

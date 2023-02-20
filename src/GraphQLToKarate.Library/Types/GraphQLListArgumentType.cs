@@ -16,4 +16,6 @@ internal sealed class GraphQLListArgumentType : GraphQLArgumentTypeBase
     public override string VariableName => _innerType.VariableName;
 
     public override string VariableTypeName => $"{SchemaToken.OpenBracket}{_innerType.VariableTypeName}{SchemaToken.CloseBracket}";
+
+    public override string ExampleValue => _innerType.ExampleValue;
 }

@@ -6,5 +6,13 @@ namespace GraphQLToKarate.Library.Converters;
 [ExcludeFromCodeCoverage]
 public sealed class GraphQLInputValueDefinitionConverterFactory : IGraphQLInputValueDefinitionConverterFactory
 {
-    public IGraphQLInputValueDefinitionConverter Create() => new GraphQLInputValueDefinitionConverter();
+    private readonly IGraphQLInputValueToExampleValueConverter _graphQLInputValueToExampleValue;
+
+    public GraphQLInputValueDefinitionConverterFactory(
+        IGraphQLInputValueToExampleValueConverter graphQLInputValueToExampleValue
+    ) => _graphQLInputValueToExampleValue = graphQLInputValueToExampleValue;
+
+    public IGraphQLInputValueDefinitionConverter Create() => new GraphQLInputValueDefinitionConverter(
+        _graphQLInputValueToExampleValue
+    );
 }

@@ -19,7 +19,7 @@ internal sealed class GraphQLVariableTypeTests
     {
         get
         {
-            var graphQLVariableType = new GraphQLArgumentType("id", "id", GraphQLToken.String);
+            var graphQLVariableType = new GraphQLArgumentType("id", "id", GraphQLToken.String, "\"an example value\"");
 
             yield return new TestCaseData(
                 graphQLVariableType,

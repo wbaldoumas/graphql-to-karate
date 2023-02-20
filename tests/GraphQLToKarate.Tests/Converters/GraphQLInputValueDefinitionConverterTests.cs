@@ -1,9 +1,11 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Types;
 using GraphQLToKarate.Tests.Mocks;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Converters;
@@ -11,10 +13,17 @@ namespace GraphQLToKarate.Tests.Converters;
 [TestFixture]
 internal sealed class GraphQLInputValueDefinitionConverterTests
 {
+    private IGraphQLDocumentAdapter? _mockQLDocumentAdapter;
+    private IGraphQLInputValueToExampleValueConverter? _mockGraphQLInputValueToExampleValueConverter;
     private IGraphQLInputValueDefinitionConverter? _subjectUnderTest;
 
     [SetUp]
-    public void SetUp() => _subjectUnderTest = new GraphQLInputValueDefinitionConverter();
+    public void SetUp()
+    {
+        _mockQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
+        _mockGraphQLInputValueToExampleValueConverter = Substitute.For<IGraphQLInputValueToExampleValueConverter>();
+        _subjectUnderTest = new GraphQLInputValueDefinitionConverter(_mockGraphQLInputValueToExampleValueConverter);
+    }
 
     [TestCaseSource(nameof(ConvertTestCases))]
     public void Convert_ReturnsExpectedResult(
@@ -24,7 +33,7 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         string expectedVariableTypeName)
     {
         // act
-        var result = _subjectUnderTest!.Convert(inputValueDefinition);
+        var result = _subjectUnderTest!.Convert(inputValueDefinition, _mockQLDocumentAdapter!);
 
         // assert
         result.Should().BeOfType(expectedType);
@@ -141,9 +150,9 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         };
 
         // act
-        var result1 = _subjectUnderTest!.Convert(inputValueDefinition1);
-        var result2 = _subjectUnderTest!.Convert(inputValueDefinition2);
-        var result3 = _subjectUnderTest!.Convert(inputValueDefinition3);
+        var result1 = _subjectUnderTest!.Convert(inputValueDefinition1, _mockQLDocumentAdapter!);
+        var result2 = _subjectUnderTest!.Convert(inputValueDefinition2, _mockQLDocumentAdapter!);
+        var result3 = _subjectUnderTest!.Convert(inputValueDefinition3, _mockQLDocumentAdapter!);
 
         // assert
         result1.VariableName.Should().Be("age");
@@ -164,7 +173,7 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         };
 
         // act
-        var act = () => _subjectUnderTest!.Convert(graphQLInputValueDefinition);
+        var act = () => _subjectUnderTest!.Convert(graphQLInputValueDefinition, _mockQLDocumentAdapter!);
 
         // assert
         act.Should().ThrowExactly<InvalidGraphQLTypeException>();

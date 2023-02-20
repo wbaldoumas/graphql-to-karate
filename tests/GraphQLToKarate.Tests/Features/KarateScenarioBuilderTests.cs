@@ -101,12 +101,29 @@ internal sealed class KarateScenarioBuilderTests
                 {
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
-                        new GraphQLNonNullArgumentType(new GraphQLArgumentType("id", "id", GraphQLToken.String)),
-                        new GraphQLArgumentType("isCompleted", "isCompleted", GraphQLToken.Boolean),
+                        new GraphQLNonNullArgumentType(
+                            new GraphQLArgumentType(
+                                "id", 
+                                "id", 
+                                GraphQLToken.String,
+                                "\"an example value\""
+                            )
+                        ),
+                        new GraphQLArgumentType(
+                            "isCompleted", 
+                            "isCompleted",
+                            GraphQLToken.Boolean,
+                            "true"
+                        ),
                         new GraphQLNonNullArgumentType(
                             new GraphQLListArgumentType(
                                 new GraphQLNonNullArgumentType(
-                                    new GraphQLArgumentType("filter", "filter", "Color")
+                                    new GraphQLArgumentType(
+                                        "filter", 
+                                        "filter", 
+                                        "Color",
+                                        "[ RED, BLUE ]"
+                                    )
                                 )
                             )
                         )
@@ -143,9 +160,9 @@ internal sealed class KarateScenarioBuilderTests
                   * text variables =
                     """
                       {
-                        "id": <some value>
-                        "isCompleted": <some value>
-                        "filter": <some value>
+                        "id": "an example value",
+                        "isCompleted": true,
+                        "filter": [ RED, BLUE ]
                       }
                     """
 
