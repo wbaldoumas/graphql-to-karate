@@ -52,7 +52,7 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
             stringBuilder.AppendLine($"\"{argumentVariable.VariableName}\": {argumentVariable.ExampleValue},".Indent(Indent.Quadruple));
         }
 
-        stringBuilder.TrimEnd(3); // remove trailing comma
+        stringBuilder.TrimEnd(Environment.NewLine.Length + 1); // remove trailing comma
         stringBuilder.AppendLine();
 
         stringBuilder.AppendLine("}".Indent(Indent.Triple));
