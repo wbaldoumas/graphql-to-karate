@@ -12,11 +12,14 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
 
     private readonly IDictionary<string, GraphQLUnionTypeDefinition> _graphQLUnionTypeDefinitionsByName;
 
+    private readonly IDictionary<string, GraphQLInputObjectTypeDefinition> _graphQLInputObjectTypeDefinitionsByName;
+
     public GraphQLDocumentAdapter(GraphQLDocument graphQLDocument)
     {
         _graphQLTypeDefinitionsWithFieldsByName = new Dictionary<string, IHasFieldsDefinitionNode>();
         _graphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>();
         _graphQLUnionTypeDefinitionsByName = new Dictionary<string, GraphQLUnionTypeDefinition>();
+        _graphQLInputObjectTypeDefinitionsByName = new Dictionary<string, GraphQLInputObjectTypeDefinition>();
 
         // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
         foreach (var definition in graphQLDocument.Definitions ?? new List<ASTNode>())
@@ -47,6 +50,12 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
                         graphQLUnionTypeDefinition
                     );
                     break;
+                case GraphQLInputObjectTypeDefinition graphQLInputObjectTypeDefinition:
+                    _graphQLInputObjectTypeDefinitionsByName.Add(
+                        graphQLInputObjectTypeDefinition.NameValue(),
+                        graphQLInputObjectTypeDefinition
+                    );
+                    break;
             }
         }
     }
@@ -60,18 +69,26 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     public bool IsGraphQLUnionTypeDefinition(string graphQLTypeDefinitionName) =>
         _graphQLUnionTypeDefinitionsByName.ContainsKey(graphQLTypeDefinitionName);
 
+    public bool IsGraphQLInputObjectTypeDefinition(string graphQLTypeDefinitionName) =>
+        _graphQLInputObjectTypeDefinitionsByName.ContainsKey(graphQLTypeDefinitionName);
+
     public IHasFieldsDefinitionNode? GetGraphQLTypeDefinitionWithFields(string graphQLTypeDefinitionName) =>
         _graphQLTypeDefinitionsWithFieldsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQLTypeDefinitionWithFields)
             ? graphQLTypeDefinitionWithFields
             : null;
 
     public GraphQLUnionTypeDefinition? GetGraphQLUnionTypeDefinition(string graphQLTypeDefinitionName) =>
-        _graphQLUnionTypeDefinitionsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQlUnionTypeDefinition)
-            ? graphQlUnionTypeDefinition
+        _graphQLUnionTypeDefinitionsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQLUnionTypeDefinition)
+            ? graphQLUnionTypeDefinition
             : null;
 
     public GraphQLEnumTypeDefinition? GetGraphQLEnumTypeDefinition(string graphQLTypeDefinitionName) =>
         _graphQLEnumTypeDefinitionsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQLEnumTypeDefinition)
             ? graphQLEnumTypeDefinition
+            : null;
+
+    public GraphQLInputObjectTypeDefinition? GetGraphQLInputObjectTypeDefinition(string graphQLTypeDefinitionName) =>
+        _graphQLInputObjectTypeDefinitionsByName.TryGetValue(graphQLTypeDefinitionName, out var graphQLInputObjectTypeDefinition)
+            ? graphQLInputObjectTypeDefinition
             : null;
 }

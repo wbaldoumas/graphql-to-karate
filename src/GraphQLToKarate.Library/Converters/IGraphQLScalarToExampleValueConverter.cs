@@ -6,7 +6,7 @@ namespace GraphQLToKarate.Library.Converters;
 /// <summary>
 ///     Converts a GraphQL type into its associated example value.
 /// </summary>
-public interface IGraphQLToExampleValueConverter
+public interface IGraphQLScalarToExampleValueConverter
 {
     /// <summary>
     ///     Converts a GraphQL type into its associated example value. For example, a GraphQL type of "String" would

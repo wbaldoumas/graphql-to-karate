@@ -6,8 +6,8 @@ using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Converters;
 
-/// <inheritdoc cref="IGraphQLToExampleValueConverter"/>
-internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLToExampleValueConverter
+/// <inheritdoc cref="IGraphQLScalarToExampleValueConverter"/>
+internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExampleValueConverter
 {
     private const int MinRandomIntValue = 100;
 

@@ -260,6 +260,89 @@ internal sealed class GraphQLDocumentAdapterTests
     }
 
     [Test]
+    [TestCaseSource(nameof(IsGraphQLInputObjectTypeDefinitionTestCases))]
+    public void IsGraphQLInputObjectTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        string graphQLTypeDefinitionName,
+        bool expectedResult)
+    {
+        // act + assert
+        graphQLDocumentAdapter
+            .IsGraphQLInputObjectTypeDefinition(graphQLTypeDefinitionName)
+            .Should()
+            .Be(expectedResult);
+    }
+
+    private static IEnumerable<TestCaseData> IsGraphQLInputObjectTypeDefinitionTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                "test",
+                false
+            ).SetName("When GraphQL document is empty, input object type definition is not found");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLEnumTypeDefinition
+                            {
+                                Name = new GraphQLName("Goodbye")
+                            }
+                        }
+                    }
+                ),
+                "test",
+                false
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have input object type definition, input object type definition is not found"
+            );
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLInputObjectTypeDefinition
+                            {
+                                Name = new GraphQLName("Hello")
+                            }
+                        }
+                    }
+                ),
+                "test",
+                false
+            ).SetName(
+                "When GraphQL document is not empty but doesn't have specific input object type definition, input object type definition is not found"
+            );
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(
+                    new GraphQLDocument
+                    {
+                        Definitions = new List<ASTNode>
+                        {
+                            new GraphQLInputObjectTypeDefinition
+                            {
+                                Name = new GraphQLName("test")
+                            }
+                        }
+                    }
+                ),
+                "test",
+                true
+            ).SetName(
+                "When GraphQL document has specific input object type definition, input object type definition is found"
+            );
+        }
+    }
+
+    [Test]
     [TestCaseSource(nameof(GetGraphQLTypeDefinitionWithFieldsTestCases))]
     public void GetGraphQLTypeDefinitionWithFields_returns_expected_result(
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
@@ -323,19 +406,6 @@ internal sealed class GraphQLDocumentAdapterTests
             .BeEquivalentTo(expectedResult);
     }
 
-    [Test]
-    [TestCaseSource(nameof(GetGraphQLEnumTypeDefinitionTestCases))]
-    public void GetGraphQLEnumTypeDefinition_returns_expected_result(
-        IGraphQLDocumentAdapter graphQLDocumentAdapter,
-        string graphQLTypeDefinitionName,
-        GraphQLEnumTypeDefinition? expectedResult)
-    {
-        // act + assert
-        graphQLDocumentAdapter
-            .GetGraphQLEnumTypeDefinition(graphQLTypeDefinitionName)
-            .Should()
-            .BeEquivalentTo(expectedResult);
-    }
 
     private static IEnumerable<TestCaseData> GetGraphQLUnionTypeDefinitionTestCases
     {
@@ -371,6 +441,21 @@ internal sealed class GraphQLDocumentAdapterTests
                 definition as GraphQLUnionTypeDefinition
             ).SetName("When union type definition name is passed, union type definition is returned.");
         }
+    }
+
+
+    [Test]
+    [TestCaseSource(nameof(GetGraphQLEnumTypeDefinitionTestCases))]
+    public void GetGraphQLEnumTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        string graphQLTypeDefinitionName,
+        GraphQLEnumTypeDefinition? expectedResult)
+    {
+        // act + assert
+        graphQLDocumentAdapter
+            .GetGraphQLEnumTypeDefinition(graphQLTypeDefinitionName)
+            .Should()
+            .BeEquivalentTo(expectedResult);
     }
 
     private static IEnumerable<TestCaseData> GetGraphQLEnumTypeDefinitionTestCases
