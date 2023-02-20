@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace GraphQLToKarate.Tests.Converters;
 
 [TestFixture]
-internal sealed class GraphQlTypeDefinitionConverterTests
+internal sealed class GraphQLTypeDefinitionConverterTests
 {
     private IGraphQLTypeConverterFactory? _mockGraphQLTypeConverterFactory;
     private IGraphQLTypeConverter? _mockNonNullGraphQLTypeConverter;

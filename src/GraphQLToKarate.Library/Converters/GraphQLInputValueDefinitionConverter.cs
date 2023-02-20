@@ -59,8 +59,8 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
         string graphQLArgumentName,
         string graphQLVariableName)
     {
-        var graphQLListType = graphQLType as GraphQLNonNullType;
-        var graphQLInnerType = graphQLListType!.Type;
+        var graphQLNonNullType = graphQLType as GraphQLNonNullType;
+        var graphQLInnerType = graphQLNonNullType!.Type;
         var graphQLInnerVariableType = GetGraphQLInnerVariableType(graphQLInnerType, graphQLArgumentName, graphQLVariableName);
 
         return new GraphQLNonNullArgumentType(graphQLInnerVariableType);

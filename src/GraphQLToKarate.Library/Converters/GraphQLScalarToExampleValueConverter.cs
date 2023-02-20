@@ -6,8 +6,8 @@ using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Converters;
 
-/// <inheritdoc cref="IGraphQLToExampleValueConverter"/>
-internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLToExampleValueConverter
+/// <inheritdoc cref="IGraphQLScalarToExampleValueConverter"/>
+internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExampleValueConverter
 {
     private const int MinRandomIntValue = 100;
 
@@ -36,7 +36,7 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLToExampleVa
 
     private string GenerateRandomInt() => _random.Next(MinRandomIntValue, MaxRandomIntValue).ToString();
 
-    private string GenerateRandomFloat() => $"{Math.Round(_random.NextDouble() * (MaxRandomFloatValue - MinRandomFloatValue) + MinRandomFloatValue, 2)}";
+    private string GenerateRandomFloat() => $"{_random.NextDouble() * (MaxRandomFloatValue - MinRandomFloatValue) + MinRandomFloatValue:N2}";
 
     private string GenerateRandomBoolean() => _random.Next(0, 1) == 0 ? "true" : "false";
 
