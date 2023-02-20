@@ -2,8 +2,10 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
+using GraphQLToKarate.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -223,7 +225,8 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
 
         _mockGraphQLScalarToExampleValueConverter!
             .Convert(
-                Arg.Is<GraphQLType>(graphQLType => (graphQLType as GraphQLNamedType)!.NameValue() == GraphQLToken.String), 
+                Arg.Is<GraphQLType>(
+                    graphQLType => (graphQLType as GraphQLNamedType)!.NameValue() == GraphQLToken.String),
                 Arg.Any<IGraphQLDocumentAdapter>()
             )
             .Returns(exampleStringValue);
@@ -237,14 +240,16 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
 
         _mockGraphQLScalarToExampleValueConverter!
             .Convert(
-                Arg.Is<GraphQLType>(graphQLType => (graphQLType as GraphQLNamedType)!.NameValue() == GraphQLToken.Float),
+                Arg.Is<GraphQLType>(graphQLType =>
+                    (graphQLType as GraphQLNamedType)!.NameValue() == GraphQLToken.Float),
                 Arg.Any<IGraphQLDocumentAdapter>()
             )
             .Returns(exampleFloatValue);
 
         _mockGraphQLScalarToExampleValueConverter!
             .Convert(
-                Arg.Is<GraphQLType>(graphQLType => (graphQLType as GraphQLNamedType)!.NameValue() == GraphQLToken.Boolean),
+                Arg.Is<GraphQLType>(graphQLType =>
+                    (graphQLType as GraphQLNamedType)!.NameValue() == GraphQLToken.Boolean),
                 Arg.Any<IGraphQLDocumentAdapter>()
             )
             .Returns(exampleBooleanValue);
@@ -259,5 +264,29 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
 
         // assert
         exampleValue.Should().Be(expectedExampleValue);
+    }
+
+    [Test]
+    public void Convert_throws_exception_when_unsupported_GraphQLType_is_encountered()
+    {
+        // arrange
+        var graphQLInputValueDefinition = new GraphQLInputValueDefinition
+        {
+            Name = new GraphQLName("exampleInput"),
+            Type = new UnsupportedGraphQLType()
+        };
+
+        _mockGraphQLDocumentAdapter!
+            .IsGraphQLInputObjectTypeDefinition(Arg.Any<string>())
+            .Returns(false);
+
+        // act
+        var act = () => _subjectUnderTest!.Convert(
+            graphQLInputValueDefinition,
+            _mockGraphQLDocumentAdapter
+        );
+
+        // assert
+        act.Should().Throw<InvalidGraphQLTypeException>();
     }
 }
