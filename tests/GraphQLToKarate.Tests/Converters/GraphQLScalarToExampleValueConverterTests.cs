@@ -4,6 +4,7 @@ using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
+using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Tokens;
 using NSubstitute;
 using NUnit.Framework;
@@ -15,11 +16,13 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
 {
     private GraphQLScalarToExampleValueConverter? _subjectUnderTest;
     private IGraphQLDocumentAdapter? _mockGraphQLDocumentAdapter;
+    private ICustomScalarMapping? _mockCustomScalarMapping;
 
     [SetUp]
     public void SetUp()
     {
-        _subjectUnderTest = new GraphQLScalarToExampleValueConverter();
+        _mockCustomScalarMapping = Substitute.For<ICustomScalarMapping>();
+        _subjectUnderTest = new GraphQLScalarToExampleValueConverter(_mockCustomScalarMapping);
         _mockGraphQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
     }
 
@@ -117,6 +120,110 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
 
         // assert
         exampleValue.Should().BeOneOf("Value1", "Value2");
+    }
+
+    [Test]
+    public void Convert_generates_expected_example_value_from_custom_scalar_mapping_that_maps_to_number()
+    {
+        // arrange
+        var graphQLType = new GraphQLNamedType
+        {
+            Name = new GraphQLName("MyCustomScalar")
+        };
+
+        _mockCustomScalarMapping!
+            .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
+            .Returns(callInfo =>
+                {
+                    callInfo[1] = KarateToken.Number;
+
+                    return true;
+                }
+            );
+
+        // act
+        var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
+
+        // assert
+        exampleValue.Should().MatchRegex("^\\d+$");
+    }
+
+    [Test]
+    public void Convert_generates_expected_example_value_from_custom_scalar_mapping_that_maps_to_string()
+    {
+        // arrange
+        var graphQLType = new GraphQLNamedType
+        {
+            Name = new GraphQLName("MyCustomScalar")
+        };
+
+        _mockCustomScalarMapping!
+            .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
+            .Returns(callInfo =>
+                {
+                    callInfo[1] = KarateToken.String;
+
+                    return true;
+                }
+            );
+
+        // act
+        var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
+
+        // assert
+        exampleValue.Length.Should().BeGreaterThan(2, "because it should be a value surrounded by quotes.");
+    }
+
+    [Test]
+    public void Convert_generates_expected_example_value_from_custom_scalar_mapping_that_maps_to_boolean()
+    {
+        // arrange
+        var graphQLType = new GraphQLNamedType
+        {
+            Name = new GraphQLName("MyCustomScalar")
+        };
+
+        _mockCustomScalarMapping!
+            .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
+            .Returns(callInfo =>
+                {
+                    callInfo[1] = KarateToken.Boolean;
+
+                    return true;
+                }
+            );
+
+        // act
+        var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
+
+        // assert
+        exampleValue.Should().BeOneOf("true", "false");
+    }
+
+    [Test]
+    public void Convert_generates_default_example_value_from_custom_scalar_mapping_that_maps_to_unknown_type()
+    {
+        // arrange
+        var graphQLType = new GraphQLNamedType
+        {
+            Name = new GraphQLName("MyCustomScalar")
+        };
+
+        _mockCustomScalarMapping!
+            .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
+            .Returns(callInfo =>
+                {
+                    callInfo[1] = "UnknownType";
+
+                    return true;
+                }
+            );
+
+        // act
+        var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
+
+        // assert
+        exampleValue.Should().Be("<some value>");
     }
 
     [Test]
