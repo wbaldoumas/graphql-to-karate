@@ -2,6 +2,7 @@
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
+using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -19,7 +20,13 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExa
 
     private readonly Random _random;
 
-    public GraphQLScalarToExampleValueConverter() => _random = new Random();
+    private readonly ICustomScalarMapping _customScalarMapping;
+
+    public GraphQLScalarToExampleValueConverter(ICustomScalarMapping customScalarMapping)
+    {
+        _customScalarMapping = customScalarMapping;
+        _random = new Random();
+    }
 
     public string Convert(GraphQLType graphQLType, IGraphQLDocumentAdapter graphQLDocumentAdapter) => graphQLType.GetTypeName() switch
     {
@@ -29,6 +36,7 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExa
         GraphQLToken.Float => GenerateRandomFloat(),
         GraphQLToken.Boolean => GenerateRandomBoolean(),
         { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => GenerateRandomEnumValue(graphQLTypeName, graphQLDocumentAdapter),
+        { } graphQLTypeName when _customScalarMapping.TryGetKarateType(graphQLTypeName, out var karateType) => GenerateRandomValueFromKarateType(karateType),
         _ => "<some value>"
     };
 
@@ -53,4 +61,12 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExa
 
         return graphQLEnumTypeDefinition.Values[index].NameValue();
     }
+
+    private string GenerateRandomValueFromKarateType(string karateType) => karateType switch
+    {
+        KarateToken.String => GenerateRandomString(),
+        KarateToken.Number => GenerateRandomInt(),
+        KarateToken.Boolean => GenerateRandomBoolean(),
+        _ => "<some value>"
+    };
 }

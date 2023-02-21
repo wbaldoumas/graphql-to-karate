@@ -67,7 +67,7 @@ Scenario: Perform a user query and validate the response
   * text variables =
     """
       {
-        "id": "68c06d52fec04d0d8a7ac0ace72875c0"
+        "id": "4e665b78d44b49ec809165a4359287af"
       }
     """
 
@@ -101,7 +101,7 @@ Scenario: Perform a users query and validate the response
   * text variables =
     """
       {
-        "filter": { "nameContains": "637ccb8e8b0f4c29a973876d80cec54b", "emailContains": "da434522a30141b3a026297c67b787d6", "ageGreaterThan": 231, "ageLessThan": 905, "address": { "streetContains": "ad6dc0b6cf6940c680adf2de3f94035a", "cityContains": "8b4555c2c0c84b148531a3bcbbf45457", "stateEquals": "6844abe5dfc542b58d661854252b88e7", "zipEquals": "e4726271bd5544ca9e91295f301c018a", "url": <some value> } }
+        "filter": { "nameContains": "2d5ba4c0c0ae4191a10f76ecc9a8e4b8", "emailContains": "cf0628e442654e53982cdab411540919", "ageGreaterThan": 499, "ageLessThan": 636, "address": { "streetContains": "18e75caa3b6d4d82984301263dba992a", "cityContains": "9ede382df97146cca9d2883661e88be2", "stateEquals": "19f6b1d0a615449d8317756df7da5c7b", "zipEquals": "e1d829c6231e4ce1ad7dfc0f5e6c5df9", "url": "1199f75459014c9f8e4ac2c9633e98e4" } }
       }
     """
 
@@ -156,8 +156,8 @@ Scenario: Perform a search query and validate the response
   * text variables =
     """
       {
-        "query": "35fe1ec4d7034a6d91a09baa5f32e961",
-        "limit": 715,
+        "query": "e58394d89e9c440a90c5c05a5dba0850",
+        "limit": 560,
         "offset": 649
       }
     """
@@ -190,7 +190,7 @@ Scenario: Perform a article query and validate the response
   * text variables =
     """
       {
-        "id": "b9f3dd7defcc4d81a548a152567d7ded"
+        "id": "9fd6fd62bd5d4f08bc83008ae6df86c3"
       }
     """
 
@@ -215,7 +215,7 @@ Scenario: Perform a articles query and validate the response
   * text variables =
     """
       {
-        "input": { "titleContains": "ff281cc50c5e40f4bc212fbefad3f26c", "contentContains": "3560d172b0434622b761f89a5c95ae56", "authorId": "2fc98ef9a8374923be58c8e5187d8468" }
+        "input": { "titleContains": "ba586d7560b0412fa23348c5780eac55", "contentContains": "b707097235364a29870080badbfdaee3", "authorId": "7c26901aae9f40a9ba5ee5d345119628" }
       }
     """
 

@@ -24,12 +24,16 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private ISet<string> _operationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+    private ICustomScalarMapping _customScalarMapping = new CustomScalarMapping();
+
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder();
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
         ICustomScalarMapping customScalarMapping)
     {
-        _graphQLTypeConverter = customScalarMapping.Any()
+        _customScalarMapping = customScalarMapping;
+
+        _graphQLTypeConverter = _customScalarMapping.Any()
             ? new GraphQLCustomScalarTypeConverter(customScalarMapping, new GraphQLTypeConverter())
             : new GraphQLTypeConverter();
 
@@ -79,7 +83,7 @@ public sealed class GraphQLToKarateConverterBuilder :
         new GraphQLFieldDefinitionConverter(
             new GraphQLInputValueDefinitionConverterFactory(
                 new GraphQLInputValueToExampleValueConverter(
-                    new GraphQLScalarToExampleValueConverter()
+                    new GraphQLScalarToExampleValueConverter(_customScalarMapping)
                 )
             )
         ),
