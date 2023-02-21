@@ -69,7 +69,7 @@ internal sealed class CommandAppConfiguratorTests
             {
                 GraphQLSchema = "some GraphQL schema",
                 OutputFile = "graphql.feature",
-                CustomScalarMapping = new Dictionary<string, string>(),
+                CustomScalarMapping = new CustomScalarMapping(),
                 ExcludeQueries = false,
                 BaseUrl = "baseUrl",
                 QueryName = GraphQLToken.Query,

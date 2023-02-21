@@ -1,4 +1,6 @@
-﻿namespace GraphQLToKarate.Library.Builders;
+﻿using GraphQLToKarate.Library.Mappings;
+
+namespace GraphQLToKarate.Library.Builders;
 
 /// <summary>
 ///     A <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with methods providing configuration options.
@@ -11,7 +13,7 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     /// </summary>
     /// <param name="customScalarMapping">The custom scalar mapping to use.</param>
     /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given custom scalar mapping.</returns>
-    IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(IDictionary<string, string> customScalarMapping);
+    IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(ICustomScalarMapping customScalarMapping);
 
     /// <summary>
     ///     Configure the converter with the given <paramref name="baseUrl"/>. This allows the

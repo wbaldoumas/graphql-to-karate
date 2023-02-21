@@ -3,6 +3,7 @@ using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Extensions;
+using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using NSubstitute;
@@ -15,7 +16,7 @@ namespace GraphQLToKarate.Tests.Converters;
 internal sealed class GraphQLCustomScalarTypeConverterTests
 {
     private IGraphQLTypeConverter? _mockGraphQLTypeConverter;
-    private IDictionary<string, string>? _customScalarMapping;
+    private ICustomScalarMapping? _customScalarMapping;
     private IGraphQLTypeConverter? _subjectUnderTest;
 
     private const string CustomScalarNameLong = "Long";
@@ -26,11 +27,13 @@ internal sealed class GraphQLCustomScalarTypeConverterTests
     {
         _mockGraphQLTypeConverter = Substitute.For<IGraphQLTypeConverter>();
 
-        _customScalarMapping = new Dictionary<string, string>
-        {
-            { CustomScalarNameLong, KarateToken.Number },
-            { CustomScalarNameTime, KarateToken.String }
-        };
+        _customScalarMapping = new CustomScalarMapping(
+            new Dictionary<string, string>
+            {
+                { CustomScalarNameLong, KarateToken.Number },
+                { CustomScalarNameTime, KarateToken.String }
+            }
+        );
 
         _subjectUnderTest = new GraphQLCustomScalarTypeConverter(
             _customScalarMapping!,
@@ -47,7 +50,7 @@ internal sealed class GraphQLCustomScalarTypeConverterTests
         KarateTypeBase expectedKarateType)
     {
         // arrange
-        var shouldCallUnderlyingGraphQLTypeConverter = !_customScalarMapping!.ContainsKey(graphQLType.GetTypeName());
+        var shouldCallUnderlyingGraphQLTypeConverter = !_customScalarMapping!.TryGetKarateType(graphQLType.GetTypeName(), out _);
 
         if (shouldCallUnderlyingGraphQLTypeConverter)
         {

@@ -1,3 +1,7 @@
+scalar Date
+scalar URL
+scalar Long
+
 type Query {
   user(id: ID!): User
   users(filter: UserFilterInput): [User!]
@@ -10,7 +14,8 @@ type User implements Node {
   id: ID!
   name: String!
   email: String!
-  age: Int
+  age: Long!
+  birthday: Date!
   address: Address
   friends(limit: Int, offset: Int): [User!]
 }
@@ -20,6 +25,7 @@ type Address {
   city: String!
   state: String!
   zip: String!
+  url: URL
 }
 
 interface Node {
@@ -44,7 +50,8 @@ input AddressFilterInput {
   streetContains: String
   cityContains: String
   stateEquals: String
-  zipEquals: String
+  zipEquals: String,
+  url: URL
 }
 
 input UserFilterInput {

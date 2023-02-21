@@ -105,12 +105,13 @@ internal sealed class CustomScalarMappingLoaderTests
 
         // assert
         customScalarMapping.Should().BeEquivalentTo(
-            new Dictionary<string, string>
-            {
-                { "DateTime", "string" },
-                { "Long", "number" },
-                { "URL", "string" }
-            }
+            new CustomScalarMapping(new Dictionary<string, string>
+                {
+                    { "DateTime", "string" },
+                    { "Long", "number" },
+                    { "URL", "string" }
+                }
+            )
         );
     }
 
@@ -134,12 +135,14 @@ internal sealed class CustomScalarMappingLoaderTests
 
         // assert
         customScalarMapping.Should().BeEquivalentTo(
-            new Dictionary<string, string>
-            {
-                { "DateTime", "string" },
-                { "Long", "number" },
-                { "URL", "string" }
-            }
+            new CustomScalarMapping(
+                new Dictionary<string, string>
+                {
+                    { "DateTime", "string" },
+                    { "Long", "number" },
+                    { "URL", "string" }
+                }
+            )
         );
     }
 
@@ -153,12 +156,14 @@ internal sealed class CustomScalarMappingLoaderTests
 
         // assert
         customScalarMapping.Should().BeEquivalentTo(
-            new Dictionary<string, string>
-            {
-                { "DateTime", "string" },
-                { "Long", "number" },
-                { "URL", "string" }
-            }
+            new CustomScalarMapping(
+                new Dictionary<string, string>
+                {
+                    { "DateTime", "string" },
+                    { "Long", "number" },
+                    { "URL", "string" }
+                }
+            )
         );
     }
 }
