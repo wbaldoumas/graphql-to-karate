@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Mappings;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Builders;
@@ -14,9 +15,11 @@ internal sealed class GraphQLToKarateConverterBuilderTests
     public void Build_builds_expected_converter(bool populateCustomScalarMapping)
     {
         // arrange
-        var customScalarMapping = populateCustomScalarMapping
-            ? new Dictionary<string, string> { { "hello", "world" } }
-            : new Dictionary<string, string>();
+        var customScalarMapping = new CustomScalarMapping(
+            populateCustomScalarMapping
+                ? new Dictionary<string, string> { { "hello", "world" } }
+                : new Dictionary<string, string>()
+        );
 
         var subjectUnderTest = new GraphQLToKarateConverterBuilder();
 

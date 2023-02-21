@@ -10,20 +10,20 @@ public interface ICustomScalarMappingLoader : ICustomScalarMappingValidator
     ///     Load the custom scalar mapping from the given file path.
     /// </summary>
     /// <param name="filePath">The file path to load the custom scalar mapping from.</param>
-    /// <returns>The custom scalar mapping, represented as a dictionary.</returns>
-    IDictionary<string, string> LoadFromFile(string filePath);
+    /// <returns>The custom scalar mapping.</returns>
+    ICustomScalarMapping LoadFromFile(string filePath);
 
     /// <summary>
     ///     Load the custom scalar mapping from the given file path.
     /// </summary>
     /// <param name="filePath">The file path to load the custom scalar mapping from.</param>
-    /// <returns>The custom scalar mapping, represented as a dictionary.</returns>
-    Task<IDictionary<string, string>> LoadFromFileAsync(string filePath);
+    /// <returns>The custom scalar mapping.</returns>
+    Task<ICustomScalarMapping> LoadFromFileAsync(string filePath);
 
     /// <summary>
     ///     Load the custom scalar mapping from the given text.
     /// </summary>
     /// <param name="text">The text to load the custom scalar mapping from.</param>
-    /// <returns>The custom scalar mapping, represented as a dictionary.</returns>
-    IDictionary<string, string> LoadFromText(string text);
+    /// <returns>The custom scalar mapping.</returns>
+    ICustomScalarMapping LoadFromText(string text);
 }

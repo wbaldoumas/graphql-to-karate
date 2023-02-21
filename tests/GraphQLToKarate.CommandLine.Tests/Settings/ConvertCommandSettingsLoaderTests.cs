@@ -95,12 +95,14 @@ internal sealed class ConvertCommandSettingsLoaderTests
             .ReadAllTextAsync(convertCommandSettings.InputFile)
             .Returns(SomeGraphQLSchema);
 
-        var expectedCustomScalarMapping = new Dictionary<string, string>
-        {
-            { "key1", "value1" },
-            { "key2", "value2" },
-            { "key3", "value3" }
-        };
+        var expectedCustomScalarMapping = new CustomScalarMapping(
+            new Dictionary<string, string>
+            {
+                { "key1", "value1" },
+                { "key2", "value2" },
+                { "key3", "value3" }
+            }
+        );
 
         _mockCustomScalarMappingLoader!
             .IsFileLoadable(convertCommandSettings.CustomScalarMapping)
@@ -153,7 +155,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
             .ReadAllTextAsync(convertCommandSettings.InputFile)
             .Returns(SomeGraphQLSchema);
 
-        var expectedCustomScalarMapping = new Dictionary<string, string>();
+        var expectedCustomScalarMapping = new CustomScalarMapping();
 
         // act
         var loadedConvertCommandSettings = await _subjectUnderTest!.LoadAsync(convertCommandSettings);
@@ -192,7 +194,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
             .IsTextLoadable(convertCommandSettings.CustomScalarMapping)
             .Returns(false);
 
-        var expectedCustomScalarMapping = new Dictionary<string, string>();
+        var expectedCustomScalarMapping = new CustomScalarMapping();
 
         // act
         var loadedConvertCommandSettings = await _subjectUnderTest!.LoadAsync(convertCommandSettings);

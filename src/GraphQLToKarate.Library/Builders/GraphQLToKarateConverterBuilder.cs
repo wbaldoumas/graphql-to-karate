@@ -1,5 +1,6 @@
 ﻿using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Features;
+using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
@@ -26,7 +27,7 @@ public sealed class GraphQLToKarateConverterBuilder :
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder();
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
-        IDictionary<string, string> customScalarMapping)
+        ICustomScalarMapping customScalarMapping)
     {
         _graphQLTypeConverter = customScalarMapping.Any()
             ? new GraphQLCustomScalarTypeConverter(customScalarMapping, new GraphQLTypeConverter())

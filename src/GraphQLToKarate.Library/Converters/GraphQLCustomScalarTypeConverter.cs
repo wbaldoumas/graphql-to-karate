@@ -1,6 +1,7 @@
 ﻿using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Extensions;
+using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Types;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -8,11 +9,11 @@ namespace GraphQLToKarate.Library.Converters;
 /// <inheritdoc cref="IGraphQLTypeConverter"/>
 public sealed class GraphQLCustomScalarTypeConverter : IGraphQLTypeConverter
 {
-    private readonly IDictionary<string, string> _customScalarMapping;
+    private readonly ICustomScalarMapping _customScalarMapping;
     private readonly IGraphQLTypeConverter _graphQLTypeConverter;
 
     public GraphQLCustomScalarTypeConverter(
-        IDictionary<string, string> customScalarMapping,
+        ICustomScalarMapping customScalarMapping,
         IGraphQLTypeConverter graphQLTypeConverter)
     {
         _customScalarMapping = customScalarMapping;
@@ -23,7 +24,7 @@ public sealed class GraphQLCustomScalarTypeConverter : IGraphQLTypeConverter
         string graphQLFieldName,
         GraphQLType graphQLType,
         IGraphQLDocumentAdapter graphQLDocumentAdapter
-    ) => _customScalarMapping.TryGetValue(graphQLType.GetTypeName(), out var karateType)
+    ) => _customScalarMapping.TryGetKarateType(graphQLType.GetTypeName(), out var karateType)
         ? new KarateType(karateType, graphQLFieldName)
         : _graphQLTypeConverter.Convert(graphQLFieldName, graphQLType, graphQLDocumentAdapter);
 }

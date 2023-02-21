@@ -46,21 +46,22 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
     public bool IsTextLoadable(string text) => _regex.IsMatch(text);
 
-    public IDictionary<string, string> LoadFromFile(string filePath) =>
+    public ICustomScalarMapping LoadFromFile(string filePath) =>
         DeserializeFileContent(_file.ReadAllText(filePath));
 
-    public async Task<IDictionary<string, string>> LoadFromFileAsync(string filePath) =>
+    public async Task<ICustomScalarMapping> LoadFromFileAsync(string filePath) =>
         DeserializeFileContent(await _file.ReadAllTextAsync(filePath));
 
-    private IDictionary<string, string> DeserializeFileContent(string fileContent) => IsTextLoadable(fileContent)
+    private ICustomScalarMapping DeserializeFileContent(string fileContent) => IsTextLoadable(fileContent)
         ? LoadFromText(fileContent)
-        : JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!;
+        : new CustomScalarMapping(JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!);
 
-    public IDictionary<string, string> LoadFromText(string text) => text
-        .Split(SchemaToken.Comma, StringSplitOptions.TrimEntries)
-        .Select(customScalarMappingEntry => customScalarMappingEntry.Split(SchemaToken.Colon, StringSplitOptions.TrimEntries))
-        .ToDictionary(
-            customScalarMappingEntryParts => customScalarMappingEntryParts.First(),
-            customScalarMappingEntryParts => customScalarMappingEntryParts.Last()
-        );
+    public ICustomScalarMapping LoadFromText(string text) => new CustomScalarMapping(
+        text.Split(SchemaToken.Comma, StringSplitOptions.TrimEntries)
+            .Select(customScalarMappingEntry => customScalarMappingEntry.Split(SchemaToken.Colon, StringSplitOptions.TrimEntries))
+            .ToDictionary(
+                customScalarMappingEntryParts => customScalarMappingEntryParts.First(),
+                customScalarMappingEntryParts => customScalarMappingEntryParts.Last()
+            )
+    );
 }

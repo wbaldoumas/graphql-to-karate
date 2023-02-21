@@ -22,7 +22,7 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
 
         var customScalarMapping = convertCommandSettings.CustomScalarMapping is not null
             ? await LoadCustomScalarMapping(convertCommandSettings)
-            : new Dictionary<string, string>();
+            : new CustomScalarMapping();
 
         return new LoadedConvertCommandSettings
         {
@@ -37,11 +37,9 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
         };
     }
 
-    private async Task<IDictionary<string, string>> LoadCustomScalarMapping(
+    private async Task<ICustomScalarMapping> LoadCustomScalarMapping(
         ConvertCommandSettings convertCommandSettings)
     {
-        var customScalarMapping = new Dictionary<string, string>();
-
         if (_customScalarMappingLoader.IsTextLoadable(convertCommandSettings.CustomScalarMapping!))
         {
             return _customScalarMappingLoader.LoadFromText(convertCommandSettings.CustomScalarMapping!);
@@ -52,6 +50,6 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
             return await _customScalarMappingLoader.LoadFromFileAsync(convertCommandSettings.CustomScalarMapping!);
         }
 
-        return customScalarMapping;
+        return new CustomScalarMapping();
     }
 }
