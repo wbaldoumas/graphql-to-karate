@@ -5,6 +5,8 @@ using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
+using GraphQLToKarate.Library.Types;
+using Microsoft.Extensions.Logging;
 
 namespace GraphQLToKarate.Library.Converters;
 
@@ -15,6 +17,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
     private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
     private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
     private readonly IKarateFeatureBuilder _karateFeatureBuilder;
+    private readonly ILogger<GraphQLToKarateConverter> _logger;
     private readonly GraphQLToKarateConverterSettings _graphQLToKarateConverterSettings;
 
     public GraphQLToKarateConverter(
@@ -22,12 +25,14 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
         IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter,
         IKarateFeatureBuilder karateFeatureBuilder,
+        ILogger<GraphQLToKarateConverter> logger,
         GraphQLToKarateConverterSettings graphQLToKarateConverterSettings)
     {
         _graphQLSchemaParser = graphQLSchemaParser;
         _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
         _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
         _karateFeatureBuilder = karateFeatureBuilder;
+        _logger = logger;
         _graphQLToKarateConverterSettings = graphQLToKarateConverterSettings;
     }
 
@@ -35,37 +40,35 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
     {
         var graphQLDocument = _graphQLSchemaParser.Parse(schema);
 
-        var graphQLObjectTypeDefinitionsByName = graphQLDocument.Definitions
+        var graphQLObjectTypeDefinitions = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
             .Where(definition =>
                 !definition.NameValue().Equals(
                     _graphQLToKarateConverterSettings.QueryName,
                     StringComparison.OrdinalIgnoreCase
-                ) 
+                )
                 && !definition.NameValue().Equals(
                     GraphQLToken.Mutation,
                     StringComparison.OrdinalIgnoreCase
                 )
                 && _graphQLToKarateConverterSettings.TypeFilter.NoneOrContains(definition.NameValue())
-            )
-            .ToDictionary(definition => definition.NameValue());
+            );
 
-        var graphQLInterfaceTypeDefinitionsByName = graphQLDocument.Definitions
+        var graphQLInterfaceTypeDefinitions = graphQLDocument.Definitions
             .OfType<GraphQLInterfaceTypeDefinition>()
             .Where(definition =>
                 _graphQLToKarateConverterSettings.TypeFilter.NoneOrContains(definition.NameValue())
-            )
-            .ToDictionary(definition => definition.NameValue());
+            );
 
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument);
 
-        var karateObjects = graphQLObjectTypeDefinitionsByName.Values.Select(
+        var karateObjects = graphQLObjectTypeDefinitions.Select(
             graphQLObjectTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
                 graphQLObjectTypeDefinition,
                 graphQLDocumentAdapter
             )
         ).Concat(
-            graphQLInterfaceTypeDefinitionsByName.Values.Select(
+            graphQLInterfaceTypeDefinitions.Select(
                 graphQLInterfaceTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
                     graphQLInterfaceTypeDefinition,
                     graphQLDocumentAdapter
@@ -82,7 +85,23 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                 )
             );
 
-        var graphQLQueryFieldTypes = graphQLQueryTypeDefinition!.Fields!
+        if (graphQLQueryTypeDefinition?.Fields is null)
+        {
+            _logger.LogWarning(
+                message: """Unable to find query type by the name of "{queryName}". If your query type exists and is named something other than "{queryName}", you will need to set the correct {queryNameOption} option for correct Karate scenario generation.""",
+                _graphQLToKarateConverterSettings.QueryName,
+                _graphQLToKarateConverterSettings.QueryName,
+                "--query-name"
+            );
+
+            return _karateFeatureBuilder.Build(
+                karateObjects,
+                Enumerable.Empty<GraphQLQueryFieldType>(),
+                graphQLDocumentAdapter
+            );
+        }
+
+        var graphQLQueryFieldTypes = graphQLQueryTypeDefinition.Fields
             .Where(definition =>
                 _graphQLToKarateConverterSettings.OperationFilter.NoneOrContains(definition.NameValue())
             )

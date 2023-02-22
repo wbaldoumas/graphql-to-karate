@@ -8,6 +8,7 @@ using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NSubstitute.Core;
 using NUnit.Framework;
@@ -21,6 +22,7 @@ internal sealed class GraphQLToKarateConverterTests
     private IGraphQLTypeDefinitionConverter? _mockGraphQLTypeDefinitionConverter;
     private IGraphQLFieldDefinitionConverter? _mockGraphQLFieldDefinitionConverter;
     private IKarateFeatureBuilder? _mockKarateFeatureBuilder;
+    private ILogger<GraphQLToKarateConverter>? _mockLogger;
 
     [SetUp]
     public void SetUp()
@@ -29,6 +31,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLTypeDefinitionConverter = Substitute.For<IGraphQLTypeDefinitionConverter>();
         _mockGraphQLFieldDefinitionConverter = Substitute.For<IGraphQLFieldDefinitionConverter>();
         _mockKarateFeatureBuilder = Substitute.For<IKarateFeatureBuilder>();
+        _mockLogger = Substitute.For<ILogger<GraphQLToKarateConverter>>();
     }
 
     [Test]
@@ -86,6 +89,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockLogger!,
             settings
         );
 
@@ -178,6 +182,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockLogger!,
             settings
         );
 
@@ -270,6 +275,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockLogger!,
             settings
         );
 
@@ -358,6 +364,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockLogger!,
             settings
         );
 
@@ -446,6 +453,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockLogger!,
             settings
         );
 
@@ -478,6 +486,91 @@ internal sealed class GraphQLToKarateConverterTests
                 Arg.Is<IEnumerable<GraphQLQueryFieldType>>(arg => arg.Count() == 1),
                 Arg.Any<IGraphQLDocumentAdapter>()
             );
+    }
+
+    [Test]
+    public void Convert_skips_scenario_generation_and_logs_warning_when_query_not_found()
+    {
+        // arrange
+        _mockGraphQLSchemaParser!
+            .Parse(SomeSchemaString)
+            .Returns(TestGraphQLDocument);
+
+        _mockGraphQLTypeDefinitionConverter!
+            .Convert(Arg.Any<GraphQLObjectTypeDefinition>(), Arg.Any<GraphQLDocumentAdapter>())
+            .Returns(TestKarateObject);
+
+        _mockGraphQLTypeDefinitionConverter!
+            .Convert(Arg.Any<GraphQLInterfaceTypeDefinition>(), Arg.Any<GraphQLDocumentAdapter>())
+            .Returns(OtherTestKarateObject);
+
+        _mockKarateFeatureBuilder!
+            .Build(
+                Arg.Any<IEnumerable<KarateObject>>(),
+                Arg.Any<IEnumerable<GraphQLQueryFieldType>>(),
+                Arg.Any<IGraphQLDocumentAdapter>()
+            )
+            .Returns(ExpectedKarateFeature)
+            .AndDoes(ForceEnumerationOfMockedEnumerables);
+
+        var settings = new GraphQLToKarateConverterSettings
+        {
+            QueryName = "SomeWackyQueryName",
+            TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            ExcludeQueries = false
+        };
+
+        var subjectUnderTest = new GraphQLToKarateConverter(
+            _mockGraphQLSchemaParser,
+            _mockGraphQLTypeDefinitionConverter,
+            _mockGraphQLFieldDefinitionConverter!,
+            _mockKarateFeatureBuilder,
+            _mockLogger!,
+            settings
+        );
+
+        // act
+        var karateFeature = subjectUnderTest.Convert(SomeSchemaString);
+
+        // assert
+        karateFeature.Should().Be(ExpectedKarateFeature);
+
+        _mockGraphQLSchemaParser
+            .Received(1)
+            .Parse(SomeSchemaString);
+
+        _mockGraphQLTypeDefinitionConverter
+            .Received(1)
+            .Convert(GraphQLObjectTypeDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLTypeDefinitionConverter
+            .Received(1)
+            .Convert(GraphQLInterfaceTypeDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLFieldDefinitionConverter!
+            .DidNotReceive()
+            .Convert(TodoQueryFieldDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockGraphQLFieldDefinitionConverter!
+            .DidNotReceive()
+            .Convert(TodosQueryFieldDefinition, Arg.Any<GraphQLDocumentAdapter>());
+
+        _mockKarateFeatureBuilder
+            .Received(1)
+            .Build(
+                Arg.Is<IEnumerable<KarateObject>>(arg => arg.Count() == 3),
+                Arg.Is<IEnumerable<GraphQLQueryFieldType>>(arg => !arg.Any()),
+                Arg.Any<IGraphQLDocumentAdapter>()
+            );
+
+        // LogWarning is an extension method, so we need to hack around verifying that it was called...
+        _mockLogger
+            .ReceivedCalls()
+            .Select(call => call.GetArguments())
+            .Count(callArguments => ((LogLevel)callArguments[0]!).Equals(LogLevel.Warning))
+            .Should()
+            .Be(1);
     }
 
     private static void ForceEnumerationOfMockedEnumerables(CallInfo callInfo)
