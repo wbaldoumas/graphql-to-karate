@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="GraphQL-Parser" Version="8.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="QuikGraph" Version="2.5.0" />
     <PackageReference Include="System.IO.Abstractions" Version="19.1.18" />
   </ItemGroup>

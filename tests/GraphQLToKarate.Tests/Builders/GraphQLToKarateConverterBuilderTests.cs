@@ -2,6 +2,8 @@
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Mappings;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Builders;
@@ -9,6 +11,11 @@ namespace GraphQLToKarate.Tests.Builders;
 [TestFixture]
 internal sealed class GraphQLToKarateConverterBuilderTests
 {
+    private ILogger<GraphQLToKarateConverter>? _mockLogger;
+
+    [SetUp]
+    public void SetUp() => _mockLogger = Substitute.For<ILogger<GraphQLToKarateConverter>>();
+
     [Test]
     [TestCase(true)]
     [TestCase(false)]
@@ -21,7 +28,7 @@ internal sealed class GraphQLToKarateConverterBuilderTests
                 : new Dictionary<string, string>()
         );
 
-        var subjectUnderTest = new GraphQLToKarateConverterBuilder();
+        var subjectUnderTest = new GraphQLToKarateConverterBuilder(_mockLogger!);
 
         // act
         var graphQLToKarateConverter = subjectUnderTest

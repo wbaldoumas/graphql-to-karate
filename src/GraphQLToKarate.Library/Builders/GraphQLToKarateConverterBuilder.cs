@@ -4,6 +4,7 @@ using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
+using Microsoft.Extensions.Logging;
 
 namespace GraphQLToKarate.Library.Builders;
 
@@ -26,7 +27,13 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private ICustomScalarMapping _customScalarMapping = new CustomScalarMapping();
 
-    public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder();
+    private readonly ILogger<GraphQLToKarateConverter> _graphQLToKarateConverterLogger;
+
+    public GraphQLToKarateConverterBuilder(ILogger<GraphQLToKarateConverter> graphQLToKarateConverterLogger) => _graphQLToKarateConverterLogger = graphQLToKarateConverterLogger;
+
+    public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder(
+        _graphQLToKarateConverterLogger
+    );
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
         ICustomScalarMapping customScalarMapping)
@@ -95,6 +102,7 @@ public sealed class GraphQLToKarateConverterBuilder :
                 ExcludeQueries = _excludeQueriesSetting
             }
         ),
+        _graphQLToKarateConverterLogger,
         new GraphQLToKarateConverterSettings
         {
             ExcludeQueries = _excludeQueriesSetting,
