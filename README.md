@@ -1,6 +1,6 @@
 # graphql-to-karate
 
-**Project Status**: Prototyping
+**Project Status**: Testing
 
 [![Contributor Covenant][contributor-covenant-shield]][contributor-covenant-url]
 [![Contributors][contributors-shield]][contributors-url]
