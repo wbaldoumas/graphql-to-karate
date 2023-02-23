@@ -89,7 +89,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
 
                   Given path "/graphql"
-                  And request { query: query, operationName: "TodoTest" }
+                  And request { query: '#(query)', operationName: "TodoTest" }
                   When method post
                   Then status 200
                   And match response.data.todo == todoSchema
@@ -167,7 +167,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
 
                   Given path "/graphql"
-                  And request { query: query, operationName: "TodoTest", variables: variables }
+                  And request { query: '#(query)', operationName: "TodoTest", variables: '#(variables)' }
                   When method post
                   Then status 200
                   And match response.data.todo == todoSchema
@@ -214,7 +214,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
 
                   Given path "/graphql"
-                  And request { query: query, operationName: "TodoTest" }
+                  And request { query: '#(query)', operationName: "TodoTest" }
                   When method post
                   Then status 200
                   And match each response.data.todo == todoSchema
@@ -264,7 +264,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
 
                   Given path "/graphql"
-                  And request { query: query, operationName: "TodoTest" }
+                  And request { query: '#(query)', operationName: "TodoTest" }
                   When method post
                   Then status 200
                   And match each response.data.todo == todoSchema
@@ -348,7 +348,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
 
                   Given path "/graphql"
-                  And request { query: query, operationName: "TodoUnionTest" }
+                  And request { query: '#(query)', operationName: "TodoUnionTest" }
                   When method post
                   Then status 200
                   And match each response.data.todoUnion == "#? isValid(_)"

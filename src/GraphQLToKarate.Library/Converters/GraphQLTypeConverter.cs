@@ -26,7 +26,7 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => 
                 KarateToken.String,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLTypeName) =>
-                $"{graphQLTypeName.FirstCharToLower()}Schema",
+                $"({graphQLTypeName.FirstCharToLower()}Schema)",
             _ => KarateToken.Present
         };
 

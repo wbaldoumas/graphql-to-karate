@@ -94,12 +94,12 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         stringBuilder.AppendLine("Given path \"/graphql\"".Indent(Indent.Single));
         stringBuilder.Append("And request ".Indent(Indent.Single));
         stringBuilder.Append("{ ");
-        stringBuilder.Append("query: query, ");
+        stringBuilder.Append("query: '#(query)', ");
         stringBuilder.Append($"operationName: \"{graphQLQueryFieldType.OperationName}\"");
 
         if (graphQLQueryFieldType.Arguments.Any())
         {
-            stringBuilder.Append(", variables: variables");
+            stringBuilder.Append(", variables: '#(variables)'");
         }
 
         stringBuilder.AppendLine(" }");
@@ -119,9 +119,20 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 
         stringBuilder.Append(matchCardinalityString.Indent(Indent.Single));
 
-        var schemaMatchString = graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLQueryFieldType.ReturnTypeName)
-            ? "\"#? isValid(_)\""
-            : $"{graphQLQueryFieldType.ReturnTypeName.FirstCharToLower()}Schema";
+        string schemaMatchString;
+
+        if (graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLQueryFieldType.ReturnTypeName))
+        {
+            schemaMatchString = "\"#? isValid(_)\"";
+        }
+        else if (graphQLQueryFieldType.IsNullableReturnType)
+        {
+            schemaMatchString = $"\"##({graphQLQueryFieldType.ReturnTypeName.FirstCharToLower()}Schema)\"";
+        }
+        else
+        {
+            schemaMatchString = $"{graphQLQueryFieldType.ReturnTypeName.FirstCharToLower()}Schema";
+        }
 
         stringBuilder.Append(schemaMatchString);
     }

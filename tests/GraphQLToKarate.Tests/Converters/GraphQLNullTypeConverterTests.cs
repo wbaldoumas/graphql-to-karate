@@ -153,7 +153,7 @@ internal sealed class GraphQLNullTypeConverterTests
                     Name = new GraphQLName(customTypeName)
                 },
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
-                new KarateNullType(new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName))
+                new KarateNullType(new KarateType($"({customTypeName.FirstCharToLower()}Schema)", testFieldName))
             ).SetName("Nullable custom GraphQL type is converted to nullable custom Karate type.");
 
             yield return new TestCaseData(

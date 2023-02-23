@@ -13,6 +13,8 @@ public sealed class GraphQLQueryFieldType
 
     public string ReturnTypeName => _queryField.Type.GetTypeName();
 
+    public bool IsNullableReturnType => _queryField.Type is not GraphQLNonNullType;
+
     public bool IsListReturnType => _queryField.Type is GraphQLListType or GraphQLNonNullType
     {
         Type: GraphQLListType

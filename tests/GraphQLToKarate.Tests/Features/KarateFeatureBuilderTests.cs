@@ -129,7 +129,7 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
 
-                  * text todoSchema =
+                  * def todoSchema =
                     """
                       {
                         id: '#number',
@@ -281,7 +281,7 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
 
-                  * text todoSchema =
+                  * def todoSchema =
                     """
                       {
                         id: '#number',
@@ -289,7 +289,7 @@ internal sealed class KarateFeatureBuilderTests
                       }
                     """
 
-                  * text userSchema =
+                  * def userSchema =
                     """
                       {
                         id: '#number',
@@ -374,7 +374,7 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
                 
-                  * text todoSchema =
+                  * def todoSchema =
                     """
                       {
                         id: '#number',
@@ -382,7 +382,7 @@ internal sealed class KarateFeatureBuilderTests
                       }
                     """
                 
-                  * text userSchema =
+                  * def userSchema =
                     """
                       {
                         id: '#number',
@@ -456,7 +456,7 @@ internal sealed class KarateFeatureBuilderTests
                 Background: Base URL and Schemas
                   * url "https://www.karate-feature-builder-tests/graphql"
 
-                  * text todoSchema =
+                  * def todoSchema =
                     """
                       {
                         id: '#number',
