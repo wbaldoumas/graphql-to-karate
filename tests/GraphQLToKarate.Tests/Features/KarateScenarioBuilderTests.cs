@@ -92,7 +92,7 @@ internal sealed class KarateScenarioBuilderTests
                   And request { query: '#(query)', operationName: "TodoTest" }
                   When method post
                   Then status 200
-                  And match response.data.todo == "##(todoSchema)""
+                  And match response.data.todo == "##(todoSchema)"
                 """"
             ).SetName("Simple query without arguments is generated as a valid scenario.");
 
