@@ -10,6 +10,12 @@ type Query {
   articles(input: ArticleInput): [Article!]
 }
 
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(id: ID!): Boolean
+}
+
 type User implements Node {
   id: ID!
   name: String!
@@ -60,4 +66,31 @@ input UserFilterInput {
   ageGreaterThan: Int
   ageLessThan: Int
   address: AddressFilterInput
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  age: Long!
+  birthday: Date!
+  address: AddressInput
+  phoneNumber: String
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  email: String
+  age: Long
+  birthday: Date
+  address: AddressInput
+  phoneNumber: String
+}
+
+input AddressInput {
+  street: String!
+  city: String!
+  state: String!
+  zip: String!
+  url: URL
 }

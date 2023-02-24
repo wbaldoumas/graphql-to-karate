@@ -201,7 +201,7 @@ internal sealed class GraphQLListTypeConverterTests
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(
                     new KarateNullType(
-                        new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
+                        new KarateType($"({customTypeName.FirstCharToLower()}Schema)", testFieldName)
                     )
                 )
             ).SetName("List of nullable custom GraphQL type is converted to list of nullable custom Karate type.");
@@ -343,7 +343,7 @@ internal sealed class GraphQLListTypeConverterTests
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(
                     new KarateNonNullType(
-                        new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
+                        new KarateType($"({customTypeName.FirstCharToLower()}Schema)", testFieldName)
                     )
                 )
             ).SetName("List of non-nullable custom GraphQL type is converted to list of non-nullable custom Karate type.");

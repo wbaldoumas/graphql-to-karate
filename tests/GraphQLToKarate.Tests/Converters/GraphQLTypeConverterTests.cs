@@ -142,7 +142,7 @@ internal sealed class GraphQLTypeConverterTests
                     Name = new GraphQLName(customTypeName)
                 },
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
-                new KarateType($"{customTypeName.FirstCharToLower()}Schema", testFieldName)
+                new KarateType($"({customTypeName.FirstCharToLower()}Schema)", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
 
             const string interfaceTypeName = "TodoInterface";
@@ -181,7 +181,7 @@ internal sealed class GraphQLTypeConverterTests
                     Name = new GraphQLName(interfaceTypeName)
                 },
                 new GraphQLDocumentAdapter(populatedGraphQLDocument),
-                new KarateType($"{interfaceTypeName.FirstCharToLower()}Schema", testFieldName)
+                new KarateType($"({interfaceTypeName.FirstCharToLower()}Schema)", testFieldName)
             ).SetName("Custom GraphQL type is converted to custom Karate type.");
 
             yield return new TestCaseData(

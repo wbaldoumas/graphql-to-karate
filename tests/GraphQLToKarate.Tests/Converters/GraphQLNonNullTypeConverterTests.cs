@@ -176,7 +176,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateNonNullType(
                     new KarateType(
-                        $"{customTypeName.FirstCharToLower()}Schema",
+                        $"({customTypeName.FirstCharToLower()}Schema)",
                         testFieldName
                     )
                 )
