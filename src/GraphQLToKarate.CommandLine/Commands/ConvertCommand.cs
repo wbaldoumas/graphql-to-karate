@@ -37,6 +37,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
             .WithCustomScalarMapping(loadedCommandSettings.CustomScalarMapping)
             .WithExcludeQueriesSetting(commandSettings.ExcludeQueries)
             .WithQueryName(loadedCommandSettings.QueryName)
+            .WithMutationName(loadedCommandSettings.MutationName)
             .WithTypeFilter(loadedCommandSettings.TypeFilter)
             .WithOperationFilter(loadedCommandSettings.OperationFilter)
             .Build();

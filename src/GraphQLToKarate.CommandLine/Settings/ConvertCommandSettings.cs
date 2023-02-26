@@ -47,6 +47,11 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [DefaultValue(typeof(string), GraphQLToken.Query)]
     public string? QueryName { get; set; } = GraphQLToken.Query;
 
+    [CommandOption("--mutation-name")]
+    [Description("The name of the GraphQL mutation type")]
+    [DefaultValue(typeof(string), GraphQLToken.Mutation)]
+    public string? MutationName { get; set; } = GraphQLToken.Mutation;
+
     [CommandOption("--type-filter")]
     [Description("A comma-separated list of GraphQL types to include in the Karate feature")]
     [TypeConverter(typeof(StringToSetConverter))]

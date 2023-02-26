@@ -41,6 +41,13 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     IConfigurableGraphQLToKarateConverterBuilder WithQueryName(string queryName);
 
     /// <summary>
+    ///   Configure the converter with the given <paramref name="mutationName"/>. This allows the user to specify a
+    /// </summary>
+    /// <param name="mutationName">The name of the mutation type.</param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given mutation name.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithMutationName(string mutationName);
+
+    /// <summary>
     ///    Configure the converter with the given <paramref name="typeFilter"/>. This allows the user to specify
     ///    which GraphQL types to include in the output, if they'd like to filter them.
     /// </summary>

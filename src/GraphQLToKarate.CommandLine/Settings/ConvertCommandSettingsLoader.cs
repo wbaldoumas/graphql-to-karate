@@ -32,6 +32,7 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
             BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
             ExcludeQueries = convertCommandSettings.ExcludeQueries,
             QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
+            MutationName = convertCommandSettings.MutationName ?? GraphQLToken.Mutation,
             TypeFilter = convertCommandSettings.TypeFilter,
             OperationFilter = convertCommandSettings.OperationFilter
         };

@@ -4,7 +4,6 @@ using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
 using GraphQLToKarate.Library.Settings;
-using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using Microsoft.Extensions.Logging;
 
@@ -48,7 +47,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                     StringComparison.OrdinalIgnoreCase
                 )
                 && !definition.NameValue().Equals(
-                    GraphQLToken.Mutation,
+                    _graphQLToKarateConverterSettings.MutationName,
                     StringComparison.OrdinalIgnoreCase
                 )
                 && _graphQLToKarateConverterSettings.TypeFilter.NoneOrContains(definition.NameValue())
