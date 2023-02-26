@@ -303,6 +303,20 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
                                 Name = new GraphQLName("TestInputObjectTypeDefinition")
                             }
                         }
+                    },
+                    new()
+                    {
+                        Name = new GraphQLName("recursiveNestedNonNullListValue"),
+                        Type = new GraphQLNonNullType
+                        {
+                            Type = new GraphQLListType
+                            {
+                                Type = new GraphQLNamedType
+                                {
+                                    Name = new GraphQLName("TestInputObjectTypeDefinition")
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -426,7 +440,7 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
             )
             .Returns(exampleBooleanValue);
 
-        const string expectedExampleValue = $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"recursiveNestedValue\": <some TestInputObjectTypeDefinition value>, \"recursiveNestedListValue\": [ <some TestInputObjectTypeDefinition value> ] }} }}";
+        const string expectedExampleValue = $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"recursiveNestedValue\": <some TestInputObjectTypeDefinition value>, \"recursiveNestedListValue\": [ <some TestInputObjectTypeDefinition value> ], \"recursiveNestedNonNullListValue\": [ <some TestInputObjectTypeDefinition value> ] }} }}";
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(
