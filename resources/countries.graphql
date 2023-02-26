@@ -1,0 +1,67 @@
+""""""
+type Query {
+  """"""
+  continents: [Continent]
+  """"""
+  continent(code: ID!): Continent
+  """"""
+  countries: [Country]
+  """"""
+  country(code: ID!): Country
+  """"""
+  languages: [Language]
+  """"""
+  language(code: ID!): Language
+}
+
+""""""
+type Continent {
+  """"""
+  code: ID
+  """"""
+  name: String
+  """"""
+  countries: [Country]
+}
+
+""""""
+type Country {
+  """"""
+  code: ID
+  """"""
+  name: String
+  """"""
+  native: String
+  """"""
+  phone: String
+  """"""
+  currency: String
+  """"""
+  languages: [Language]
+  """"""
+  emoji: String
+  """"""
+  emojiU: String
+  """"""
+  states: [State]
+}
+
+""""""
+type Language {
+  """"""
+  code: ID
+  """"""
+  name: String
+  """"""
+  native: String
+  """"""
+  rtl: Boolean
+}
+
+""""""
+type State {
+  """"""
+  code: ID
+  """"""
+  name: String
+}

@@ -1,0 +1,57 @@
+type Query {
+  findTypeA(input: TypeA!): TypeA
+}
+
+type TypeA {
+  id: ID!
+  name: String!
+  typeB: TypeB!
+}
+
+type TypeB {
+  id: ID!
+  name: String!
+  typeC: TypeC!
+}
+
+type TypeC {
+  id: ID!
+  name: String!
+  typeA: TypeA!
+}
+
+input TypeA {
+  id: ID!
+  name: String!
+  typeB: TypeBInput!
+}
+
+input TypeB {
+  id: ID!
+  name: String!
+  typeC: TypeCInput!
+}
+
+input TypeC {
+  id: ID!
+  name: String!
+  typeA: TypeAInput!
+}
+
+input TypeAInput {
+  id: ID!
+  name: String!
+  typeB: TypeBInput!
+}
+
+input TypeBInput {
+  id: ID!
+  name: String!
+  typeC: TypeCInput!
+}
+
+input TypeCInput {
+  id: ID!
+  name: String!
+  typeA: TypeAInput!
+}
