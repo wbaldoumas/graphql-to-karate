@@ -21,6 +21,8 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private string _queryName = GraphQLToken.Query;
 
+    private string _mutationName = GraphQLToken.Mutation;
+
     private ISet<string> _typeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     private ISet<string> _operationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -68,6 +70,13 @@ public sealed class GraphQLToKarateConverterBuilder :
         return this;
     }
 
+    public IConfigurableGraphQLToKarateConverterBuilder WithMutationName(string mutationName)
+    {
+        _mutationName = mutationName;
+
+        return this;
+    }
+
     public IConfigurableGraphQLToKarateConverterBuilder WithTypeFilter(ISet<string> typeFilter)
     {
         _typeFilter = typeFilter;
@@ -107,6 +116,7 @@ public sealed class GraphQLToKarateConverterBuilder :
         {
             ExcludeQueries = _excludeQueriesSetting,
             QueryName = _queryName,
+            MutationName = _mutationName,
             TypeFilter = _typeFilter,
             OperationFilter = _operationFilter
         }

@@ -10,6 +10,8 @@ public sealed class GraphQLToKarateConverterSettings
 
     public string QueryName { get; init; } = GraphQLToken.Query;
 
+    public string MutationName { get; init; } = GraphQLToken.Mutation;
+
     public ISet<string> TypeFilter { get; init; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     public ISet<string> OperationFilter { get; init; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

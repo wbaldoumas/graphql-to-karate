@@ -37,6 +37,7 @@ internal sealed class GraphQLToKarateConverterBuilderTests
             .WithBaseUrl("https://www.builder-test.com/graphql")
             .WithExcludeQueriesSetting(false)
             .WithQueryName("Hello")
+            .WithMutationName("World")
             .WithTypeFilter(new HashSet<string> { "Test" })
             .WithOperationFilter(new HashSet<string> { "todos" })
             .Build();

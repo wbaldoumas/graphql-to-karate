@@ -81,6 +81,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
             BaseUrl = "baseUrl",
             ExcludeQueries = false,
             QueryName = GraphQLToken.Query,
+            MutationName = GraphQLToken.Mutation,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "Hello"
@@ -135,6 +136,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
+        loadedConvertCommandSettings.MutationName.Should().Be(convertCommandSettings.MutationName);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
         loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
     }
@@ -148,7 +150,8 @@ internal sealed class ConvertCommandSettingsLoaderTests
             InputFile = "schema.graphql",
             CustomScalarMapping = null,
             OutputFile = "karate.feature",
-            QueryName = null
+            QueryName = null,
+            MutationName = null
         };
 
         _mockFile!
@@ -167,6 +170,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.BaseUrl.Should().Be(convertCommandSettings.BaseUrl);
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(GraphQLToken.Query);
+        loadedConvertCommandSettings.MutationName.Should().Be(GraphQLToken.Mutation);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
         loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
     }
