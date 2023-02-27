@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Tokens;
 using NUnit.Framework;
 
 namespace GraphQLToKarate.Tests.Adapters;
@@ -609,6 +610,236 @@ internal sealed class GraphQLDocumentAdapterTests
             ).SetName(
                 "When GraphQL document has specific input object type definition, input object type definition is found"
             );
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(GraphQLObjectTypeDefinitionsTestCases))]
+    public void GraphQLObjectTypeDefinitions_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        IEnumerable<GraphQLObjectTypeDefinition> expectedResult
+    ) => graphQLDocumentAdapter
+        .GraphQLObjectTypeDefinitions
+        .Should()
+        .BeEquivalentTo(expectedResult);
+
+    private static IEnumerable<TestCaseData> GraphQLObjectTypeDefinitionsTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                new List<GraphQLObjectTypeDefinition>()
+            ).SetName("GraphQL document with no definitions generates expected result");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLInterfaceTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeInterfaceType")
+                        }
+                    }
+                }),
+                new List<GraphQLObjectTypeDefinition>()
+            ).SetName("GraphQL document with no object type definitions generates expected result");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLInterfaceTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeInterfaceType")
+                        },
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeObjectType")
+                        },
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName(GraphQLToken.Query)
+                        }
+                    }
+                }),
+                new List<GraphQLObjectTypeDefinition>
+                {
+                    new()
+                    {
+                        Name = new GraphQLName("SomeObjectType")
+                    }
+                }
+            ).SetName("GraphQL document with one object type definitions generates expected result");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(GraphQLInterfaceTypeDefinitionsTestCases))]
+    public void GraphQLInterfaceTypeDefinitions_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        IEnumerable<GraphQLInterfaceTypeDefinition> expectedResult
+    ) => graphQLDocumentAdapter
+        .GraphQLInterfaceTypeDefinitions
+        .Should()
+        .BeEquivalentTo(expectedResult);
+
+    private static IEnumerable<TestCaseData> GraphQLInterfaceTypeDefinitionsTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                new List<GraphQLInterfaceTypeDefinition>()
+            ).SetName("GraphQL document with no definitions generates expected result");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeObjectType")
+                        }
+                    }
+                }),
+                new List<GraphQLInterfaceTypeDefinition>()
+            ).SetName("GraphQL document with no interface type definitions generates expected result");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLInterfaceTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeInterfaceType")
+                        },
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeObjectType")
+                        },
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName(GraphQLToken.Query)
+                        }
+                    }
+                }),
+                new List<GraphQLInterfaceTypeDefinition>
+                {
+                    new()
+                    {
+                        Name = new GraphQLName("SomeInterfaceType")
+                    }
+                }
+            ).SetName("GraphQL document with one interface type definition generates expected result");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(GraphQLQueryTypeDefinitionTestCases))]
+    public void GraphQLQueryTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLObjectTypeDefinition? expectedResult
+    ) => graphQLDocumentAdapter
+        .GraphQLQueryTypeDefinition
+        .Should()
+        .BeEquivalentTo(expectedResult);
+
+    private static IEnumerable<TestCaseData> GraphQLQueryTypeDefinitionTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                null
+            ).SetName("GraphQL document with no definitions returns expected result.");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLInterfaceTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeInterfaceType")
+                        }
+                    }
+                }),
+                null
+            ).SetName("GraphQL document with no query definition returns expected result.");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName(GraphQLToken.Query)
+                        }
+                    }
+                }),
+                new GraphQLObjectTypeDefinition
+                {
+                    Name = new GraphQLName(GraphQLToken.Query)
+                }
+            ).SetName("GraphQL document with query definition returns expected result.");
+        }
+    }
+
+    [Test]
+    [TestCaseSource(nameof(GraphQLMutationTypeDefinitionTestCases))]
+    public void GraphQLMutationTypeDefinition_returns_expected_result(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLObjectTypeDefinition? expectedResult
+    ) => graphQLDocumentAdapter
+        .GraphQLMutationTypeDefinition
+        .Should()
+        .BeEquivalentTo(expectedResult);
+
+    private static IEnumerable<TestCaseData> GraphQLMutationTypeDefinitionTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument()),
+                null
+            ).SetName("GraphQL document with no definitions returns expected result.");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLInterfaceTypeDefinition
+                        {
+                            Name = new GraphQLName("SomeInterfaceType")
+                        }
+                    }
+                }),
+                null
+            ).SetName("GraphQL document with no mutation definition returns expected result.");
+
+            yield return new TestCaseData(
+                new GraphQLDocumentAdapter(new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName(GraphQLToken.Mutation)
+                        }
+                    }
+                }),
+                new GraphQLObjectTypeDefinition
+                {
+                    Name = new GraphQLName(GraphQLToken.Mutation)
+                }
+            ).SetName("GraphQL document with mutation definition returns expected result.");
         }
     }
 }

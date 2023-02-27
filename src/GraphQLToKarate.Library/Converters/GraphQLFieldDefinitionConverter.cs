@@ -44,7 +44,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
         int indentationLevel = 0)
     {
-        var graphQLFieldDefinitionTypeName = graphQLFieldDefinition.Type.GetTypeName();
+        var graphQLFieldDefinitionTypeName = graphQLFieldDefinition.Type.GetUnwrappedTypeName();
 
         fieldRelationshipsGraph.AddVertex(graphQLFieldDefinitionTypeName);
 
@@ -136,7 +136,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         foreach (var graphQLNamedType in graphQLUnionTypeDefinition.Types!)
         {
-            var graphQLTypeName = graphQLNamedType.GetTypeName();
+            var graphQLTypeName = graphQLNamedType.GetUnwrappedTypeName();
 
             stringBuilder.AppendLine($"... on {graphQLTypeName} {SchemaToken.OpenBrace}".Indent(indentationLevel + 4));
 
@@ -169,7 +169,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     {
         foreach (var childGraphQLFieldDefinition in graphQLTypeDefinitionWithFields.Fields!)
         {
-            var childGraphQLFieldDefinitionTypeName = childGraphQLFieldDefinition.Type.GetTypeName();
+            var childGraphQLFieldDefinitionTypeName = childGraphQLFieldDefinition.Type.GetUnwrappedTypeName();
 
             fieldRelationships.AddVertex(childGraphQLFieldDefinitionTypeName);
 
@@ -207,7 +207,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         AdjacencyGraph<string, Edge<string>> fieldRelationships,
         int indentationLevel)
     {
-        var graphQLFieldDefinitionTypeName = graphQLFieldDefinition.Type.GetTypeName();
+        var graphQLFieldDefinitionTypeName = graphQLFieldDefinition.Type.GetUnwrappedTypeName();
 
         if (graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLFieldDefinitionTypeName) ||
             graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLFieldDefinitionTypeName))

@@ -37,8 +37,8 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
         GraphQLListType graphQLListType => $"[ {Convert(graphQLListType.Type, graphQLDocumentAdapter, inputValueRelationships)} ]",
         GraphQLNonNullType graphQLNonNullType => Convert(graphQLNonNullType.Type, graphQLDocumentAdapter, inputValueRelationships),
         GraphQLNamedType graphQLNamedType when
-            graphQLDocumentAdapter.IsGraphQLInputObjectTypeDefinition(graphQLNamedType.GetTypeName()) => Convert(
-                graphQLDocumentAdapter.GetGraphQLInputObjectTypeDefinition(graphQLNamedType.GetTypeName())!,
+            graphQLDocumentAdapter.IsGraphQLInputObjectTypeDefinition(graphQLNamedType.GetUnwrappedTypeName()) => Convert(
+                graphQLDocumentAdapter.GetGraphQLInputObjectTypeDefinition(graphQLNamedType.GetUnwrappedTypeName())!,
                 graphQLDocumentAdapter,
                 inputValueRelationships ?? new AdjacencyGraph<string, Edge<string>>()
             ),
@@ -65,7 +65,7 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
         foreach (var graphQLInputValueDefinition in graphQLInputObjectTypeDefinition.Fields!)
         {
             var childInputValueName = graphQLInputValueDefinition.NameValue();
-            var childInputValueDefinitionTypeName = graphQLInputValueDefinition.Type.GetTypeName();
+            var childInputValueDefinitionTypeName = graphQLInputValueDefinition.Type.GetUnwrappedTypeName();
 
             inputValueRelationships.AddVertex(childInputValueDefinitionTypeName);
 
@@ -79,7 +79,7 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
                 inputValueRelationships.RemoveEdge(edge);
 
                 stringBuilder.Append(
-                    graphQLInputValueDefinition.Type is GraphQLListType or GraphQLNonNullType { Type: GraphQLListType }
+                    graphQLInputValueDefinition.Type.IsListType()
                         ? $"\"{childInputValueName}\": [ <some {childInputValueDefinitionTypeName} value> ]{SchemaToken.Comma} "
                         : $"\"{childInputValueName}\": <some {childInputValueDefinitionTypeName} value>{SchemaToken.Comma} "
                 );

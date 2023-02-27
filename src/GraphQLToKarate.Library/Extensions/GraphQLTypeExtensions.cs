@@ -10,7 +10,7 @@ internal static class GraphQLTypeExtensions
     /// </summary>
     /// <param name="graphQLType">The <see cref="GraphQLType"/> to retrieve the type name from.</param>
     /// <returns>The type name contained by the given <see cref="GraphQLType"/>.</returns>
-    public static string GetTypeName(this GraphQLType graphQLType)
+    public static string GetUnwrappedTypeName(this GraphQLType graphQLType)
     {
         while (true)
         {
@@ -36,4 +36,12 @@ internal static class GraphQLTypeExtensions
     /// <param name="namedNode">The node to retrieve the name value of</param>
     /// <returns>The string value of the node's name</returns>
     public static string NameValue(this INamedNode namedNode) => namedNode.Name.StringValue;
+
+    /// <summary>
+    ///     Return whether the given GraphQL type is a list type.
+    /// </summary>
+    /// <param name="graphQLType">The source GraphQL type to check.</param>
+    /// <returns>Whether the given GraphQL type is a list type.</returns>
+    public static bool IsListType(this GraphQLType graphQLType) =>
+        graphQLType is GraphQLListType or GraphQLNonNullType { Type: GraphQLListType };
 }

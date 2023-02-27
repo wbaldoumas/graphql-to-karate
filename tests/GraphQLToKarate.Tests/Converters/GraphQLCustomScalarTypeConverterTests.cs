@@ -50,7 +50,7 @@ internal sealed class GraphQLCustomScalarTypeConverterTests
         KarateTypeBase expectedKarateType)
     {
         // arrange
-        var shouldCallUnderlyingGraphQLTypeConverter = !_customScalarMapping!.TryGetKarateType(graphQLType.GetTypeName(), out _);
+        var shouldCallUnderlyingGraphQLTypeConverter = !_customScalarMapping!.TryGetKarateType(graphQLType.GetUnwrappedTypeName(), out _);
 
         if (shouldCallUnderlyingGraphQLTypeConverter)
         {

@@ -11,10 +11,10 @@ namespace GraphQLToKarate.Tests.Extensions;
 internal sealed class GraphQLTypeExtensionsTests
 {
     [TestCaseSource(nameof(TestCases))]
-    public void GetTypeName_should_return_correct_type_name(
+    public void GetUnwrappedTypeName_should_return_correct_type_name(
         GraphQLType graphQLType,
         string expectedTypeName
-    ) => graphQLType.GetTypeName().Should().Be(expectedTypeName);
+    ) => graphQLType.GetUnwrappedTypeName().Should().Be(expectedTypeName);
 
     private static IEnumerable<TestCaseData> TestCases
     {
@@ -59,13 +59,13 @@ internal sealed class GraphQLTypeExtensionsTests
     }
 
     [Test]
-    public void GetTypeName_should_throw_an_exception_when_unsupported_graphql_type_is_encountered()
+    public void GetUnwrappedTypeName_should_throw_an_exception_when_unsupported_graphql_type_is_encountered()
     {
         // arrange
         var graphQLType = new UnsupportedGraphQLType();
 
         // act
-        var act = () => graphQLType.GetTypeName();
+        var act = () => graphQLType.GetUnwrappedTypeName();
 
         // assert
         act.Should().ThrowExactly<InvalidGraphQLTypeException>();
@@ -85,5 +85,48 @@ internal sealed class GraphQLTypeExtensionsTests
 
         // assert
         result.Should().Be("NamedType");
+    }
+
+    [Test]
+    [TestCaseSource(nameof(IsListTypeTestCases))]
+    public void IsListType_returns_expected_value(GraphQLType graphQLType, bool expectedIsListType) =>
+        graphQLType.IsListType().Should().Be(expectedIsListType);
+
+    private static IEnumerable<TestCaseData> IsListTypeTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLNamedType(),
+                false
+            );
+
+            yield return new TestCaseData(
+                new GraphQLNonNullType
+                {
+                    Type = new GraphQLNamedType()
+                },
+                false
+            );
+
+            yield return new TestCaseData(
+                new GraphQLListType
+                {
+                    Type = new GraphQLNamedType()
+                },
+                true
+            );
+
+            yield return new TestCaseData(
+                new GraphQLNonNullType
+                {
+                    Type = new GraphQLListType
+                    {
+                        Type = new GraphQLNamedType()
+                    }
+                },
+                true
+            );
+        }
     }
 }

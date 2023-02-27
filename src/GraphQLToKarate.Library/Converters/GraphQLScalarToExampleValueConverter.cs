@@ -28,7 +28,7 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExa
         _random = new Random();
     }
 
-    public string Convert(GraphQLType graphQLType, IGraphQLDocumentAdapter graphQLDocumentAdapter) => graphQLType.GetTypeName() switch
+    public string Convert(GraphQLType graphQLType, IGraphQLDocumentAdapter graphQLDocumentAdapter) => graphQLType.GetUnwrappedTypeName() switch
     {
         GraphQLToken.Id => GenerateRandomString(),
         GraphQLToken.String => GenerateRandomString(),

@@ -24,7 +24,7 @@ public sealed class GraphQLCustomScalarTypeConverter : IGraphQLTypeConverter
         string graphQLFieldName,
         GraphQLType graphQLType,
         IGraphQLDocumentAdapter graphQLDocumentAdapter
-    ) => _customScalarMapping.TryGetKarateType(graphQLType.GetTypeName(), out var karateType)
+    ) => _customScalarMapping.TryGetKarateType(graphQLType.GetUnwrappedTypeName(), out var karateType)
         ? new KarateType(karateType, graphQLFieldName)
         : _graphQLTypeConverter.Convert(graphQLFieldName, graphQLType, graphQLDocumentAdapter);
 }
