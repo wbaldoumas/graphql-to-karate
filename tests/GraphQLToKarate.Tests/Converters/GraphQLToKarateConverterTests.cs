@@ -77,7 +77,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Returns(ExpectedKarateFeature)
             .AndDoes(ForceEnumerationOfMockedEnumerables);
 
-        var settings = new GraphQLToKarateConverterSettings
+        var settings = new GraphQLToKarateSettings
         {
             QueryName = GraphQLToken.Query,
             ExcludeQueries = false,
@@ -167,7 +167,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Returns(ExpectedKarateFeature)
             .AndDoes(ForceEnumerationOfMockedEnumerables);
 
-        var settings = new GraphQLToKarateConverterSettings
+        var settings = new GraphQLToKarateSettings
         {
             ExcludeQueries = false,
             QueryName = GraphQLToken.Query,
@@ -260,7 +260,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Returns(ExpectedKarateFeature)
             .AndDoes(ForceEnumerationOfMockedEnumerables);
 
-        var settings = new GraphQLToKarateConverterSettings
+        var settings = new GraphQLToKarateSettings
         {
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -348,7 +348,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Returns(ExpectedKarateFeature)
             .AndDoes(ForceEnumerationOfMockedEnumerables);
 
-        var settings = new GraphQLToKarateConverterSettings
+        var settings = new GraphQLToKarateSettings
         {
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
@@ -437,7 +437,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Returns(ExpectedKarateFeature)
             .AndDoes(ForceEnumerationOfMockedEnumerables);
 
-        var settings = new GraphQLToKarateConverterSettings
+        var settings = new GraphQLToKarateSettings
         {
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
@@ -513,7 +513,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Returns(ExpectedKarateFeature)
             .AndDoes(ForceEnumerationOfMockedEnumerables);
 
-        var settings = new GraphQLToKarateConverterSettings
+        var settings = new GraphQLToKarateSettings
         {
             QueryName = "SomeWackyQueryName",
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),

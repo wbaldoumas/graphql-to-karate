@@ -112,7 +112,7 @@ public sealed class GraphQLToKarateConverterBuilder :
             }
         ),
         _graphQLToKarateConverterLogger,
-        new GraphQLToKarateConverterSettings
+        new GraphQLToKarateSettings
         {
             ExcludeQueries = _excludeQueriesSetting,
             QueryName = _queryName,

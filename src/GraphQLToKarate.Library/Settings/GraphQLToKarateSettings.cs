@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace GraphQLToKarate.Library.Settings;
 
 [ExcludeFromCodeCoverage]
-public sealed class GraphQLToKarateConverterSettings
+public sealed class GraphQLToKarateSettings
 {
     public bool ExcludeQueries { get; init; } = false;
 
