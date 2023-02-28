@@ -20,5 +20,9 @@ public interface IGraphQLInputValueDefinitionConverter
         IGraphQLDocumentAdapter graphQLDocumentAdapter
     );
 
+    /// <summary>
+    ///     Get all of the previously converted <see cref="GraphQLArgumentTypeBase"/> types.
+    /// </summary>
+    /// <returns>All of the previously converted <see cref="GraphQLArgumentTypeBase"/> types.</returns>
     ICollection<GraphQLArgumentTypeBase> GetAllConverted();
 }

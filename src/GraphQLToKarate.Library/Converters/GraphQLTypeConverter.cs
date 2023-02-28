@@ -14,7 +14,7 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
         GraphQLType graphQLType,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
-        var karateTypeSchema = graphQLType.GetTypeName() switch
+        var karateTypeSchema = graphQLType.GetUnwrappedTypeName() switch
         {
             GraphQLToken.Id => KarateToken.String,
             GraphQLToken.String => KarateToken.String,

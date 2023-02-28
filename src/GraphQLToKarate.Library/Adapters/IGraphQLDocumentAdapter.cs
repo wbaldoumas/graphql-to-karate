@@ -7,6 +7,14 @@ namespace GraphQLToKarate.Library.Adapters;
 /// </summary>
 public interface IGraphQLDocumentAdapter
 {
+    GraphQLObjectTypeDefinition? GraphQLQueryTypeDefinition { get; }
+
+    GraphQLObjectTypeDefinition? GraphQLMutationTypeDefinition { get; }
+
+    IEnumerable<GraphQLObjectTypeDefinition> GraphQLObjectTypeDefinitions { get; }
+
+    IEnumerable<GraphQLInterfaceTypeDefinition> GraphQLInterfaceTypeDefinitions { get; }
+
     /// <summary>
     ///     Is the given <paramref name="graphQLTypeDefinitionName"/> a <see cref="GraphQLEnumTypeDefinition"/>?
     /// </summary>

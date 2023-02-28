@@ -13,7 +13,7 @@ public sealed class GraphQLToKarateConverterBuilder :
     IGraphQLToKarateConverterBuilder,
     IConfigurableGraphQLToKarateConverterBuilder
 {
-    private IGraphQLTypeConverter? _graphQLTypeConverter;
+    private IGraphQLTypeConverter _graphQLTypeConverter = new GraphQLTypeConverter();
 
     private bool _excludeQueriesSetting;
 
@@ -94,7 +94,7 @@ public sealed class GraphQLToKarateConverterBuilder :
     public IGraphQLToKarateConverter Build() => new GraphQLToKarateConverter(
         new GraphQLSchemaParser(),
         new GraphQLTypeDefinitionConverter(
-            new GraphQLTypeConverterFactory(_graphQLTypeConverter ?? new GraphQLTypeConverter())
+            new GraphQLTypeConverterFactory(_graphQLTypeConverter)
         ),
         new GraphQLFieldDefinitionConverter(
             new GraphQLInputValueDefinitionConverterFactory(
@@ -112,7 +112,7 @@ public sealed class GraphQLToKarateConverterBuilder :
             }
         ),
         _graphQLToKarateConverterLogger,
-        new GraphQLToKarateConverterSettings
+        new GraphQLToKarateSettings
         {
             ExcludeQueries = _excludeQueriesSetting,
             QueryName = _queryName,

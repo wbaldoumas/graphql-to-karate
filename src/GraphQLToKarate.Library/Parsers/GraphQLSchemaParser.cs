@@ -4,6 +4,7 @@ using GraphQLParser.AST;
 
 namespace GraphQLToKarate.Library.Parsers;
 
+/// <inheritdoc cref="IGraphQLSchemaParser"/>
 [ExcludeFromCodeCoverage(Justification = "Just a wrapper to enable dependency injection.")]
 public sealed class GraphQLSchemaParser : IGraphQLSchemaParser
 {

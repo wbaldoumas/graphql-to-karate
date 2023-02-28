@@ -57,7 +57,7 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
         string graphQLArgumentName,
         string graphQLVariableName,
         string exampleValue
-    ) => new GraphQLArgumentType(graphQLArgumentName, graphQLVariableName, graphQLType.GetTypeName(), exampleValue);
+    ) => new GraphQLArgumentType(graphQLArgumentName, graphQLVariableName, graphQLType.GetUnwrappedTypeName(), exampleValue);
 
     private static GraphQLArgumentTypeBase GetGraphQLListVariableType(
         GraphQLType graphQLType,
