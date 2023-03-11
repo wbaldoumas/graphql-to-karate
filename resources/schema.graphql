@@ -26,6 +26,10 @@ type User implements Node {
   friends(limit: Int, offset: Int): [User!]
 }
 
+extend type User {
+  favoriteColor: String!
+}
+
 type Address {
   street: String!
   city: String!
@@ -46,10 +50,16 @@ type Article implements Node {
 
 union SearchResult = User | Article
 
+extend union SearchResult = Address
+
 input ArticleInput {
   titleContains: String
   contentContains: String
   authorId: ID
+}
+
+extend input ArticleInput {
+  id: ID!
 }
 
 input AddressFilterInput {

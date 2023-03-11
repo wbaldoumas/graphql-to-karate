@@ -111,6 +111,96 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
                     break;
             }
         }
+
+        MergeTypeExtensions(graphQLDocument);
+    }
+
+    private void MergeTypeExtensions(GraphQLDocument graphQLDocument)
+    {
+        foreach (var graphQLTypeExtension in graphQLDocument.Definitions.OfType<GraphQLTypeExtension>())
+        {
+            switch (graphQLTypeExtension)
+            {
+                case GraphQLInterfaceTypeExtension graphQLInterfaceTypeExtension:
+                    MergeHasFieldsDefinitionTypeExtension(graphQLInterfaceTypeExtension);
+                    break;
+                case GraphQLObjectTypeExtension graphQLObjectTypeExtension:
+                    MergeHasFieldsDefinitionTypeExtension(graphQLObjectTypeExtension);
+                    break;
+                case GraphQLEnumTypeExtension graphQLEnumTypeExtension:
+                    MergeGraphQLEnumTypeExtension(graphQLEnumTypeExtension);
+                    break;
+                case GraphQLUnionTypeExtension graphQLUnionTypeExtension:
+                    MergeGraphQLUnionTypeExtension(graphQLUnionTypeExtension);
+                    break;
+                case GraphQLInputObjectTypeExtension graphQLInputObjectTypeExtension:
+                    MergeGraphQLInputObjectTypeExtension(graphQLInputObjectTypeExtension);
+                    break;
+            }
+        }
+    }
+
+    private void MergeHasFieldsDefinitionTypeExtension<T>(T graphQLTypeExtension)
+        where T : GraphQLTypeExtension, IHasFieldsDefinitionNode
+    {
+        var hasFieldsDefinition = GetGraphQLTypeDefinitionWithFields(graphQLTypeExtension.NameValue());
+
+        if (hasFieldsDefinition?.Fields is null)
+        {
+            return;
+        }
+
+        foreach (var field in graphQLTypeExtension.Fields?.Items ?? new List<GraphQLFieldDefinition>())
+        {
+            hasFieldsDefinition.Fields.Items.Add(field);
+        }
+    }
+
+    private void MergeGraphQLEnumTypeExtension(GraphQLEnumTypeExtension graphQLEnumTypeExtension)
+    {
+        var graphQLEnumTypeDefinition = GetGraphQLEnumTypeDefinition(graphQLEnumTypeExtension.NameValue());
+
+        if (graphQLEnumTypeDefinition?.Values is null)
+        {
+            return;
+        }
+
+        foreach (var value in graphQLEnumTypeExtension.Values?.Items ?? new List<GraphQLEnumValueDefinition>())
+        {
+            graphQLEnumTypeDefinition.Values.Items.Add(value);
+        }
+    }
+
+    private void MergeGraphQLUnionTypeExtension(GraphQLUnionTypeExtension graphQLUnionTypeExtension)
+    {
+        var graphQLUnionTypeDefinition = GetGraphQLUnionTypeDefinition(graphQLUnionTypeExtension.NameValue());
+
+        if (graphQLUnionTypeDefinition?.Types is null)
+        {
+            return;
+        }
+
+        foreach (var type in graphQLUnionTypeExtension.Types?.Items ?? new List<GraphQLNamedType>())
+        {
+            graphQLUnionTypeDefinition.Types.Items.Add(type);
+        }
+    }
+
+    private void MergeGraphQLInputObjectTypeExtension(GraphQLInputObjectTypeExtension graphQLInputObjectTypeExtension)
+    {
+        var graphQLInputObjectTypeDefinition = GetGraphQLInputObjectTypeDefinition(
+            graphQLInputObjectTypeExtension.NameValue()
+        );
+
+        if (graphQLInputObjectTypeDefinition?.Fields is null)
+        {
+            return;
+        }
+
+        foreach (var field in graphQLInputObjectTypeExtension.Fields?.Items ?? new List<GraphQLInputValueDefinition>())
+        {
+            graphQLInputObjectTypeDefinition.Fields.Items.Add(field);
+        }
     }
 
     public bool IsGraphQLEnumTypeDefinition(string graphQLTypeDefinitionName) =>
