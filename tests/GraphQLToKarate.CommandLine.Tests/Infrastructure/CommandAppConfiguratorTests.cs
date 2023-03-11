@@ -71,6 +71,7 @@ internal sealed class CommandAppConfiguratorTests
                 OutputFile = "graphql.feature",
                 CustomScalarMapping = new CustomScalarMapping(),
                 ExcludeQueries = false,
+                IncludeMutations = false,
                 BaseUrl = "baseUrl",
                 QueryName = GraphQLToken.Query,
                 MutationName = GraphQLToken.Mutation,

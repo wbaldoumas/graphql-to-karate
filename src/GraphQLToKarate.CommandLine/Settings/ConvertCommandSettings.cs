@@ -37,6 +37,11 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [DefaultValue(typeof(string), "false")]
     public bool ExcludeQueries { get; set; }
 
+    [CommandOption("--include-mutations")]
+    [Description("WHether to include mutations or not")]
+    [DefaultValue(typeof(string), "false")]
+    public bool IncludeMutations { get; set; }
+
     [CommandOption("--base-url")]
     [Description("The base URL to be used in the Karate feature")]
     [DefaultValue(typeof(string), "baseUrl")]
@@ -59,7 +64,7 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     public ISet<string> TypeFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     [CommandOption("--operation-filter")]
-    [Description("A comma-separated list of GraphQL query operations to include in the Karate feature")]
+    [Description("A comma-separated list of GraphQL operations to include in the Karate feature")]
     [TypeConverter(typeof(StringToSetConverter))]
     [DefaultValue(typeof(string), "")]
     public ISet<string> OperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

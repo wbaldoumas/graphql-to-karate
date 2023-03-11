@@ -12,6 +12,8 @@ internal sealed class LoadedConvertCommandSettings
 
     public required bool ExcludeQueries { get; init; }
 
+    public required bool IncludeMutations { get; init; }
+
     public required string BaseUrl { get; init; }
 
     public required string QueryName { get; init; }
