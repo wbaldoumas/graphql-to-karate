@@ -23,7 +23,7 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
 
     public string Build(
         IEnumerable<KarateObject> karateObjects,
-        IEnumerable<GraphQLQueryFieldType> graphQLQueries,
+        IEnumerable<GraphQLOperation> graphQLOperations,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var lines = new List<string> {
@@ -38,7 +38,7 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
 
         if (!_karateFeatureBuilderSettings.ExcludeQueries)
         {
-            lines.AddRange(BuildGraphQLQueries(graphQLQueries, graphQLDocumentAdapter));
+            lines.AddRange(BuildGraphQLOperations(graphQLOperations, graphQLDocumentAdapter));
         }
 
         var stringBuilder = new StringBuilder();
@@ -59,11 +59,11 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
         }
     }
 
-    private IEnumerable<string> BuildGraphQLQueries(
-        IEnumerable<GraphQLQueryFieldType> graphQLQueries, 
+    private IEnumerable<string> BuildGraphQLOperations(
+        IEnumerable<GraphQLOperation> graphQLOperations, 
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
-        foreach (var graphQLQueryField in graphQLQueries)
+        foreach (var graphQLQueryField in graphQLOperations)
         {
             yield return _karateScenarioBuilder.Build(graphQLQueryField, graphQLDocumentAdapter);
             yield return string.Empty;

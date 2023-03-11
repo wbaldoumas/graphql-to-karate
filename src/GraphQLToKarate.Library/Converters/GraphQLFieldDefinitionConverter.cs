@@ -4,6 +4,7 @@ using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using System.Text;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Enums;
 using QuikGraph;
 using QuikGraph.Algorithms;
 
@@ -18,18 +19,21 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         IGraphQLInputValueDefinitionConverterFactory graphQLInputValueDefinitionConverterFactory
     ) => _graphQLInputValueDefinitionConverterFactory = graphQLInputValueDefinitionConverterFactory;
 
-    public GraphQLQueryFieldType Convert(
+    public GraphQLOperation Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
-        IGraphQLDocumentAdapter graphQLDocumentAdapter)
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType)
     {
         var graphQLInputValueDefinitionConverter = _graphQLInputValueDefinitionConverterFactory.Create();
         var fieldRelationshipsGraph = new AdjacencyGraph<string, Edge<string>>();
 
-        return new GraphQLQueryFieldType(graphQLFieldDefinition)
+        return new GraphQLOperation(graphQLFieldDefinition)
         {
-            QueryString = Convert(
+            Type = graphQLOperationType,
+            OperationString = Convert(
                 graphQLFieldDefinition,
                 graphQLDocumentAdapter,
+                graphQLOperationType,
                 graphQLInputValueDefinitionConverter,
                 fieldRelationshipsGraph
             ),
@@ -40,6 +44,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     private static string Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
         int indentationLevel = 0)
@@ -64,6 +69,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         MaybeHandleGraphQLTypeDefinitionWithFields(
             graphQLFieldDefinitionTypeName,
             graphQLDocumentAdapter,
+            graphQLOperationType,
             graphQLInputValueDefinitionConverter,
             stringBuilder,
             fieldRelationshipsGraph,
@@ -73,6 +79,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         MaybeHandleGraphQLUnionTypeDefinition(
             graphQLFieldDefinitionTypeName,
             graphQLDocumentAdapter,
+            graphQLOperationType,
             graphQLInputValueDefinitionConverter,
             stringBuilder,
             fieldRelationshipsGraph,
@@ -83,7 +90,12 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         if (indentationLevel == 0)
         {
-            HandleOperation(graphQLFieldDefinition, graphQLInputValueDefinitionConverter, stringBuilder);
+            HandleOperation(
+                graphQLFieldDefinition, 
+                graphQLOperationType, 
+                graphQLInputValueDefinitionConverter,
+                stringBuilder
+            );
         }
 
         return stringBuilder.ToString();
@@ -92,6 +104,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     private static void MaybeHandleGraphQLTypeDefinitionWithFields(
         string graphQLFieldDefinitionTypeName,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
         AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
@@ -110,6 +123,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
             graphQLTypeDefinitionWithFields,
             graphQLFieldDefinitionTypeName,
             graphQLDocumentAdapter,
+            graphQLOperationType,
             graphQLInputValueDefinitionConverter,
             stringBuilder,
             fieldRelationshipsGraph,
@@ -120,6 +134,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     private static void MaybeHandleGraphQLUnionTypeDefinition(
         string graphQLFieldDefinitionTypeName,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
         AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
@@ -148,6 +163,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
                 innerUnionTypeDefinitionWithFields!,
                 graphQLFieldDefinitionTypeName,
                 graphQLDocumentAdapter,
+                graphQLOperationType,
                 graphQLInputValueDefinitionConverter,
                 stringBuilder,
                 fieldRelationshipsGraph,
@@ -162,6 +178,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         IHasFieldsDefinitionNode graphQLTypeDefinitionWithFields,
         string graphQLFieldDefinitionTypeName,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
         AdjacencyGraph<string, Edge<string>> fieldRelationships,
@@ -191,6 +208,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
             HandleField(
                 childGraphQLFieldDefinition,
                 graphQLDocumentAdapter,
+                graphQLOperationType,
                 graphQLInputValueDefinitionConverter,
                 stringBuilder,
                 fieldRelationships,
@@ -202,6 +220,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
     private static void HandleField(
         GraphQLFieldDefinition graphQLFieldDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
         AdjacencyGraph<string, Edge<string>> fieldRelationships,
@@ -216,6 +235,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
                 Convert(
                     graphQLFieldDefinition,
                     graphQLDocumentAdapter,
+                    graphQLOperationType,
                     graphQLInputValueDefinitionConverter,
                     fieldRelationships,
                     indentationLevel + 2
@@ -263,12 +283,13 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
     private static void HandleOperation(
         INamedNode graphQLQueryFieldDefinition,
+        GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder)
     {
         var operationStringBuilder = new StringBuilder();
 
-        operationStringBuilder.Append($"query {graphQLQueryFieldDefinition.NameValue().FirstCharToUpper()}Test");
+        operationStringBuilder.Append($"{graphQLOperationType.Name()} {graphQLQueryFieldDefinition.NameValue().FirstCharToUpper()}Test");
 
         var graphQLArgumentTypes = graphQLInputValueDefinitionConverter.GetAllConverted();
 

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
@@ -25,7 +26,7 @@ internal sealed class KarateScenarioBuilderTests
     [Test]
     [TestCaseSource(nameof(TestCases))]
     public void ScenarioBuilder_builds_expected_scenario_string(
-        GraphQLQueryFieldType graphQLQueryFieldType,
+        GraphQLOperation graphQLOperation,
         GraphQLUnionTypeDefinition? graphQLUnionTypeDefinitionReturn,
         string expectedScenarioString)
     {
@@ -42,7 +43,7 @@ internal sealed class KarateScenarioBuilderTests
         }
 
         // act
-        var scenarioString = _subjectUnderTest!.Build(graphQLQueryFieldType, _mockGraphQLDocumentAdapter!);
+        var scenarioString = _subjectUnderTest!.Build(graphQLOperation, _mockGraphQLDocumentAdapter!);
 
         // assert
         scenarioString.Should().Be(expectedScenarioString);
@@ -62,10 +63,11 @@ internal sealed class KarateScenarioBuilderTests
             };
 
             yield return new TestCaseData(
-                new GraphQLQueryFieldType(graphQLFieldDefinition)
+                new GraphQLOperation(graphQLFieldDefinition)
                 {
+                    Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
-                    QueryString =
+                    OperationString =
                     """
                     query TodoTest {
                       todo {
@@ -97,8 +99,9 @@ internal sealed class KarateScenarioBuilderTests
             ).SetName("Simple query without arguments is generated as a valid scenario.");
 
             yield return new TestCaseData(
-                new GraphQLQueryFieldType(graphQLFieldDefinition)
+                new GraphQLOperation(graphQLFieldDefinition)
                 {
+                    Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>
                     {
                         new GraphQLNonNullArgumentType(
@@ -128,7 +131,7 @@ internal sealed class KarateScenarioBuilderTests
                             )
                         )
                     },
-                    QueryString =
+                    OperationString =
                     """
                     query TodoTest($id: String!, $isCompleted: Boolean, $filter: [Color!]!) {
                       todo(id: $id, isCompleted: $isCompleted) {
@@ -187,10 +190,11 @@ internal sealed class KarateScenarioBuilderTests
             };
 
             yield return new TestCaseData(
-                new GraphQLQueryFieldType(graphQLFieldDefinitionWithListReturn)
+                new GraphQLOperation(graphQLFieldDefinitionWithListReturn)
                 {
+                    Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
-                    QueryString = 
+                    OperationString = 
                     """
                     query TodoTest {
                       todo {
@@ -237,10 +241,11 @@ internal sealed class KarateScenarioBuilderTests
             };
 
             yield return new TestCaseData(
-                new GraphQLQueryFieldType(graphQLFieldDefinitionWithNonNullListReturn)
+                new GraphQLOperation(graphQLFieldDefinitionWithNonNullListReturn)
                 {
+                    Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
-                    QueryString =
+                    OperationString =
                     """
                     query TodoTest {
                       todo {
@@ -287,10 +292,11 @@ internal sealed class KarateScenarioBuilderTests
             };
 
             yield return new TestCaseData(
-                new GraphQLQueryFieldType(graphQLFieldDefinitionWithUnionReturnType)
+                new GraphQLOperation(graphQLFieldDefinitionWithUnionReturnType)
                 {
+                    Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
-                    QueryString =
+                    OperationString =
                     """
                     query TodoUnionTest {
                       todoUnion {
