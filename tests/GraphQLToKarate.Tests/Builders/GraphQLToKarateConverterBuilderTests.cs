@@ -36,6 +36,7 @@ internal sealed class GraphQLToKarateConverterBuilderTests
             .WithCustomScalarMapping(customScalarMapping)
             .WithBaseUrl("https://www.builder-test.com/graphql")
             .WithExcludeQueriesSetting(false)
+            .WithIncludeMutationsSetting(false)
             .WithQueryName("Hello")
             .WithMutationName("World")
             .WithTypeFilter(new HashSet<string> { "Test" })

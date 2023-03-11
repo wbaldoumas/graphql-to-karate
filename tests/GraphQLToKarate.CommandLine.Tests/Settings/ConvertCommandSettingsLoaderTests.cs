@@ -80,6 +80,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
             OutputFile = "karate.feature",
             BaseUrl = "baseUrl",
             ExcludeQueries = false,
+            IncludeMutations = true,
             QueryName = GraphQLToken.Query,
             MutationName = GraphQLToken.Mutation,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -139,6 +140,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.MutationName.Should().Be(convertCommandSettings.MutationName);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
         loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
+        loadedConvertCommandSettings.IncludeMutations.Should().Be(convertCommandSettings.IncludeMutations);
     }
 
     [Test]

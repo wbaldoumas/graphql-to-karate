@@ -79,6 +79,7 @@ internal sealed class ConvertCommandTests
                 OutputFile = convertCommandSettings.OutputFile!,
                 CustomScalarMapping = new CustomScalarMapping(),
                 ExcludeQueries = convertCommandSettings.ExcludeQueries,
+                IncludeMutations = convertCommandSettings.IncludeMutations,
                 BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
                 QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
                 MutationName = convertCommandSettings.MutationName ?? GraphQLToken.Mutation,

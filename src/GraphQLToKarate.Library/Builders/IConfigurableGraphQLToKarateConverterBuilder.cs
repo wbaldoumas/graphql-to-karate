@@ -31,6 +31,13 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given excluded queries setting.</returns>
     IConfigurableGraphQLToKarateConverterBuilder WithExcludeQueriesSetting(bool excludeQueriesSetting);
 
+    /// <summary>
+    ///     Configure the converter with the given <paramref name="includeMutationsSetting"/>. This allows the
+    ///     user to include mutations within the final generated Karate feature, if they would like to.
+    /// </summary>
+    /// <param name="includeMutationsSetting"></param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given included queries setting.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithIncludeMutationsSetting(bool includeMutationsSetting);
 
     /// <summary>
     ///    Configure the converter with the given <paramref name="queryName"/>. This allows the user to specify a

@@ -17,6 +17,8 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private bool _excludeQueriesSetting;
 
+    private bool _includeMutationsSetting;
+
     private string _baseUrl = "baseUrl";
 
     private string _queryName = GraphQLToken.Query;
@@ -59,6 +61,13 @@ public sealed class GraphQLToKarateConverterBuilder :
     public IConfigurableGraphQLToKarateConverterBuilder WithExcludeQueriesSetting(bool excludeQueriesSetting)
     {
         _excludeQueriesSetting = excludeQueriesSetting;
+
+        return this;
+    }
+
+    public IConfigurableGraphQLToKarateConverterBuilder WithIncludeMutationsSetting(bool includeMutationsSetting)
+    {
+        _includeMutationsSetting = includeMutationsSetting;
 
         return this;
     }
@@ -115,6 +124,7 @@ public sealed class GraphQLToKarateConverterBuilder :
         new GraphQLToKarateSettings
         {
             ExcludeQueries = _excludeQueriesSetting,
+            IncludeMutations = _includeMutationsSetting,
             QueryName = _queryName,
             MutationName = _mutationName,
             TypeFilter = _typeFilter,
