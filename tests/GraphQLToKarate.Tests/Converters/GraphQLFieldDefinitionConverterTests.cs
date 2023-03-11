@@ -2,6 +2,7 @@
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Converters;
+using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using NSubstitute;
@@ -38,19 +39,21 @@ internal sealed class GraphQLFieldDefinitionConverterTests
     [TestCaseSource(nameof(TestCases))]
     public void Convert(
         GraphQLFieldDefinition graphQLQueryFieldDefinition,
-        IGraphQLDocumentAdapter graphQLUeDefinedTypes,
-        GraphQLQueryFieldType expectedGraphQLQueryFieldType)
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLOperationType graphQLOperationType,
+        GraphQLOperation expectedGraphQLOperation)
     {
         // act
         var graphQLQueryFieldType = _subjectUnderTest!.Convert(
             graphQLQueryFieldDefinition,
-            graphQLUeDefinedTypes
+            graphQLDocumentAdapter,
+            graphQLOperationType
         );
 
         // assert
         graphQLQueryFieldType
             .Should()
-            .BeEquivalentTo(expectedGraphQLQueryFieldType);
+            .BeEquivalentTo(expectedGraphQLOperation);
     }
 
     private static IEnumerable<TestCaseData> TestCases
@@ -728,9 +731,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 personQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(personQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(personQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query PersonTest {
                                   person {
                                     id
@@ -756,9 +761,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 personWithFriendsQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(personWithFriendsQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(personWithFriendsQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query PersonWithFriendsTest {
                                   personWithFriends {
                                     id
@@ -802,9 +809,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 personWithFriendsWithArgumentsGraphQLQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(personWithFriendsWithArgumentsGraphQLQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(personWithFriendsWithArgumentsGraphQLQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query PersonByIdTest($id: Int) {
                                   personById(id: $id) {
                                     id
@@ -856,9 +865,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(personWithFriendsWithNestedArgumentsGraphQLQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query PersonWithFriendsByIdTest($id: Int, $ids: [String], $location: String!) {
                                   personWithFriendsById(id: $id) {
                                     id
@@ -884,9 +895,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 personWithFavoriteColorsGraphQLQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(personWithFavoriteColorsGraphQLQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(personWithFavoriteColorsGraphQLQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query PersonWithFavoriteColorsTest($filter: [String]) {
                                   personWithFavoriteColors {
                                     id
@@ -918,9 +931,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 personInterfaceQueryGraphQLFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(personInterfaceQueryGraphQLFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(personInterfaceQueryGraphQLFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query PersonInterfaceTest {
                                   personInterface {
                                     id
@@ -944,9 +959,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 nestedPersonInterfaceGraphQLQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(nestedPersonInterfaceGraphQLQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(nestedPersonInterfaceGraphQLQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query NestedPersonInterfaceTest {
                                   nestedPersonInterface {
                                     id
@@ -974,9 +991,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 blogPostQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(blogPostQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(blogPostQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query BlogPostTest {
                                   blogPost {
                                     id
@@ -1003,9 +1022,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 blogPostWithCommentsQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(blogPostWithCommentsQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(blogPostWithCommentsQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query BlogPostWithCommentsTest {
                                   blogPostWithComments {
                                     id
@@ -1037,9 +1058,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 bestFriendQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(bestFriendQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(bestFriendQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query BestFriendTest {
                                   bestFriend {
                                     id
@@ -1063,9 +1086,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 blogUnionQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(blogUnionQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(blogUnionQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query BlogUnionTest($filter: String, $filter1: String) {
                                   blogUnion {
                                     ... on BlogPost {
@@ -1121,9 +1146,11 @@ internal sealed class GraphQLFieldDefinitionConverterTests
             yield return new TestCaseData(
                 bloggerWithUnionPostsQueryFieldDefinition,
                 graphQLDocumentAdapter,
-                new GraphQLQueryFieldType(bloggerWithUnionPostsQueryFieldDefinition)
+                GraphQLOperationType.Query,
+                new GraphQLOperation(bloggerWithUnionPostsQueryFieldDefinition)
                 {
-                    QueryString = """
+                    Type = GraphQLOperationType.Query,
+                    OperationString = """
                                 query BloggerWithUnionPostsTest($filter: String, $filter1: String) {
                                   bloggerWithUnionPosts {
                                     id

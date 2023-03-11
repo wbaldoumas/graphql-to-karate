@@ -8,6 +8,8 @@ public sealed class GraphQLToKarateSettings
 {
     public bool ExcludeQueries { get; init; } = false;
 
+    public bool IncludeMutations { get; init; } = false;
+
     public string QueryName { get; init; } = GraphQLToken.Query;
 
     public string MutationName { get; init; } = GraphQLToken.Mutation;

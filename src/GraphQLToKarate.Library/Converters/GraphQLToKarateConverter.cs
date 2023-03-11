@@ -1,4 +1,5 @@
 ﻿using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Parsers;
@@ -53,6 +54,8 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
             )
         );
 
+        var graphQLOperations = new List<GraphQLOperation>();
+
         if (graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields is null)
         {
             _logger.LogWarning(
@@ -61,22 +64,48 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                 _graphQLToKarateSettings.QueryName,
                 "--query-name"
             );
+        }
 
-            return _karateFeatureBuilder.Build(
-                karateObjects,
-                Enumerable.Empty<GraphQLQueryFieldType>(),
-                graphQLDocumentAdapter
+        if (graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields is null)
+        {
+            _logger.LogWarning(
+                message: """Unable to find mutation type by the name of "{mutationName}". If your mutation type exists and is named something other than "{mutationName}", you will need to set the correct {mutationNameOption} option for correct Karate scenario generation.""",
+                _graphQLToKarateSettings.MutationName,
+                _graphQLToKarateSettings.MutationName,
+                "--mutation-name"
             );
         }
 
-        var graphQLQueryFieldTypes = graphQLDocumentAdapter.GraphQLQueryTypeDefinition.Fields
-            .Where(definition =>
-                _graphQLToKarateSettings.OperationFilter.NoneOrContains(definition.NameValue())
-            )
-            .Select(definition =>
-                _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter)
-            );
+        if (!_graphQLToKarateSettings.ExcludeQueries)
+        {
+            var graphQLQueryOperations = graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields?
+                .Where(definition =>
+                    _graphQLToKarateSettings.OperationFilter.NoneOrContains(definition.NameValue())
+                )
+                .Select(definition =>
+                    _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, GraphQLOperationType.Query)
+                ) ?? new List<GraphQLOperation>();
 
-        return _karateFeatureBuilder.Build(karateObjects, graphQLQueryFieldTypes, graphQLDocumentAdapter);
+            graphQLOperations = graphQLOperations.Concat(graphQLQueryOperations).ToList();
+        }
+
+        if (_graphQLToKarateSettings.IncludeMutations)
+        {
+            var graphQLMutationOperations = graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields?
+                .Where(definition =>
+                    _graphQLToKarateSettings.OperationFilter.NoneOrContains(definition.NameValue())
+                )
+                .Select(definition =>
+                    _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, GraphQLOperationType.Mutation)
+                ) ?? new List<GraphQLOperation>();
+
+            graphQLOperations = graphQLOperations.Concat(graphQLMutationOperations).ToList();
+        }
+
+        return _karateFeatureBuilder.Build(
+            karateObjects,
+            graphQLOperations, 
+            graphQLDocumentAdapter
+        );
     }
 }

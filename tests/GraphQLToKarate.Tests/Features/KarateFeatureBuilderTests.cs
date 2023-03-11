@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Settings;
@@ -27,23 +28,23 @@ internal sealed class KarateFeatureBuilderTests
     [TestCaseSource(nameof(TestCases))]
     public void FeatureBuilder_builds_expected_feature_when_queries_are_included(
         IEnumerable<KarateObject> karateObjects,
-        ICollection<GraphQLQueryFieldType> graphQLQueryFieldTypes,
-        IDictionary<string, string> mockScenarioBuilderReturnByGraphQLQueryName,
+        ICollection<GraphQLOperation> graphQLOperations,
+        IDictionary<string, string> mockScenarioBuilderReturnByGraphQLOperationName,
         KarateFeatureBuilderSettings karateFeatureBuilderSettings,
         string expectedFeatureString)
     {
         // arrange
-        foreach (var graphQLQueryFieldType in graphQLQueryFieldTypes)
+        foreach (var graphQLOperation in graphQLOperations)
         {
             _mockScenarioBuilder!
-                .Build(graphQLQueryFieldType, _mockGraphQLDocumentAdapter!)
-                .Returns(mockScenarioBuilderReturnByGraphQLQueryName[graphQLQueryFieldType.Name]);
+                .Build(graphQLOperation, _mockGraphQLDocumentAdapter!)
+                .Returns(mockScenarioBuilderReturnByGraphQLOperationName[graphQLOperation.Name]);
         }
 
         var subjectUnderTest = new KarateFeatureBuilder(_mockScenarioBuilder!, karateFeatureBuilderSettings);
 
         // act
-        var featureString = subjectUnderTest.Build(karateObjects, graphQLQueryFieldTypes, _mockGraphQLDocumentAdapter!);
+        var featureString = subjectUnderTest.Build(karateObjects, graphQLOperations, _mockGraphQLDocumentAdapter!);
 
         // assert
         featureString.Should().Be(expectedFeatureString);
@@ -82,12 +83,13 @@ internal sealed class KarateFeatureBuilderTests
                         }
                     )
                 },
-                new List<GraphQLQueryFieldType>
+                new List<GraphQLOperation>
                 {
                     new(graphQLFieldDefinition)
                     {
+                        Type = GraphQLOperationType.Query,
                         Arguments = new List<GraphQLArgumentTypeBase>(),
-                        QueryString =
+                        OperationString =
                         """
                         query TodoTest {
                           todo {
@@ -192,12 +194,13 @@ internal sealed class KarateFeatureBuilderTests
                         }
                     )
                 },
-                new List<GraphQLQueryFieldType>
+                new List<GraphQLOperation>
                 {
                     new(graphQLFieldDefinition)
                     {
+                        Type = GraphQLOperationType.Query,
                         Arguments = new List<GraphQLArgumentTypeBase>(),
-                        QueryString =
+                        OperationString =
                         """
                         query TodoTest {
                           todo {
@@ -209,8 +212,9 @@ internal sealed class KarateFeatureBuilderTests
                     },
                     new(otherGraphQLFieldDefinition)
                     {
+                        Type = GraphQLOperationType.Query,
                         Arguments = new List<GraphQLArgumentTypeBase>(),
-                        QueryString =
+                        OperationString =
                         """
                         query UserTest {
                           user {
@@ -365,7 +369,7 @@ internal sealed class KarateFeatureBuilderTests
                         }
                     )
                 },
-                new List<GraphQLQueryFieldType>(),
+                new List<GraphQLOperation>(),
                 new Dictionary<string, string>(),
                 karateFeatureBuilderSettingsWithQueries,
                 """"
@@ -405,12 +409,13 @@ internal sealed class KarateFeatureBuilderTests
                         }
                     )
                 },
-                new List<GraphQLQueryFieldType>
+                new List<GraphQLOperation>
                 {
                     new(graphQLFieldDefinition)
                     {
+                        Type = GraphQLOperationType.Query,
                         Arguments = new List<GraphQLArgumentTypeBase>(),
-                        QueryString =
+                        OperationString =
                         """
                         query TodoTest {
                           todo {

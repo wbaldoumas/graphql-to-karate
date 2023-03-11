@@ -10,18 +10,18 @@ namespace GraphQLToKarate.Library.Features;
 public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 {
     public string Build(
-        GraphQLQueryFieldType graphQLQueryFieldType,
+        GraphQLOperation graphQLOperation,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         var stringBuilder = new StringBuilder();
 
-        stringBuilder.AppendLine($"Scenario: Perform a {graphQLQueryFieldType.Name} query and validate the response");
+        stringBuilder.AppendLine($"Scenario: Perform a {graphQLOperation.Name} {graphQLOperation.Type.Name()} and validate the response");
 
-        BuildQueryString(graphQLQueryFieldType.QueryString, stringBuilder);
-        BuildVariablesString(graphQLQueryFieldType.Arguments, stringBuilder);
-        BuildUnionValidation(graphQLQueryFieldType.ReturnTypeName, graphQLDocumentAdapter, stringBuilder);
-        BuildKarateRequest(graphQLQueryFieldType, stringBuilder);
-        BuildKarateAssert(graphQLQueryFieldType, graphQLDocumentAdapter,  stringBuilder);
+        BuildQueryString(graphQLOperation.OperationString, stringBuilder);
+        BuildVariablesString(graphQLOperation.Arguments, stringBuilder);
+        BuildUnionValidation(graphQLOperation.ReturnTypeName, graphQLDocumentAdapter, stringBuilder);
+        BuildKarateRequest(graphQLOperation, stringBuilder);
+        BuildKarateAssert(graphQLOperation, graphQLDocumentAdapter,  stringBuilder);
 
         return stringBuilder.ToString();
     }
@@ -88,16 +88,16 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         stringBuilder.AppendLine(SchemaToken.TripleQuote.Indent(Indent.Double));
     }
 
-    private static void BuildKarateRequest(GraphQLQueryFieldType graphQLQueryFieldType, StringBuilder stringBuilder)
+    private static void BuildKarateRequest(GraphQLOperation graphQLOperation, StringBuilder stringBuilder)
     {
         stringBuilder.AppendLine();
         stringBuilder.AppendLine("Given path \"/graphql\"".Indent(Indent.Single));
         stringBuilder.Append("And request ".Indent(Indent.Single));
         stringBuilder.Append("{ ");
         stringBuilder.Append("query: '#(query)', ");
-        stringBuilder.Append($"operationName: \"{graphQLQueryFieldType.OperationName}\"");
+        stringBuilder.Append($"operationName: \"{graphQLOperation.OperationName}\"");
 
-        if (graphQLQueryFieldType.Arguments.Any())
+        if (graphQLOperation.Arguments.Any())
         {
             stringBuilder.Append(", variables: '#(variables)'");
         }
@@ -106,32 +106,32 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
     }
 
     private static void BuildKarateAssert(
-        GraphQLQueryFieldType graphQLQueryFieldType,
+        GraphQLOperation graphQLOperation,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
         StringBuilder stringBuilder)
     {
         stringBuilder.AppendLine("When method post".Indent(Indent.Single));
         stringBuilder.AppendLine("Then status 200".Indent(Indent.Single));
 
-        var matchCardinalityString = graphQLQueryFieldType.IsListReturnType
-            ? $"And match each response.data.{graphQLQueryFieldType.Name} == "
-            : $"And match response.data.{graphQLQueryFieldType.Name} == ";
+        var matchCardinalityString = graphQLOperation.IsListReturnType
+            ? $"And match each response.data.{graphQLOperation.Name} == "
+            : $"And match response.data.{graphQLOperation.Name} == ";
 
         stringBuilder.Append(matchCardinalityString.Indent(Indent.Single));
 
         string schemaMatchString;
 
-        if (graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLQueryFieldType.ReturnTypeName))
+        if (graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLOperation.ReturnTypeName))
         {
             schemaMatchString = "\"#? isValid(_)\"";
         }
-        else if (graphQLQueryFieldType.IsNullableReturnType)
+        else if (graphQLOperation.IsNullableReturnType)
         {
-            schemaMatchString = $"\"##({graphQLQueryFieldType.ReturnTypeName.FirstCharToLower()}Schema)\"";
+            schemaMatchString = $"\"##({graphQLOperation.ReturnTypeName.FirstCharToLower()}Schema)\"";
         }
         else
         {
-            schemaMatchString = $"{graphQLQueryFieldType.ReturnTypeName.FirstCharToLower()}Schema";
+            schemaMatchString = $"{graphQLOperation.ReturnTypeName.FirstCharToLower()}Schema";
         }
 
         stringBuilder.Append(schemaMatchString);
