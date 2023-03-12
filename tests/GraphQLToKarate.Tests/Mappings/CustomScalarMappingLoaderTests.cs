@@ -19,7 +19,7 @@ internal sealed class CustomScalarMappingLoaderTests
         _subjectUnderTest = new CustomScalarMappingLoader(_mockFile);
     }
 
-    private const string CustomScalarMappingAsJson = 
+    private const string CustomScalarMappingAsJson =
         """
         {
             "DateTime": "string",
@@ -28,7 +28,9 @@ internal sealed class CustomScalarMappingLoaderTests
         }
         """;
 
-    private const string CustomScalarMappingAsText = " DateTime:string, Long: number,URL :string "; // messy user input with spaces
+    private const string CustomScalarMappingAsText = " DateTime:string, Long: number,URL :string ";
+
+    private const string CustomScalarMappingAsShortText = "DateTime:string";
 
     [Test]
     public void IsFileLoadable_returns_false_when_file_does_not_exist()
@@ -47,11 +49,13 @@ internal sealed class CustomScalarMappingLoaderTests
 
     [Test]
     [TestCase("", false)]
+    [TestCase("  : ,  : , :", false)]
     [TestCase("some random text xyz {123}", false)]
     [TestCase(CustomScalarMappingAsJson, true)]
     [TestCase(CustomScalarMappingAsText, true)]
+    [TestCase(CustomScalarMappingAsShortText, true)]
     public void IsFileLoadable_returns_expected_result_based_on_file_content(
-        string fileContent, 
+        string fileContent,
         bool expectedIsFileLoadable)
     {
         // arrange
@@ -72,9 +76,11 @@ internal sealed class CustomScalarMappingLoaderTests
 
     [Test]
     [TestCase("", false)]
+    [TestCase("  : ,  : , :", false)]
     [TestCase("some,random,text", false)]
     [TestCase(CustomScalarMappingAsText, true)]
-    public void IsFileLoadable_returns_expected_result_based_on_text_content(
+    [TestCase(CustomScalarMappingAsShortText, true)]
+    public void IsTextLoadable_returns_expected_result_based_on_text_content(
         string textContent,
         bool expectedIsTextLoadable)
     {
@@ -86,10 +92,10 @@ internal sealed class CustomScalarMappingLoaderTests
     }
 
     [Test]
-    [TestCase(CustomScalarMappingAsJson)]
-    [TestCase(CustomScalarMappingAsText)]
+    [TestCaseSource(nameof(LoadFromFileTestCases))]
     public void LoadFromFile_returns_expected_result_when_file_exists_and_contains_expected_content(
-        string fileContent)
+        string fileContent,
+        CustomScalarMapping expectedCustomScalarMapping)
     {
         // arrange
         _mockFile!
@@ -104,22 +110,14 @@ internal sealed class CustomScalarMappingLoaderTests
         var customScalarMapping = _subjectUnderTest!.LoadFromFile("some-file-path");
 
         // assert
-        customScalarMapping.Should().BeEquivalentTo(
-            new CustomScalarMapping(new Dictionary<string, string>
-                {
-                    { "DateTime", "string" },
-                    { "Long", "number" },
-                    { "URL", "string" }
-                }
-            )
-        );
+        customScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
     }
 
     [Test]
-    [TestCase(CustomScalarMappingAsJson)]
-    [TestCase(CustomScalarMappingAsText)]
+    [TestCaseSource(nameof(LoadFromFileTestCases))]
     public async Task LoadFromFileAsync_returns_expected_result_when_file_exists_and_contains_expected_content(
-        string fileContent)
+        string fileContent,
+        CustomScalarMapping expectedCustomScalarMapping)
     {
         // arrange
         _mockFile!
@@ -134,36 +132,57 @@ internal sealed class CustomScalarMappingLoaderTests
         var customScalarMapping = await _subjectUnderTest!.LoadFromFileAsync("some-file-path");
 
         // assert
-        customScalarMapping.Should().BeEquivalentTo(
-            new CustomScalarMapping(
-                new Dictionary<string, string>
-                {
-                    { "DateTime", "string" },
-                    { "Long", "number" },
-                    { "URL", "string" }
-                }
-            )
-        );
+        customScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
     }
 
     [Test]
-    [TestCase(CustomScalarMappingAsText)]
+    [TestCaseSource(nameof(LoadFromTextTestCases))]
     public void LoadFromText_returns_expected_result_when_text_contains_expected_content(
-        string textContent)
+        string textContent,
+        CustomScalarMapping expectedCustomScalarMapping)
     {
         // act
         var customScalarMapping = _subjectUnderTest!.LoadFromText(textContent);
 
         // assert
-        customScalarMapping.Should().BeEquivalentTo(
-            new CustomScalarMapping(
-                new Dictionary<string, string>
-                {
-                    { "DateTime", "string" },
-                    { "Long", "number" },
-                    { "URL", "string" }
-                }
-            )
-        );
+        customScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
+    }
+
+    private static readonly CustomScalarMapping MultiCustomScalarMapping = new(
+        new Dictionary<string, string>
+        {
+            { "DateTime", "string" },
+            { "Long", "number" },
+            { "URL", "string" }
+        }
+    );
+
+    private static readonly CustomScalarMapping SingleCustomScalarMapping = new(
+        new Dictionary<string, string>
+        {
+            { "DateTime", "string" }
+        }
+    );
+
+    private static IEnumerable<TestCaseData> LoadFromFileTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(CustomScalarMappingAsJson, MultiCustomScalarMapping);
+
+            yield return new TestCaseData(CustomScalarMappingAsText, MultiCustomScalarMapping);
+
+            yield return new TestCaseData(CustomScalarMappingAsShortText, SingleCustomScalarMapping);
+        }
+    }
+
+    private static IEnumerable<TestCaseData> LoadFromTextTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(CustomScalarMappingAsText, MultiCustomScalarMapping);
+
+            yield return new TestCaseData(CustomScalarMappingAsShortText, SingleCustomScalarMapping);
+        }
     }
 }
