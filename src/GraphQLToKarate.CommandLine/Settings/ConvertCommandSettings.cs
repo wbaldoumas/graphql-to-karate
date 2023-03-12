@@ -1,9 +1,9 @@
-﻿using Spectre.Console;
+﻿using GraphQLToKarate.Library.Mappings;
+using GraphQLToKarate.Library.Tokens;
+using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
 using System.IO.Abstractions;
-using GraphQLToKarate.Library.Mappings;
-using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.CommandLine.Settings;
 
@@ -84,7 +84,7 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (!IsCustomScalarMappingValid(CustomScalarMapping))
         {
-            return ValidationResult.Error("Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option.");
+            return ValidationResult.Error("The --custom-scalar-mapping option value is invalid. Please provide either a valid file path or valid custom scalar mapping value.");
         }
 
         return ValidationResult.Success();
