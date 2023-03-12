@@ -8,7 +8,7 @@ namespace GraphQLToKarate.Library.Mappings;
 /// <inheritdoc cref="ICustomScalarMappingLoader"/>
 public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 {
-    private readonly Regex _regex = new(@"^([\w\s]+:[\w\s]+,\s*)+[\w\s]+:[\w\s]+$", RegexOptions.Compiled);
+    private readonly Regex _regex = new(@"^([\w\s]+:[\w\s]+(?:,\s*|$))*[\w\s]+:[\w\s]+(?:,\s*)?$", RegexOptions.Compiled);
     private readonly IFile _file;
 
     public CustomScalarMappingLoader(IFile file) => _file = file;

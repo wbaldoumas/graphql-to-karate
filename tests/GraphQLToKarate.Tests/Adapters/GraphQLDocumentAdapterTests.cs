@@ -656,7 +656,7 @@ internal sealed class GraphQLDocumentAdapterTests
                 null
             ).SetName("When GraphQL document is empty, enum type definition is not found");
 
-            var graphQLEnumTypeDefinitionName = "Color";
+            const string graphQLEnumTypeDefinitionName = "Color";
 
             var graphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition
             {

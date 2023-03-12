@@ -89,6 +89,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
             graphQLOperations = graphQLOperations.Concat(graphQLQueryOperations).ToList();
         }
 
+        // ReSharper disable once InvertIf
         if (_graphQLToKarateSettings.IncludeMutations)
         {
             var graphQLMutationOperations = graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields?
