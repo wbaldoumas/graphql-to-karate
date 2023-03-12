@@ -4,6 +4,7 @@ using Spectre.Console.Cli;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 
+/// <inheritdoc cref="ITypeRegistrar"/>
 internal sealed class TypeRegistrar : ITypeRegistrar
 {
     private readonly IHostBuilder _hostBuilder;
@@ -12,21 +13,21 @@ internal sealed class TypeRegistrar : ITypeRegistrar
 
     public ITypeResolver Build() => new TypeResolver(_hostBuilder.Build());
 
-    public void Register(Type service, Type implementation) => _hostBuilder.ConfigureServices(
-        (_, services) => services.AddSingleton(service, implementation)
+    public void Register(Type serviceType, Type implementationType) => _hostBuilder.ConfigureServices(
+        (_, serviceCollection) => serviceCollection.AddSingleton(serviceType, implementationType)
     );
 
-    public void RegisterInstance(Type type, object implementation) => _hostBuilder.ConfigureServices(
-        (_, services) => services.AddSingleton(type, implementation)
+    public void RegisterInstance(Type serviceType, object implementation) => _hostBuilder.ConfigureServices(
+        (_, serviceCollection) => serviceCollection.AddSingleton(serviceType, implementation)
     );
 
-    public void RegisterLazy(Type type, Func<object>? func)
+    public void RegisterLazy(Type serviceType, Func<object>? implementationFactory)
     {
-        if (func is null)
+        if (implementationFactory is null)
         {
-            throw new ArgumentNullException(nameof(func));
+            throw new ArgumentNullException(nameof(implementationFactory));
         }
 
-        _hostBuilder.ConfigureServices((_, services) => services.AddSingleton(type, _ => func()));
+        _hostBuilder.ConfigureServices((_, serviceCollection) => serviceCollection.AddSingleton(serviceType, _ => implementationFactory()));
     }
 }

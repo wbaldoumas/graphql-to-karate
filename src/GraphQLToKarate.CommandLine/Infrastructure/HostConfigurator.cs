@@ -9,8 +9,16 @@ using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 
+/// <summary>
+///   Configures the host builder.
+/// </summary>
 internal static class HostConfigurator
 {
+    /// <summary>
+    ///    Configures the host builder.
+    /// </summary>
+    /// <param name="args">The command line arguments.</param>
+    /// <returns>The configured host builder.</returns>
     public static IHostBuilder ConfigureHostBuilder(string[]? args) => Host
         .CreateDefaultBuilder(args)
         .ConfigureServices(serviceCollection =>

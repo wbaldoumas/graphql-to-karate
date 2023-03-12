@@ -93,7 +93,7 @@ internal sealed class ConvertCommandSettingsTests
                 "customScalarMapping.json",
                 true,
                 false,
-                "Please provide a valid file path and filename for the custom scalar mapping passed to the --csm|--custom-scalar-mapping option."
+                "The --custom-scalar-mapping option value is invalid. Please provide either a valid file path or valid custom scalar mapping value."
             ).SetName("When non-null and non-empty custom scalar mapping filename points to file that doesn't exist, settings are invalid.");
 
             yield return new TestCaseData(

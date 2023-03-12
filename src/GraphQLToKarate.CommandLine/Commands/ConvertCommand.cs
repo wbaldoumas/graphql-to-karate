@@ -29,7 +29,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
     {
         _logger.LogInformation("Running GraphQL to Karate conversion...");
 
-        var loadedCommandSettings = await _convertCommandSettingsLoader.LoadAsync(commandSettings);
+        var loadedCommandSettings = await _convertCommandSettingsLoader.LoadAsync(commandSettings).ConfigureAwait(false);
 
         var graphQLToKarateConverter = _graphQLToKarateConverterBuilder
             .Configure()
@@ -45,7 +45,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
 
         var karateFeature = graphQLToKarateConverter.Convert(loadedCommandSettings.GraphQLSchema);
 
-        await WriteKarateFeature(commandSettings, karateFeature);
+        await WriteKarateFeatureAsync(commandSettings, karateFeature).ConfigureAwait(false);
 
         var fullPath = _fileSystem.Path.GetFullPath(commandSettings.OutputFile!);
 
@@ -54,10 +54,15 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
         return 0;
     }
 
-    private async Task WriteKarateFeature(ConvertCommandSettings commandSettings, string karateFeature)
+    private async Task WriteKarateFeatureAsync(ConvertCommandSettings commandSettings, string karateFeature)
     {
         var file = _fileSystem.FileInfo.New(commandSettings.OutputFile!);
+
         file.Directory!.Create();
-        await _fileSystem.File.WriteAllTextAsync(commandSettings.OutputFile!, karateFeature);
+
+        await _fileSystem.File.WriteAllTextAsync(
+            commandSettings.OutputFile!,
+            karateFeature
+        ).ConfigureAwait(false);
     }
 }
