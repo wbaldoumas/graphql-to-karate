@@ -92,6 +92,18 @@ internal sealed class CustomScalarMappingLoaderTests
     }
 
     [Test]
+    [TestCase(null)]
+    [TestCase("invalid")]
+    public async Task LoadAsync_returns_empty_custom_scalar_mapping_when_given_invalid_input(string invalidInput)
+    {
+        // act
+        var customScalarMapping = await _subjectUnderTest!.LoadAsync(invalidInput);
+
+        // assert
+        customScalarMapping.Should().BeEquivalentTo(new CustomScalarMapping());
+    }
+
+    [Test]
     [TestCaseSource(nameof(LoadFromFileTestCases))]
     public async Task LoadAsync_returns_expected_result_when_file_exists_and_contains_expected_content(
         string fileContent,
