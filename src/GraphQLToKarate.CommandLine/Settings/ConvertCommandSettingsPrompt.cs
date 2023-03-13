@@ -29,22 +29,11 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         LoadedConvertCommandSettings initialLoadedConvertCommandSettings)
     {
         var outputFile = PromptForOutputFile(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
-
         var queryName = PromptForQueryName(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
-
         var mutationName = PromptForMutationName(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
-
         var excludeQueries = PromptForExcludeQueriesChoice(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
-
         var includeMutations = PromptForIncludeMutationsChoice(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
-
         var baseUrl = PromptForBaseUrl(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
 
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(
             _graphQLSchemaParser.Parse(initialLoadedConvertCommandSettings.GraphQLSchema),
@@ -56,13 +45,11 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         );
 
         var queryOperationFilter = PromptForQueryOperationFilter(graphQLDocumentAdapter, excludeQueries);
-
         var mutationOperationFilter = PromptForMutationOperationFilter(graphQLDocumentAdapter, includeMutations);
-
         var graphQLTypeFilter = PromptForTypeFilter(graphQLDocumentAdapter);
-
         var customScalarMapping = await PromptForCustomScalarMappingAsync().ConfigureAwait(false);
-        _ansiConsole.WriteLine();
+
+        _ansiConsole.Write(new Padder(new Rule()).PadLeft(1).PadRight(1));
 
         return new LoadedConvertCommandSettings
         {
