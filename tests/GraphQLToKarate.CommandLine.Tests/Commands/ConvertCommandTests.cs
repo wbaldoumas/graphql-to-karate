@@ -21,6 +21,7 @@ internal sealed class ConvertCommandTests
     private IConvertCommandSettingsLoader? _mockConvertCommandSettingsLoader;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
     private ICustomScalarMappingValidator? _mockCustomScalarMappingValidator;
+    private IConvertCommandSettingsPrompt? _mockConvertCommandSettingsPrompt;
     private ILogger<ConvertCommand>? _mockLogger;
     private AsyncCommand<ConvertCommandSettings>? _subjectUnderTest;
 
@@ -32,6 +33,7 @@ internal sealed class ConvertCommandTests
         _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
         _mockGraphQLToKarateConverterBuilder = Substitute.For<IGraphQLToKarateConverterBuilder>();
         _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
+        _mockConvertCommandSettingsPrompt = Substitute.For<IConvertCommandSettingsPrompt>();
         _mockLogger = Substitute.For<ILogger<ConvertCommand>>();
         _mockFileSystem.File.Returns(_mockFile);
 
@@ -39,12 +41,13 @@ internal sealed class ConvertCommandTests
             _mockFileSystem,
             _mockConvertCommandSettingsLoader,
             _mockGraphQLToKarateConverterBuilder,
+            _mockConvertCommandSettingsPrompt,
             _mockLogger
         );
     }
 
     [Test]
-    public async Task ConvertCommand_executes_as_expected()
+    public async Task ConvertCommand_executes_as_expected_when_non_interactive()
     {
         // arrange
         var commandContext = new CommandContext(
@@ -97,5 +100,76 @@ internal sealed class ConvertCommandTests
         await _mockConvertCommandSettingsLoader!
             .Received()
             .LoadAsync(convertCommandSettings);
+
+        await _mockConvertCommandSettingsPrompt!
+            .DidNotReceiveWithAnyArgs()
+            .PromptAsync(default!);
+    }
+
+    [Test]
+    public async Task ConvertCommand_executes_as_expected_when_interactive()
+    {
+        // arrange
+        var commandContext = new CommandContext(
+            remaining: Substitute.For<IRemainingArguments>(),
+            name: "Test CommandContext",
+            data: new { }
+        );
+
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingValidator!)
+        {
+            InputFile = "schema.graphql",
+            OutputFile = "graphql.feature",
+            IsInteractive = true
+        };
+
+        const string schemaFileContent = "some GraphQL schema";
+        const string karateFeature = "some Karate feature";
+
+        var mockGraphQLToKarateConverter = Substitute.For<IGraphQLToKarateConverter>();
+
+        mockGraphQLToKarateConverter.Convert(Arg.Any<string>()).Returns(karateFeature);
+
+        _mockGraphQLToKarateConverterBuilder!
+            .Configure()
+            .Build()
+            .Returns(mockGraphQLToKarateConverter);
+
+        var loadedConvertCommandSettings = new LoadedConvertCommandSettings
+        {
+            GraphQLSchema = schemaFileContent,
+            OutputFile = convertCommandSettings.OutputFile!,
+            CustomScalarMapping = new CustomScalarMapping(),
+            ExcludeQueries = convertCommandSettings.ExcludeQueries,
+            IncludeMutations = convertCommandSettings.IncludeMutations,
+            BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
+            QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
+            MutationName = convertCommandSettings.MutationName ?? GraphQLToken.Mutation,
+            TypeFilter = convertCommandSettings.TypeFilter,
+            QueryOperationFilter = convertCommandSettings.QueryOperationFilter,
+            MutationOperationFilter = convertCommandSettings.MutationOperationFilter
+        };
+
+        _mockConvertCommandSettingsLoader!
+            .LoadAsync(convertCommandSettings)
+            .Returns(loadedConvertCommandSettings);
+
+        _mockConvertCommandSettingsPrompt!
+            .PromptAsync(loadedConvertCommandSettings)
+            .Returns(loadedConvertCommandSettings);
+
+        // act
+        var result = await _subjectUnderTest!.ExecuteAsync(commandContext, convertCommandSettings);
+
+        // assert
+        result.Should().Be(0);
+
+        await _mockConvertCommandSettingsLoader!
+            .Received()
+            .LoadAsync(convertCommandSettings);
+
+        await _mockConvertCommandSettingsPrompt!
+            .Received()
+            .PromptAsync(loadedConvertCommandSettings);
     }
 }
