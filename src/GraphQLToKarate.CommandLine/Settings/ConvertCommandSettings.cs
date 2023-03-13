@@ -23,6 +23,11 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [Description("The path of the GraphQL schema file to convert")]
     public string? InputFile { get; set; }
 
+    [CommandOption("--interactive")]
+    [Description("Whether to run conversion in an interactive way or not")]
+    [DefaultValue(typeof(string), "true")]
+    public bool IsInteractive { get; set; }
+
     [CommandOption("--output-file")]
     [Description("The path of the output Karate feature file")]
     [DefaultValue(typeof(string), "graphql.feature")]

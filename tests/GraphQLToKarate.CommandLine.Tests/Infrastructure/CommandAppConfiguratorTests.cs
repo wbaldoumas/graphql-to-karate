@@ -23,6 +23,7 @@ internal sealed class CommandAppConfiguratorTests
     private ConvertCommandSettings? _mockConvertCommandSettings;
     private IGraphQLToKarateConverterBuilder? _mockGraphQLToKarateConverterBuilder;
     private ICustomScalarMappingValidator? _mockCustomScalarMappingValidator;
+    private IConvertCommandSettingsPrompt? _mockConvertCommandSettingsPrompt;
     private ConvertCommand? _mockConvertCommand;
     private ITypeResolver? _mockTypeResolver;
     private ITypeRegistrar? _mockTypeRegistrar;
@@ -34,6 +35,7 @@ internal sealed class CommandAppConfiguratorTests
         _mockFileSystem = Substitute.For<IFileSystem>();
         _mockFileSystem.File.Returns(_mockFile);
         _mockCustomScalarMappingValidator = Substitute.For<ICustomScalarMappingValidator>();
+        _mockConvertCommandSettingsPrompt = Substitute.For<IConvertCommandSettingsPrompt>();
         _mockConvertCommandSettings = new ConvertCommandSettings(_mockFile, _mockCustomScalarMappingValidator);
         _mockLogger = Substitute.For<ILogger<ConvertCommand>>();
         _mockConvertCommandSettingsLoader = Substitute.For<IConvertCommandSettingsLoader>();
@@ -43,6 +45,7 @@ internal sealed class CommandAppConfiguratorTests
             _mockFileSystem,
             _mockConvertCommandSettingsLoader,
             _mockGraphQLToKarateConverterBuilder,
+            _mockConvertCommandSettingsPrompt,
             _mockLogger
         );
 
@@ -67,22 +70,28 @@ internal sealed class CommandAppConfiguratorTests
             .IsValid(Arg.Any<string>())
             .Returns(true);
 
+        var loadedConvertCommandSettings = new LoadedConvertCommandSettings
+        {
+            GraphQLSchema = "some GraphQL schema",
+            OutputFile = "graphql.feature",
+            CustomScalarMapping = new CustomScalarMapping(),
+            ExcludeQueries = false,
+            IncludeMutations = false,
+            BaseUrl = "baseUrl",
+            QueryName = GraphQLToken.Query,
+            MutationName = GraphQLToken.Mutation,
+            TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            MutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        };
+        
         _mockConvertCommandSettingsLoader!
             .LoadAsync(Arg.Any<ConvertCommandSettings>())
-            .Returns(new LoadedConvertCommandSettings
-            {
-                GraphQLSchema = "some GraphQL schema",
-                OutputFile = "graphql.feature",
-                CustomScalarMapping = new CustomScalarMapping(),
-                ExcludeQueries = false,
-                IncludeMutations = false,
-                BaseUrl = "baseUrl",
-                QueryName = GraphQLToken.Query,
-                MutationName = GraphQLToken.Mutation,
-                TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-                QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-                MutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            });
+            .Returns(loadedConvertCommandSettings);
+
+        _mockConvertCommandSettingsPrompt!
+            .PromptAsync(loadedConvertCommandSettings)
+            .Returns(loadedConvertCommandSettings);
 
         // act
         var result = await CommandAppConfigurator
