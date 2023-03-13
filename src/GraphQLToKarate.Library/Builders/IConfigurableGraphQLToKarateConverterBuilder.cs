@@ -63,10 +63,18 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     IConfigurableGraphQLToKarateConverterBuilder WithTypeFilter(ISet<string> typeFilter);
 
     /// <summary>
-    ///    Configure the converter with the given <paramref name="operationFilter"/>. This allows the user to specify
+    ///    Configure the converter with the given <paramref name="queryOperationFilter"/>. This allows the user to specify
     ///    which GraphQL query operations to include in the output, if they'd like to filter them.
     /// </summary>
-    /// <param name="operationFilter">The operation filter to use.</param>
-    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given operation filter.</returns>
-    IConfigurableGraphQLToKarateConverterBuilder WithOperationFilter(ISet<string> operationFilter);
+    /// <param name="queryOperationFilter">The query operation filter to use.</param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given query operation filter.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithQueryOperationFilter(ISet<string> queryOperationFilter);
+
+    /// <summary>
+    ///     Configure the converter with the given <paramref name="mutationOperationFilter"/>. This allows the user to specify
+    ///     which GraphQL mutation operations to include in the output, if they'd like to filter them.
+    /// </summary>
+    /// <param name="mutationOperationFilter">The mutation operation filter to use.</param>
+    /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given mutation operation filter.</returns>
+    IConfigurableGraphQLToKarateConverterBuilder WithMutationOperationFilter(ISet<string> mutationOperationFilter);
 }

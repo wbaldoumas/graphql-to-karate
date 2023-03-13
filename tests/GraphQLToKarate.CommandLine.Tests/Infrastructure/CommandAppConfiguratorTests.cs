@@ -80,7 +80,8 @@ internal sealed class CommandAppConfiguratorTests
                 QueryName = GraphQLToken.Query,
                 MutationName = GraphQLToken.Mutation,
                 TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-                OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+                MutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             });
 
         // act

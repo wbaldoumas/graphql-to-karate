@@ -27,7 +27,9 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private ISet<string> _typeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-    private ISet<string> _operationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    private ISet<string> _queryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    private ISet<string> _mutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     private ICustomScalarMapping _customScalarMapping = new CustomScalarMapping();
 
@@ -93,9 +95,16 @@ public sealed class GraphQLToKarateConverterBuilder :
         return this;
     }
 
-    public IConfigurableGraphQLToKarateConverterBuilder WithOperationFilter(ISet<string> operationFilter)
+    public IConfigurableGraphQLToKarateConverterBuilder WithQueryOperationFilter(ISet<string> queryOperationFilter)
     {
-        _operationFilter = operationFilter;
+        _queryOperationFilter = queryOperationFilter;
+
+        return this;
+    }
+
+    public IConfigurableGraphQLToKarateConverterBuilder WithMutationOperationFilter(ISet<string> mutationOperationFilter)
+    {
+        _mutationOperationFilter = mutationOperationFilter;
 
         return this;
     }
@@ -128,7 +137,8 @@ public sealed class GraphQLToKarateConverterBuilder :
             QueryName = _queryName,
             MutationName = _mutationName,
             TypeFilter = _typeFilter,
-            OperationFilter = _operationFilter
+            QueryOperationFilter = _queryOperationFilter,
+            MutationOperationFilter = _mutationOperationFilter
         }
     );
 }

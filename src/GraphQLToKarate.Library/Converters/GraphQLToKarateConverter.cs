@@ -80,7 +80,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         {
             var graphQLQueryOperations = graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields?
                 .Where(definition =>
-                    _graphQLToKarateSettings.OperationFilter.NoneOrContains(definition.NameValue())
+                    _graphQLToKarateSettings.QueryOperationFilter.NoneOrContains(definition.NameValue())
                 )
                 .Select(definition =>
                     _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, GraphQLOperationType.Query)
@@ -89,12 +89,12 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
             graphQLOperations = graphQLOperations.Concat(graphQLQueryOperations).ToList();
         }
 
-        // ReSharper disable once InvertIf
+        // ReSharper disable once InvertIf - this is easier to read.
         if (_graphQLToKarateSettings.IncludeMutations)
         {
             var graphQLMutationOperations = graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields?
                 .Where(definition =>
-                    _graphQLToKarateSettings.OperationFilter.NoneOrContains(definition.NameValue())
+                    _graphQLToKarateSettings.MutationOperationFilter.NoneOrContains(definition.NameValue())
                 )
                 .Select(definition =>
                     _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, GraphQLOperationType.Mutation)

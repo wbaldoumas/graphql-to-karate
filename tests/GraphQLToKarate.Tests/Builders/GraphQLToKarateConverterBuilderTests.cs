@@ -40,7 +40,8 @@ internal sealed class GraphQLToKarateConverterBuilderTests
             .WithQueryName("Hello")
             .WithMutationName("World")
             .WithTypeFilter(new HashSet<string> { "Test" })
-            .WithOperationFilter(new HashSet<string> { "todos" })
+            .WithQueryOperationFilter(new HashSet<string> { "todos" })
+            .WithMutationOperationFilter(new HashSet<string> { "todos" })
             .Build();
 
         // assert

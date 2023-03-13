@@ -35,6 +35,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         _graphQLInputObjectTypeDefinitionsByName = new Dictionary<string, GraphQLInputObjectTypeDefinition>();
 
         // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+        // this actually can be null, but the GraphQLParser library doesn't mark it as nullable
         graphQLDocument.Definitions ??= new List<ASTNode>();
 
         GraphQLObjectTypeDefinitions = graphQLDocument.Definitions
