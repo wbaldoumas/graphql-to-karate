@@ -13,6 +13,19 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
     public CustomScalarMappingLoader(IFile file) => _file = file;
 
+    public async Task<ICustomScalarMapping> LoadAsync(string? customScalarMappingSource) => customScalarMappingSource switch
+    {
+        null => new CustomScalarMapping(),
+        _ when IsTextLoadable(customScalarMappingSource) => LoadFromText(customScalarMappingSource),
+        _ when IsFileLoadable(customScalarMappingSource) => await LoadFromFileAsync(customScalarMappingSource).ConfigureAwait(false),
+        _ => new CustomScalarMapping()
+    };
+
+    public bool IsValid(string? customScalarMappingSource) =>
+        string.IsNullOrEmpty(customScalarMappingSource) ||
+        IsTextLoadable(customScalarMappingSource) ||
+        IsFileLoadable(customScalarMappingSource);
+    
     public bool IsFileLoadable(string filePath)
     {
         if (!_file.Exists(filePath))
@@ -24,7 +37,7 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
         if (string.IsNullOrWhiteSpace(fileContent))
         {
-            return false;
+            return true;
         }
 
         if (_regex.IsMatch(fileContent))
@@ -45,9 +58,6 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
     }
 
     public bool IsTextLoadable(string text) => _regex.IsMatch(text);
-
-    public ICustomScalarMapping LoadFromFile(string filePath) =>
-        DeserializeFileContent(_file.ReadAllText(filePath));
 
     public async Task<ICustomScalarMapping> LoadFromFileAsync(string filePath) =>
         DeserializeFileContent(await _file.ReadAllTextAsync(filePath));

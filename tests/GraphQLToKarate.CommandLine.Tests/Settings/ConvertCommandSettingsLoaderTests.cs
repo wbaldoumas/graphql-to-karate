@@ -107,25 +107,8 @@ internal sealed class ConvertCommandSettingsLoaderTests
         );
 
         _mockCustomScalarMappingLoader!
-            .IsFileLoadable(convertCommandSettings.CustomScalarMapping)
-            .Returns(mockCustomScalarMappingLoaderIsFileLoadableReturn);
-
-        _mockCustomScalarMappingLoader
-            .IsTextLoadable(convertCommandSettings.CustomScalarMapping)
-            .Returns(!mockCustomScalarMappingLoaderIsFileLoadableReturn);
-
-        if (mockCustomScalarMappingLoaderIsFileLoadableReturn)
-        {
-            _mockCustomScalarMappingLoader
-                .LoadFromFileAsync(convertCommandSettings.CustomScalarMapping)
-                .Returns(expectedCustomScalarMapping);
-        }
-        else
-        {
-            _mockCustomScalarMappingLoader
-                .LoadFromText(convertCommandSettings.CustomScalarMapping)
-                .Returns(expectedCustomScalarMapping);
-        }
+            .LoadAsync(convertCommandSettings.CustomScalarMapping)
+            .Returns(expectedCustomScalarMapping);
 
         // act
         var loadedConvertCommandSettings = await _subjectUnderTest!.LoadAsync(convertCommandSettings);
@@ -160,6 +143,10 @@ internal sealed class ConvertCommandSettingsLoaderTests
             .ReadAllTextAsync(convertCommandSettings.InputFile)
             .Returns(SomeGraphQLSchema);
 
+        _mockCustomScalarMappingLoader!
+            .LoadAsync(convertCommandSettings.CustomScalarMapping)
+            .Returns(new CustomScalarMapping());
+
         var expectedCustomScalarMapping = new CustomScalarMapping();
 
         // act
@@ -193,12 +180,8 @@ internal sealed class ConvertCommandSettingsLoaderTests
             .Returns(SomeGraphQLSchema);
 
         _mockCustomScalarMappingLoader!
-            .IsFileLoadable(convertCommandSettings.CustomScalarMapping)
-            .Returns(false);
-
-        _mockCustomScalarMappingLoader!
-            .IsTextLoadable(convertCommandSettings.CustomScalarMapping)
-            .Returns(false);
+            .LoadAsync(convertCommandSettings.CustomScalarMapping)
+            .Returns(new CustomScalarMapping());
 
         var expectedCustomScalarMapping = new CustomScalarMapping();
 

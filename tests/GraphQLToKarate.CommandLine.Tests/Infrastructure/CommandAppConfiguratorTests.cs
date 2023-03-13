@@ -63,6 +63,10 @@ internal sealed class CommandAppConfiguratorTests
             .Build()
             .Returns(_mockTypeResolver);
 
+        _mockCustomScalarMappingValidator!
+            .IsValid(Arg.Any<string>())
+            .Returns(true);
+
         _mockConvertCommandSettingsLoader!
             .LoadAsync(Arg.Any<ConvertCommandSettings>())
             .Returns(new LoadedConvertCommandSettings

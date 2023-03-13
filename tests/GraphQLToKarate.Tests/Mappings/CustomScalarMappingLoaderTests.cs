@@ -33,7 +33,7 @@ internal sealed class CustomScalarMappingLoaderTests
     private const string CustomScalarMappingAsShortText = "DateTime:string";
 
     [Test]
-    public void IsFileLoadable_returns_false_when_file_does_not_exist()
+    public void IsValid_returns_false_when_file_does_not_exist()
     {
         // arrange
         _mockFile!
@@ -41,22 +41,22 @@ internal sealed class CustomScalarMappingLoaderTests
             .Returns(false);
 
         // act
-        var isFileLoadable = _subjectUnderTest!.IsFileLoadable("some-file-path");
+        var isValid = _subjectUnderTest!.IsValid("some-file-path");
 
         // assert
-        isFileLoadable.Should().BeFalse();
+        isValid.Should().BeFalse();
     }
 
     [Test]
-    [TestCase("", false)]
     [TestCase("  : ,  : , :", false)]
     [TestCase("some random text xyz {123}", false)]
+    [TestCase("", true)]
     [TestCase(CustomScalarMappingAsJson, true)]
     [TestCase(CustomScalarMappingAsText, true)]
     [TestCase(CustomScalarMappingAsShortText, true)]
-    public void IsFileLoadable_returns_expected_result_based_on_file_content(
+    public void IsValid_returns_expected_result_based_on_file_content(
         string fileContent,
-        bool expectedIsFileLoadable)
+        bool expectedIsValid)
     {
         // arrange
         _mockFile!
@@ -68,54 +68,44 @@ internal sealed class CustomScalarMappingLoaderTests
             .Returns(fileContent);
 
         // act
-        var isFileLoadable = _subjectUnderTest!.IsFileLoadable("some-file-path");
+        var isValid = _subjectUnderTest!.IsValid("some-file-path");
 
         // assert
-        isFileLoadable.Should().Be(expectedIsFileLoadable);
+        isValid.Should().Be(expectedIsValid);
     }
 
     [Test]
-    [TestCase("", false)]
     [TestCase("  : ,  : , :", false)]
     [TestCase("some,random,text", false)]
+    [TestCase("", true)]
     [TestCase(CustomScalarMappingAsText, true)]
     [TestCase(CustomScalarMappingAsShortText, true)]
-    public void IsTextLoadable_returns_expected_result_based_on_text_content(
+    public void IsValid_returns_expected_result_based_on_text_content(
         string textContent,
-        bool expectedIsTextLoadable)
+        bool expectedIsValid)
     {
         // act
-        var result = _subjectUnderTest!.IsTextLoadable(textContent);
+        var result = _subjectUnderTest!.IsValid(textContent);
 
         // assert
-        result.Should().Be(expectedIsTextLoadable);
+        result.Should().Be(expectedIsValid);
+    }
+
+    [Test]
+    [TestCase(null)]
+    [TestCase("invalid")]
+    public async Task LoadAsync_returns_empty_custom_scalar_mapping_when_given_invalid_input(string invalidInput)
+    {
+        // act
+        var customScalarMapping = await _subjectUnderTest!.LoadAsync(invalidInput);
+
+        // assert
+        customScalarMapping.Should().BeEquivalentTo(new CustomScalarMapping());
     }
 
     [Test]
     [TestCaseSource(nameof(LoadFromFileTestCases))]
-    public void LoadFromFile_returns_expected_result_when_file_exists_and_contains_expected_content(
-        string fileContent,
-        CustomScalarMapping expectedCustomScalarMapping)
-    {
-        // arrange
-        _mockFile!
-            .Exists(Arg.Any<string>())
-            .Returns(true);
-
-        _mockFile!
-            .ReadAllText(Arg.Any<string>())
-            .Returns(fileContent);
-
-        // act
-        var customScalarMapping = _subjectUnderTest!.LoadFromFile("some-file-path");
-
-        // assert
-        customScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
-    }
-
-    [Test]
-    [TestCaseSource(nameof(LoadFromFileTestCases))]
-    public async Task LoadFromFileAsync_returns_expected_result_when_file_exists_and_contains_expected_content(
+    public async Task LoadAsync_returns_expected_result_when_file_exists_and_contains_expected_content(
         string fileContent,
         CustomScalarMapping expectedCustomScalarMapping)
     {
@@ -129,7 +119,7 @@ internal sealed class CustomScalarMappingLoaderTests
             .Returns(fileContent);
 
         // act
-        var customScalarMapping = await _subjectUnderTest!.LoadFromFileAsync("some-file-path");
+        var customScalarMapping = await _subjectUnderTest!.LoadAsync("some-file-path");
 
         // assert
         customScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);
@@ -137,12 +127,12 @@ internal sealed class CustomScalarMappingLoaderTests
 
     [Test]
     [TestCaseSource(nameof(LoadFromTextTestCases))]
-    public void LoadFromText_returns_expected_result_when_text_contains_expected_content(
+    public async Task LoadAsync_returns_expected_result_when_text_contains_expected_content(
         string textContent,
         CustomScalarMapping expectedCustomScalarMapping)
     {
         // act
-        var customScalarMapping = _subjectUnderTest!.LoadFromText(textContent);
+        var customScalarMapping = await _subjectUnderTest!.LoadAsync(textContent);
 
         // assert
         customScalarMapping.Should().BeEquivalentTo(expectedCustomScalarMapping);

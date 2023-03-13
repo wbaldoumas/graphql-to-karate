@@ -82,16 +82,11 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
         }
 
         // ReSharper disable once ConvertIfStatementToReturnStatement
-        if (!IsCustomScalarMappingValid(CustomScalarMapping))
+        if (!_customScalarMappingValidator.IsValid(CustomScalarMapping))
         {
             return ValidationResult.Error("The --custom-scalar-mapping option value is invalid. Please provide either a valid file path or valid custom scalar mapping value.");
         }
 
         return ValidationResult.Success();
     }
-
-    private bool IsCustomScalarMappingValid(string? customScalarMapping) =>
-        string.IsNullOrEmpty(customScalarMapping) ||
-        _customScalarMappingValidator.IsTextLoadable(customScalarMapping) ||
-        _customScalarMappingValidator.IsFileLoadable(customScalarMapping);
 }
