@@ -32,11 +32,7 @@ internal sealed class ConvertCommandSettingsTests
         _mockFile!.Exists(graphQLSchemaFile).Returns(graphQLSchemaFileExistsReturn);
 
         _mockCustomScalarMappingValidator!
-            .IsFileLoadable(customScalarMapping!)
-            .Returns(customScalarMappingValidatorReturn);
-
-        _mockCustomScalarMappingValidator!
-            .IsTextLoadable(customScalarMapping!)
+            .IsValid(customScalarMapping)
             .Returns(customScalarMappingValidatorReturn);
 
         var settings = new ConvertCommandSettings(_mockFile, _mockCustomScalarMappingValidator!)
@@ -100,7 +96,7 @@ internal sealed class ConvertCommandSettingsTests
                 "schema.graphql",
                 null,
                 true,
-                false,
+                true,
                 null
             ).SetName("When non-null and non-empty InputFile name points to file that exists, settings are valid (null custom scalar mapping).");
 
@@ -108,7 +104,7 @@ internal sealed class ConvertCommandSettingsTests
                 "schema.graphql",
                 string.Empty,
                 true,
-                false,
+                true,
                 null
             ).SetName("When non-null and non-empty InputFile name points to file that exists, settings are valid (empty custom scalar mapping).");
 

@@ -19,7 +19,7 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
     public async Task<LoadedConvertCommandSettings> LoadAsync(ConvertCommandSettings convertCommandSettings)
     {
         var graphQLSchema = await _file.ReadAllTextAsync(convertCommandSettings.InputFile!).ConfigureAwait(false);
-        var customScalarMapping = await LoadCustomScalarMappingAsync(convertCommandSettings).ConfigureAwait(false);
+        var customScalarMapping = await _customScalarMappingLoader.LoadAsync(convertCommandSettings.CustomScalarMapping).ConfigureAwait(false);
 
         return new LoadedConvertCommandSettings
         {
@@ -34,26 +34,5 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
             TypeFilter = convertCommandSettings.TypeFilter,
             OperationFilter = convertCommandSettings.OperationFilter
         };
-    }
-
-    private async Task<ICustomScalarMapping> LoadCustomScalarMappingAsync(
-        ConvertCommandSettings convertCommandSettings)
-    {
-        if (convertCommandSettings.CustomScalarMapping is null)
-        {
-            return new CustomScalarMapping();
-        }
-
-        if (_customScalarMappingLoader.IsTextLoadable(convertCommandSettings.CustomScalarMapping!))
-        {
-            return _customScalarMappingLoader.LoadFromText(convertCommandSettings.CustomScalarMapping!);
-        }
-
-        if (_customScalarMappingLoader.IsFileLoadable(convertCommandSettings.CustomScalarMapping!))
-        {
-            return await _customScalarMappingLoader.LoadFromFileAsync(convertCommandSettings.CustomScalarMapping!).ConfigureAwait(false);
-        }
-
-        return new CustomScalarMapping();
     }
 }
