@@ -74,6 +74,4 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
                 customScalarMappingEntryParts => customScalarMappingEntryParts.Last()
             )
     );
-
-
 }
