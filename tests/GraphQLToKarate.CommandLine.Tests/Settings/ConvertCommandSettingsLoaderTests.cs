@@ -87,7 +87,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
             {
                 "Hello"
             },
-            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 "World"
             }
@@ -122,7 +122,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
         loadedConvertCommandSettings.MutationName.Should().Be(convertCommandSettings.MutationName);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
-        loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
+        loadedConvertCommandSettings.QueryOperationFilter.Should().BeEquivalentTo(convertCommandSettings.QueryOperationFilter);
         loadedConvertCommandSettings.IncludeMutations.Should().Be(convertCommandSettings.IncludeMutations);
     }
 
@@ -161,7 +161,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.QueryName.Should().Be(GraphQLToken.Query);
         loadedConvertCommandSettings.MutationName.Should().Be(GraphQLToken.Mutation);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
-        loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
+        loadedConvertCommandSettings.QueryOperationFilter.Should().BeEquivalentTo(convertCommandSettings.QueryOperationFilter);
     }
 
     [Test]
@@ -196,6 +196,6 @@ internal sealed class ConvertCommandSettingsLoaderTests
         loadedConvertCommandSettings.ExcludeQueries.Should().Be(convertCommandSettings.ExcludeQueries);
         loadedConvertCommandSettings.QueryName.Should().Be(convertCommandSettings.QueryName);
         loadedConvertCommandSettings.TypeFilter.Should().BeEquivalentTo(convertCommandSettings.TypeFilter);
-        loadedConvertCommandSettings.OperationFilter.Should().BeEquivalentTo(convertCommandSettings.OperationFilter);
+        loadedConvertCommandSettings.QueryOperationFilter.Should().BeEquivalentTo(convertCommandSettings.QueryOperationFilter);
     }
 }

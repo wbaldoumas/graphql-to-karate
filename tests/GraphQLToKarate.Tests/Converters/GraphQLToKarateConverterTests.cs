@@ -181,7 +181,11 @@ internal sealed class GraphQLToKarateConverterTests
             QueryName = GraphQLToken.Query,
             ExcludeQueries = false,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-            IncludeMutations = true
+            IncludeMutations = true,
+            MutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "todosMutation"
+            }
         };
 
         var subjectUnderTest = new GraphQLToKarateConverter(
@@ -220,7 +224,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Convert(TodosQueryFieldDefinition, Arg.Any<GraphQLDocumentAdapter>(), GraphQLOperationType.Query);
 
         _mockGraphQLFieldDefinitionConverter
-            .Received(1)
+            .DidNotReceive()
             .Convert(TodoMutationFieldDefinition, Arg.Any<GraphQLDocumentAdapter>(), GraphQLOperationType.Mutation);
 
         _mockGraphQLFieldDefinitionConverter
@@ -231,7 +235,7 @@ internal sealed class GraphQLToKarateConverterTests
             .Received(1)
             .Build(
                 Arg.Is<IEnumerable<KarateObject>>(arg => arg.Count() == 2),
-                Arg.Is<IEnumerable<GraphQLOperation>>(arg => arg.Count() == 4),
+                Arg.Is<IEnumerable<GraphQLOperation>>(arg => arg.Count() == 3),
                 Arg.Any<IGraphQLDocumentAdapter>()
             );
     }
@@ -465,7 +469,7 @@ internal sealed class GraphQLToKarateConverterTests
         {
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 TodoQueryFieldDefinition.NameValue()
             },
@@ -555,7 +559,7 @@ internal sealed class GraphQLToKarateConverterTests
         {
             QueryName = GraphQLToken.Query,
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
                 TodosQueryFieldDefinition.NameValue()
             },
@@ -631,7 +635,7 @@ internal sealed class GraphQLToKarateConverterTests
         {
             QueryName = "SomeWackyQueryName",
             TypeFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-            OperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+            QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
             ExcludeQueries = false,
             MutationName = "SomeWackyMutationName",
             IncludeMutations = true

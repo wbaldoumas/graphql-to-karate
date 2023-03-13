@@ -16,5 +16,7 @@ public sealed class GraphQLToKarateSettings
 
     public ISet<string> TypeFilter { get; init; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-    public ISet<string> OperationFilter { get; init; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    public ISet<string> QueryOperationFilter { get; init; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    public ISet<string> MutationOperationFilter { get; init; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 }

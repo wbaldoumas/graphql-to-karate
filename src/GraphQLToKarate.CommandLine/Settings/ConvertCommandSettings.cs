@@ -63,11 +63,17 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [DefaultValue(typeof(string), "")]
     public ISet<string> TypeFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-    [CommandOption("--operation-filter")]
-    [Description("A comma-separated list of GraphQL operations to include in the Karate feature")]
+    [CommandOption("--query-operation-filter")]
+    [Description("A comma-separated list of GraphQL query operations to include in the Karate feature")]
     [TypeConverter(typeof(StringToSetConverter))]
     [DefaultValue(typeof(string), "")]
-    public ISet<string> OperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    public ISet<string> QueryOperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+    [CommandOption("--mutation-operation-filter")]
+    [Description("A comma-separated list of GraphQL mutation operations to include in the Karate feature")]
+    [TypeConverter(typeof(StringToSetConverter))]
+    [DefaultValue(typeof(string), "")]
+    public ISet<string> MutationOperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     public override ValidationResult Validate()
     {
@@ -81,7 +87,7 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
             return ValidationResult.Error("GraphQL schema file does not exist. Please provide a valid file path and filename for the GraphQL schema to convert.");
         }
 
-        // ReSharper disable once ConvertIfStatementToReturnStatement
+        // ReSharper disable once ConvertIfStatementToReturnStatement - this is easier to read
         if (!_customScalarMappingValidator.IsValid(CustomScalarMapping))
         {
             return ValidationResult.Error("The --custom-scalar-mapping option value is invalid. Please provide either a valid file path or valid custom scalar mapping value.");

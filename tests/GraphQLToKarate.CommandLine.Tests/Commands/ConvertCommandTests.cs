@@ -84,7 +84,8 @@ internal sealed class ConvertCommandTests
                 QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
                 MutationName = convertCommandSettings.MutationName ?? GraphQLToken.Mutation,
                 TypeFilter = convertCommandSettings.TypeFilter,
-                OperationFilter = convertCommandSettings.OperationFilter
+                QueryOperationFilter = convertCommandSettings.QueryOperationFilter,
+                MutationOperationFilter = convertCommandSettings.MutationOperationFilter
             });
 
         // act

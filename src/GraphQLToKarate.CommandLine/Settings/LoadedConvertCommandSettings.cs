@@ -22,5 +22,7 @@ internal sealed class LoadedConvertCommandSettings
 
     public required ISet<string> TypeFilter { get; init; }
 
-    public required ISet<string> OperationFilter { get; init; }
+    public required ISet<string> QueryOperationFilter { get; init; }
+
+    public required ISet<string> MutationOperationFilter { get; init; }
 }

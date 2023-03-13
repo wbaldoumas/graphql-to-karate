@@ -32,7 +32,8 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
             QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
             MutationName = convertCommandSettings.MutationName ?? GraphQLToken.Mutation,
             TypeFilter = convertCommandSettings.TypeFilter,
-            OperationFilter = convertCommandSettings.OperationFilter
+            QueryOperationFilter = convertCommandSettings.QueryOperationFilter,
+            MutationOperationFilter = convertCommandSettings.MutationOperationFilter
         };
     }
 }
