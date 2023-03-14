@@ -1,4 +1,5 @@
-﻿using GraphQLToKarate.CommandLine.Settings;
+﻿using GraphQLToKarate.CommandLine.Prompts;
+using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Parsers;
