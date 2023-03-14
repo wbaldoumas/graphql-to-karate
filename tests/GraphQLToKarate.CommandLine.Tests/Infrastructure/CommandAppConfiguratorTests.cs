@@ -10,6 +10,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Spectre.Console.Cli;
 using System.IO.Abstractions;
+using GraphQLToKarate.CommandLine.Prompts;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 

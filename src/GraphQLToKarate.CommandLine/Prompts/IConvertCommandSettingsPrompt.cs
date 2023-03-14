@@ -1,4 +1,6 @@
-﻿namespace GraphQLToKarate.CommandLine.Settings;
+﻿using GraphQLToKarate.CommandLine.Settings;
+
+namespace GraphQLToKarate.CommandLine.Prompts;
 
 /// <summary>
 ///     Prompt the user for settings in an interactive way.
