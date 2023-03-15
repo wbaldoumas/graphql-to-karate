@@ -39,7 +39,7 @@ dotnet_diagnostic.SA1633.severity = none
 dotnet_diagnostic.SA1642.severity = none
 
 # max method length
-MA0051.maximum_lines_per_method = 80
+MA0051.maximum_lines_per_method = 120
 
 [*Tests.cs]
 
