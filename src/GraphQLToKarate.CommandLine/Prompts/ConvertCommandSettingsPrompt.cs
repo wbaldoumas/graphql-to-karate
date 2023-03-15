@@ -95,9 +95,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         var mutationOperationFilter = PromptForMutationOperationFilter(graphQLDocumentAdapter, includeMutations);
         var graphQLTypeFilter = PromptForTypeFilter(graphQLDocumentAdapter);
 
-        _ansiConsole.Write(new Padder(new Rule { Style = InfoStyle }.DoubleBorder()).PadLeft(1).PadRight(1));
-
-        return new LoadedConvertCommandSettings
+        var loadedConvertCommandSettings = new LoadedConvertCommandSettings
         {
             GraphQLSchema = initialLoadedConvertCommandSettings.GraphQLSchema,
             QueryName = queryName,
@@ -111,6 +109,49 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
             CustomScalarMapping = customScalarMapping,
             OutputFile = outputFile
         };
+
+        WriteCapturedOptions(loadedConvertCommandSettings);
+
+        return loadedConvertCommandSettings;
+    }
+
+    private void WriteCapturedOptions(LoadedConvertCommandSettings loadedConvertCommandSettings)
+    {
+        var table = new Table()
+            .Title("[bold underline]Captured Options[/]")
+            .Border(TableBorder.DoubleEdge)
+            .BorderColor(InfoColor)
+            .HideHeaders()
+            .AddColumn(new TableColumn("[bold underline]Option[/]"))
+            .AddColumn(new TableColumn("[bold underline]Value[/]"))
+            .AddRow($"[{InstructionsColorRgb}]--output-file[/]", loadedConvertCommandSettings.OutputFile)
+            .AddRow($"[{InstructionsColorRgb}]--query-name[/]", loadedConvertCommandSettings.QueryName)
+            .AddRow($"[{InstructionsColorRgb}]--mutation-name[/]", loadedConvertCommandSettings.MutationName)
+            .AddRow($"[{InstructionsColorRgb}]--exclude-queries[/]", loadedConvertCommandSettings.ExcludeQueries.ToString())
+            .AddRow($"[{InstructionsColorRgb}]--include-mutations[/]", loadedConvertCommandSettings.IncludeMutations.ToString())
+            .AddRow($"[{InstructionsColorRgb}]--base-url[/]", loadedConvertCommandSettings.BaseUrl);
+
+        if (loadedConvertCommandSettings.CustomScalarMapping.Any())
+        {
+            table.AddRow($"[{InstructionsColorRgb}]--custom-scalar-mapping[/]", string.Join(',', loadedConvertCommandSettings.CustomScalarMapping));
+        }
+
+        if (loadedConvertCommandSettings.QueryOperationFilter.Any())
+        {
+            table.AddRow($"[{InstructionsColorRgb}]--query-operation-filter[/]", string.Join(',', loadedConvertCommandSettings.QueryOperationFilter));
+        }
+
+        if (loadedConvertCommandSettings.MutationOperationFilter.Any())
+        {
+            table.AddRow($"[{InstructionsColorRgb}]--mutation-operation-filter[/]", string.Join(',', loadedConvertCommandSettings.MutationOperationFilter));
+        }
+
+        if (loadedConvertCommandSettings.TypeFilter.Any())
+        {
+            table.AddRow($"[{InstructionsColorRgb}]--type-filter[/]", string.Join(',', loadedConvertCommandSettings.TypeFilter));
+        }
+
+        _ansiConsole.Write(new Padder(table).PadLeft(1).PadRight(1));
     }
 
     private string PromptForOutputFile(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
