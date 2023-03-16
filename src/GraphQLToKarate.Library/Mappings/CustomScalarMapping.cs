@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace GraphQLToKarate.Library.Mappings;
+﻿namespace GraphQLToKarate.Library.Mappings;
 
 /// <inheritdoc cref="ICustomScalarMapping"/>
 public sealed class CustomScalarMapping : ICustomScalarMapping

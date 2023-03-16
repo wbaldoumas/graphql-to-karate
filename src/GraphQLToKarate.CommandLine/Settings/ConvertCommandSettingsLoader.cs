@@ -1,5 +1,4 @@
 ﻿using GraphQLToKarate.Library.Mappings;
-using GraphQLToKarate.Library.Tokens;
 using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Settings;
@@ -24,13 +23,14 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
         return new LoadedConvertCommandSettings
         {
             GraphQLSchema = graphQLSchema,
-            CustomScalarMapping = customScalarMapping,
+            InputFile = convertCommandSettings.InputFile!,
             OutputFile = convertCommandSettings.OutputFile!,
-            BaseUrl = convertCommandSettings.BaseUrl ?? "baseUrl",
+            CustomScalarMapping = customScalarMapping,
+            BaseUrl = convertCommandSettings.BaseUrl ?? Options.BaseUrlOptionDefaultValue,
             ExcludeQueries = convertCommandSettings.ExcludeQueries,
             IncludeMutations = convertCommandSettings.IncludeMutations,
-            QueryName = convertCommandSettings.QueryName ?? GraphQLToken.Query,
-            MutationName = convertCommandSettings.MutationName ?? GraphQLToken.Mutation,
+            QueryName = convertCommandSettings.QueryName ?? Options.QueryNameOptionDefaultValue,
+            MutationName = convertCommandSettings.MutationName ?? Options.MutationNameOptionDefaultValue,
             TypeFilter = convertCommandSettings.TypeFilter,
             QueryOperationFilter = convertCommandSettings.QueryOperationFilter,
             MutationOperationFilter = convertCommandSettings.MutationOperationFilter

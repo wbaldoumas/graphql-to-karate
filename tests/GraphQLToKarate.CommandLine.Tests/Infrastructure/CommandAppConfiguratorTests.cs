@@ -74,6 +74,7 @@ internal sealed class CommandAppConfiguratorTests
         var loadedConvertCommandSettings = new LoadedConvertCommandSettings
         {
             GraphQLSchema = "some GraphQL schema",
+            InputFile = "schema.gql",
             OutputFile = "graphql.feature",
             CustomScalarMapping = new CustomScalarMapping(),
             ExcludeQueries = false,

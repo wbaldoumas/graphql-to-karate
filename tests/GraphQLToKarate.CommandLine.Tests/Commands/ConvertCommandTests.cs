@@ -60,7 +60,8 @@ internal sealed class ConvertCommandTests
         var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingValidator!)
         {
             InputFile = "schema.graphql",
-            OutputFile = "graphql.feature"
+            OutputFile = "graphql.feature",
+            IsNonInteractive = true
         };
 
         const string schemaFileContent = "some GraphQL schema";
@@ -80,6 +81,7 @@ internal sealed class ConvertCommandTests
             .Returns(new LoadedConvertCommandSettings
             {
                 GraphQLSchema = schemaFileContent,
+                InputFile = convertCommandSettings.InputFile!,
                 OutputFile = convertCommandSettings.OutputFile!,
                 CustomScalarMapping = new CustomScalarMapping(),
                 ExcludeQueries = convertCommandSettings.ExcludeQueries,
@@ -121,7 +123,7 @@ internal sealed class ConvertCommandTests
         {
             InputFile = "schema.graphql",
             OutputFile = "graphql.feature",
-            IsInteractive = true
+            IsNonInteractive = false
         };
 
         const string schemaFileContent = "some GraphQL schema";
@@ -139,6 +141,7 @@ internal sealed class ConvertCommandTests
         var loadedConvertCommandSettings = new LoadedConvertCommandSettings
         {
             GraphQLSchema = schemaFileContent,
+            InputFile = convertCommandSettings.InputFile!,
             OutputFile = convertCommandSettings.OutputFile!,
             CustomScalarMapping = new CustomScalarMapping(),
             ExcludeQueries = convertCommandSettings.ExcludeQueries,
