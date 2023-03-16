@@ -48,7 +48,7 @@ internal sealed class LoadedConvertCommandSettingsTests
                     MutationName = "SomeMutation",
                     ExcludeQueries = true,
                     IncludeMutations = true,
-                    BaseUrl = "https://localhost:5001",
+                    BaseUrl = "\"https://localhost:5001\"",
                     CustomScalarMapping = new CustomScalarMapping(
                         new Dictionary<string, string>
                         {
@@ -60,7 +60,7 @@ internal sealed class LoadedConvertCommandSettingsTests
                     MutationOperationFilter = new HashSet<string> { "Mutation1", "Mutation2" },
                     TypeFilter = new HashSet<string> { "Type1", "Type2" }
                 },
-                "graphql-to-karate convert schema.graphql --non-interactive --output-file output.karate --query-name SomeQuery --mutation-name SomeMutation --exclude-queries --include-mutations --base-url https://localhost:5001 --custom-scalar-mapping Date:string,Long:number --query-operation-filter Query1,Query2 --mutation-operation-filter Mutation1,Mutation2 --type-filter Type1,Type2"
+                "graphql-to-karate convert schema.graphql --non-interactive --output-file output.karate --query-name SomeQuery --mutation-name SomeMutation --exclude-queries --include-mutations --base-url \\\"https://localhost:5001\\\" --custom-scalar-mapping Date:string,Long:number --query-operation-filter Query1,Query2 --mutation-operation-filter Mutation1,Mutation2 --type-filter Type1,Type2"
             ).SetName("When all options are non-default, they are included in the command-line option output.");
 
             // when some options are non-default and some are default, only the non-default value options are included in the output
