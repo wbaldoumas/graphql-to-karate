@@ -1,5 +1,4 @@
 ﻿using GraphQLToKarate.Library.Mappings;
-using GraphQLToKarate.Library.Tokens;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
@@ -23,62 +22,63 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [Description("The path of the GraphQL schema file to convert")]
     public string? InputFile { get; set; }
 
-    [CommandOption("--interactive")]
-    [Description("Whether to run conversion in an interactive way or not")]
-    [DefaultValue(typeof(string), "true")]
-    public bool IsInteractive { get; set; }
+    [CommandOption(Options.NonInteractiveOptionName)]
+    [Description(Options.NonInteractiveOptionDescription)]
+    [DefaultValue(typeof(string), Options.NonInteractiveOptionDefaultAttributeValue)]
+    public bool IsNonInteractive { get; set; } = Options.NonInteractiveOptionDefaultValue;
 
-    [CommandOption("--output-file")]
-    [Description("The path of the output Karate feature file")]
-    [DefaultValue(typeof(string), "graphql.feature")]
-    public string? OutputFile { get; set; }
+    [CommandOption(Options.OutputFileOptionName)]
+    [Description(Options.OutputFileOptionDescription)]
+    [DefaultValue(typeof(string), Options.OutputFileOptionDefaultAttributeValue)]
+    public string? OutputFile { get; set; } = Options.OutputFileOptionDefaultValue;
 
-    [CommandOption("--custom-scalar-mapping")]
-    [Description("The path or string value custom scalar mapping")]
-    public string? CustomScalarMapping { get; set; }
+    [CommandOption(Options.QueryNameOptionName)]
+    [Description(Options.QueryNameOptionDescription)]
+    [DefaultValue(typeof(string), Options.QueryNameOptionDefaultAttributeValue)]
+    public string? QueryName { get; set; } = Options.QueryNameOptionDefaultValue;
 
-    [CommandOption("--exclude-queries")]
-    [Description("Whether to exclude queries or not")]
-    [DefaultValue(typeof(string), "false")]
-    public bool ExcludeQueries { get; set; }
+    [CommandOption(Options.MutationNameOptionName)]
+    [Description(Options.MutationNameOptionDescription)]
+    [DefaultValue(typeof(string), Options.MutationNameOptionDefaultAttributeValue)]
+    public string? MutationName { get; set; } = Options.MutationNameOptionDefaultValue;
 
-    [CommandOption("--include-mutations")]
-    [Description("WHether to include mutations or not")]
-    [DefaultValue(typeof(string), "false")]
-    public bool IncludeMutations { get; set; }
+    [CommandOption(Options.ExcludeQueriesOptionName)]
+    [Description(Options.ExcludeQueriesOptionDescription)]
+    [DefaultValue(typeof(string), Options.ExcludeQueriesOptionDefaultAttributeValue)]
+    public bool ExcludeQueries { get; set; } = Options.ExcludeQueriesOptionDefaultValue;
 
-    [CommandOption("--base-url")]
-    [Description("The base URL to be used in the Karate feature")]
-    [DefaultValue(typeof(string), "baseUrl")]
-    public string? BaseUrl { get; set; } = "baseUrl";
+    [CommandOption(Options.IncludeMutationsOptionName)]
+    [Description(Options.IncludeMutationsOptionDescription)]
+    [DefaultValue(typeof(string), Options.IncludeMutationsOptionDefaultAttributeValue)]
+    public bool IncludeMutations { get; set; } = Options.IncludeMutationsOptionDefaultValue;
 
-    [CommandOption("--query-name")]
-    [Description("The name of the GraphQL query type")]
-    [DefaultValue(typeof(string), GraphQLToken.Query)]
-    public string? QueryName { get; set; } = GraphQLToken.Query;
+    [CommandOption(Options.BaseUrlOptionName)]
+    [Description(Options.BaseUrlOptionDescription)]
+    [DefaultValue(typeof(string), Options.BaseUrlOptionDefaultAttributeValue)]
+    public string? BaseUrl { get; set; } = Options.BaseUrlOptionDefaultValue;
 
-    [CommandOption("--mutation-name")]
-    [Description("The name of the GraphQL mutation type")]
-    [DefaultValue(typeof(string), GraphQLToken.Mutation)]
-    public string? MutationName { get; set; } = GraphQLToken.Mutation;
+    [CommandOption(Options.CustomScalarMappingOptionName)]
+    [Description(Options.CustomScalarMappingOptionDescription)]
+    [DefaultValue(typeof(string), Options.CustomScalarMappingOptionDefaultAttributeValue)]
+    public string? CustomScalarMapping { get; set; } = Options.CustomScalarMappingOptionDefaultValue;
 
-    [CommandOption("--type-filter")]
-    [Description("A comma-separated list of GraphQL types to include in the Karate feature")]
+    [CommandOption(Options.QueryOperationFilterOptionName)]
+    [Description(Options.QueryOperationFilterOptionDescription)]
     [TypeConverter(typeof(StringToSetConverter))]
-    [DefaultValue(typeof(string), "")]
-    public ISet<string> TypeFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    [DefaultValue(typeof(string), Options.QueryOperationFilterOptionDefaultAttributeValue)]
+    public ISet<string> QueryOperationFilter { get; set; } = Options.QueryOperationFilterOptionDefaultValue;
 
-    [CommandOption("--query-operation-filter")]
-    [Description("A comma-separated list of GraphQL query operations to include in the Karate feature")]
+    [CommandOption(Options.MutationOperationFilterOptionName)]
+    [Description(Options.MutationOperationFilterOptionDescription)]
     [TypeConverter(typeof(StringToSetConverter))]
-    [DefaultValue(typeof(string), "")]
-    public ISet<string> QueryOperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    [DefaultValue(typeof(string), Options.MutationOperationFilterOptionDefaultAttributeValue)]
+    public ISet<string> MutationOperationFilter { get; set; } = Options.MutationOperationFilterOptionDefaultValue;
 
-    [CommandOption("--mutation-operation-filter")]
-    [Description("A comma-separated list of GraphQL mutation operations to include in the Karate feature")]
+    [CommandOption(Options.TypeFilterOptionName)]
+    [Description(Options.TypeFilterOptionDescription)]
     [TypeConverter(typeof(StringToSetConverter))]
-    [DefaultValue(typeof(string), "")]
-    public ISet<string> MutationOperationFilter { get; set; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+    [DefaultValue(typeof(string), Options.TypeFilterOptionDefaultAttributeValue)]
+    public ISet<string> TypeFilter { get; set; } = Options.TypeFilterOptionDefaultValue;
 
     public override ValidationResult Validate()
     {
@@ -95,7 +95,7 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
         // ReSharper disable once ConvertIfStatementToReturnStatement - this is easier to read
         if (!_customScalarMappingValidator.IsValid(CustomScalarMapping))
         {
-            return ValidationResult.Error("The --custom-scalar-mapping option value is invalid. Please provide either a valid file path or valid custom scalar mapping value.");
+            return ValidationResult.Error($"The {Options.CustomScalarMappingOptionName} option value is invalid. Please provide either a valid file path or valid custom scalar mapping value.");
         }
 
         return ValidationResult.Success();

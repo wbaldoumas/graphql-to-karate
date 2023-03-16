@@ -33,7 +33,7 @@ internal sealed class ConvertCommand : AsyncCommand<ConvertCommandSettings>
     {
         var loadedCommandSettings = await _convertCommandSettingsLoader.LoadAsync(commandSettings).ConfigureAwait(false);
 
-        if (commandSettings.IsInteractive)
+        if (!commandSettings.IsNonInteractive)
         {
             loadedCommandSettings = await _convertCommandSettingsPrompt.PromptAsync(loadedCommandSettings).ConfigureAwait(false);
         }
