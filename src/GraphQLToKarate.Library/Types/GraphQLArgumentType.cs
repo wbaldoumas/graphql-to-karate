@@ -4,7 +4,7 @@ public sealed class GraphQLArgumentType : GraphQLArgumentTypeBase
 {
     public GraphQLArgumentType(
         string argumentName,
-        string variableName, 
+        string variableName,
         string variableTypeName,
         string exampleValue)
     {
@@ -14,7 +14,7 @@ public sealed class GraphQLArgumentType : GraphQLArgumentTypeBase
         ExampleValue = exampleValue;
     }
 
-    public override string ArgumentName { get; } 
+    public override string ArgumentName { get; }
 
     public override string VariableName { get; }
 

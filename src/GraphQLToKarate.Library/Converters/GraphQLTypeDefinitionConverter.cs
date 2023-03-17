@@ -16,7 +16,8 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
 
     public KarateObject Convert<T>(
         T graphQLTypeDefinition,
-        IGraphQLDocumentAdapter graphQLDocumentAdapter) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
+        where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode
     {
         if (graphQLTypeDefinition.Fields is null)
         {

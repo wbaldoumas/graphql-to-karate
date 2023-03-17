@@ -1,14 +1,14 @@
-﻿using System.IO.Abstractions;
+﻿using GraphQLToKarate.Library.Tokens;
+using System.IO.Abstractions;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.Library.Mappings;
 
 /// <inheritdoc cref="ICustomScalarMappingLoader"/>
 public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 {
-    private readonly Regex _regex = new(@"^([\w\s]+:[\w\s]+(?:,\s*|$))*[\w\s]+:[\w\s]+(?:,\s*)?$", RegexOptions.Compiled);
+    private readonly Regex _regex = new(@"^([\w\s]+:[\w\s]+(?:,\s*|$))*[\w\s]+:[\w\s]+(?:,\s*)?$", RegexOptions.Compiled | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
     private readonly IFile _file;
 
     public CustomScalarMappingLoader(IFile file) => _file = file;
@@ -25,7 +25,7 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
         string.IsNullOrEmpty(customScalarMappingSource) ||
         IsTextLoadable(customScalarMappingSource) ||
         IsFileLoadable(customScalarMappingSource);
-    
+
     public bool IsFileLoadable(string filePath)
     {
         if (!_file.Exists(filePath))
@@ -60,18 +60,19 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
     public bool IsTextLoadable(string text) => _regex.IsMatch(text);
 
     public async Task<ICustomScalarMapping> LoadFromFileAsync(string filePath) =>
-        DeserializeFileContent(await _file.ReadAllTextAsync(filePath));
-
-    private ICustomScalarMapping DeserializeFileContent(string fileContent) => IsTextLoadable(fileContent)
-        ? LoadFromText(fileContent)
-        : new CustomScalarMapping(JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!);
+        DeserializeFileContent(await _file.ReadAllTextAsync(filePath).ConfigureAwait(false));
 
     public ICustomScalarMapping LoadFromText(string text) => new CustomScalarMapping(
         text.Split(SchemaToken.Comma, StringSplitOptions.TrimEntries)
             .Select(customScalarMappingEntry => customScalarMappingEntry.Split(SchemaToken.Colon, StringSplitOptions.TrimEntries))
             .ToDictionary(
                 customScalarMappingEntryParts => customScalarMappingEntryParts.First(),
-                customScalarMappingEntryParts => customScalarMappingEntryParts.Last()
+                customScalarMappingEntryParts => customScalarMappingEntryParts.Last(),
+                StringComparer.OrdinalIgnoreCase
             )
     );
+
+    private ICustomScalarMapping DeserializeFileContent(string fileContent) => IsTextLoadable(fileContent)
+        ? LoadFromText(fileContent)
+        : new CustomScalarMapping(JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent)!);
 }

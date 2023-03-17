@@ -14,7 +14,8 @@ public static class EnumExtensions
     /// <param name="value">The enum value.</param>
     /// <returns>The string representation of the enum.</returns>
     /// <exception cref="InvalidEnumArgumentException">Thrown when the enum name is unidentifiable.</exception>
-    public static string Name<TEnum>(this TEnum value) where TEnum : struct, Enum
+    public static string Name<TEnum>(this TEnum value)
+        where TEnum : struct, Enum
     {
         var enumName = Enum.GetName(value);
 

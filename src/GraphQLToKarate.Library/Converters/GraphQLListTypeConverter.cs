@@ -13,7 +13,7 @@ internal sealed class GraphQLListTypeConverter : IGraphQLTypeConverter
     public GraphQLListTypeConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) => _graphQLTypeConverterFactory = graphQLTypeConverterFactory;
 
     public KarateTypeBase Convert(
-        string graphQLFieldName, 
+        string graphQLFieldName,
         GraphQLType graphQLType,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {

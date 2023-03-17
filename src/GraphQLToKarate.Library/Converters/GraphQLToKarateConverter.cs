@@ -105,7 +105,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
         return _karateFeatureBuilder.Build(
             karateObjects,
-            graphQLOperations, 
+            graphQLOperations,
             graphQLDocumentAdapter
         );
     }

@@ -23,7 +23,7 @@ internal sealed class GraphQLTypeConverter : IGraphQLTypeConverter
             GraphQLToken.Boolean => KarateToken.Boolean,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLTypeName) =>
                 KarateToken.Present,
-            { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => 
+            { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) =>
                 KarateToken.String,
             { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLTypeDefinitionWithFields(graphQLTypeName) =>
                 $"({graphQLTypeName.FirstCharToLower()}Schema)",

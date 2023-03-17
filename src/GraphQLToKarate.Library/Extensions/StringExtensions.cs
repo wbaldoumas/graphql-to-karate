@@ -44,7 +44,7 @@ internal static class StringExtensions
     }
 
     /// <summary>
-    ///     Indents a <paramref name="source"/> string (including multi-line strings) by the specified <see cref="indent"/> amount.
+    ///     Indents a <paramref name="source"/> string (including multi-line strings) by the specified indent amount.
     ///
     ///     This is different than <see cref="string.PadLeft(int)"/> in that it properly indents strings that span multiple lines.
     /// </summary>
@@ -55,6 +55,6 @@ internal static class StringExtensions
     {
         var indentation = new string(' ', indent);
 
-        return indentation + source.Replace(Environment.NewLine, Environment.NewLine + indentation);
+        return indentation + source.Replace(Environment.NewLine, Environment.NewLine + indentation, StringComparison.OrdinalIgnoreCase);
     }
 }

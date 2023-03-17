@@ -1,9 +1,9 @@
-﻿using System.Text;
-using GraphQLToKarate.Library.Adapters;
+﻿using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Settings;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
+using System.Text;
 
 namespace GraphQLToKarate.Library.Features;
 
@@ -26,7 +26,8 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
         IEnumerable<GraphQLOperation> graphQLOperations,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
-        var lines = new List<string> {
+        var lines = new List<string>
+        {
             "Feature: Test GraphQL Endpoint with Karate",
             string.Empty,
             "Background: Base URL and Schemas",
@@ -60,7 +61,7 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
     }
 
     private IEnumerable<string> BuildGraphQLOperations(
-        IEnumerable<GraphQLOperation> graphQLOperations, 
+        IEnumerable<GraphQLOperation> graphQLOperations,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
         foreach (var graphQLQueryField in graphQLOperations)

@@ -30,7 +30,7 @@ internal sealed class GraphQLNonNullTypeConverter : IGraphQLTypeConverter
 
         var karateType = graphQLTypeConverter.Convert(
             graphQLFieldName,
-            graphQLInnerType, 
+            graphQLInnerType,
             graphQLDocumentAdapter
         );
 

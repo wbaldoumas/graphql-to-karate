@@ -10,7 +10,9 @@ public sealed class InvalidGraphQLTypeException : Exception
 {
     public InvalidGraphQLTypeException() { }
 
-    public InvalidGraphQLTypeException(string? message) : base(message) { }
+    public InvalidGraphQLTypeException(string? message)
+        : base(message) { }
 
-    public InvalidGraphQLTypeException(string? message, Exception? innerException) : base(message, innerException) { }
+    public InvalidGraphQLTypeException(string? message, Exception? innerException)
+        : base(message, innerException) { }
 }

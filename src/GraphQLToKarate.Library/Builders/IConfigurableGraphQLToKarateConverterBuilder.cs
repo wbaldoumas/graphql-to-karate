@@ -35,7 +35,7 @@ public interface IConfigurableGraphQLToKarateConverterBuilder : IConfiguredGraph
     ///     Configure the converter with the given <paramref name="includeMutationsSetting"/>. This allows the
     ///     user to include mutations within the final generated Karate feature, if they would like to.
     /// </summary>
-    /// <param name="includeMutationsSetting"></param>
+    /// <param name="includeMutationsSetting">Whether to include mutations in the generated Karate feature or not.</param>
     /// <returns>An <see cref="IConfigurableGraphQLToKarateConverterBuilder"/> with the given included queries setting.</returns>
     IConfigurableGraphQLToKarateConverterBuilder WithIncludeMutationsSetting(bool includeMutationsSetting);
 
