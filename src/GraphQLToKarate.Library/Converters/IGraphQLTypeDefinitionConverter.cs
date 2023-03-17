@@ -16,9 +16,10 @@ public interface IGraphQLTypeDefinitionConverter
     /// <param name="graphQLDocumentAdapter">
     ///     The GraphQL document adapter, providing access to user-defined types within the GraphQL document.
     /// </param>
-    /// <returns></returns>
+    /// <typeparam name="T">The type of the GraphQL object to convert.</typeparam>
+    /// <returns>The converted <see cref="KarateObject"/>.</returns>
     KarateObject Convert<T>(
         T graphQLTypeDefinition,
-        IGraphQLDocumentAdapter graphQLDocumentAdapter
-    ) where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode;
+        IGraphQLDocumentAdapter graphQLDocumentAdapter)
+        where T : GraphQLTypeDefinition, IHasFieldsDefinitionNode;
 }

@@ -1,11 +1,11 @@
 ﻿using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
-using System.Text;
-using GraphQLToKarate.Library.Exceptions;
 using QuikGraph;
 using QuikGraph.Algorithms;
+using System.Text;
 
 namespace GraphQLToKarate.Library.Converters;
 
@@ -30,7 +30,7 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
     ) => Convert(graphQLInputValueDefinition.Type, graphQLDocumentAdapter, inputValueRelationships);
 
     private string Convert(
-        GraphQLType graphQLType, 
+        GraphQLType graphQLType,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
         AdjacencyGraph<string, Edge<string>>? inputValueRelationships = null) => graphQLType switch
     {

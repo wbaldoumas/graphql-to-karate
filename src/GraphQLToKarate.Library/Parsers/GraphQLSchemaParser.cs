@@ -1,6 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using GraphQLParser;
+﻿using GraphQLParser;
 using GraphQLParser.AST;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GraphQLToKarate.Library.Parsers;
 

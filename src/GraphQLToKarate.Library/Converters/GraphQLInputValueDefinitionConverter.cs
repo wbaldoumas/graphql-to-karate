@@ -26,8 +26,8 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
         var exampleValue = _graphQLInputValueToExampleValue.Convert(graphQLInputValueDefinition, graphQLDocumentAdapter);
 
         var graphQLArgument = Convert(
-            graphQLInputValueDefinition, 
-            graphQLArgumentName, 
+            graphQLInputValueDefinition,
+            graphQLArgumentName,
             graphQLVariableName,
             exampleValue
         );

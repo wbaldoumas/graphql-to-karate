@@ -5,7 +5,7 @@ public sealed class CustomScalarMapping : ICustomScalarMapping
 {
     public IDictionary<string, string> Mappings { get; }
 
-    public CustomScalarMapping() => Mappings = new Dictionary<string, string>();
+    public CustomScalarMapping() => Mappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     public CustomScalarMapping(IDictionary<string, string> mappings) =>
         Mappings = mappings;

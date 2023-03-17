@@ -1,12 +1,12 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
-using System.Text;
-using GraphQLToKarate.Library.Adapters;
-using GraphQLToKarate.Library.Enums;
 using QuikGraph;
 using QuikGraph.Algorithms;
+using System.Text;
 
 namespace GraphQLToKarate.Library.Converters;
 
@@ -58,9 +58,9 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         stringBuilder.Append(graphQLFieldDefinition.NameValue().Indent(indentationLevel + 2));
 
         HandleArguments(
-            graphQLFieldDefinition, 
-            graphQLInputValueDefinitionConverter, 
-            graphQLDocumentAdapter, 
+            graphQLFieldDefinition,
+            graphQLInputValueDefinitionConverter,
+            graphQLDocumentAdapter,
             stringBuilder
         );
 
@@ -91,8 +91,8 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         if (indentationLevel == 0)
         {
             HandleOperation(
-                graphQLFieldDefinition, 
-                graphQLOperationType, 
+                graphQLFieldDefinition,
+                graphQLOperationType,
                 graphQLInputValueDefinitionConverter,
                 stringBuilder
             );
@@ -247,8 +247,8 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
             stringBuilder.Append(graphQLFieldDefinition.NameValue().Indent(indentationLevel + 4));
 
             HandleArguments(
-                graphQLFieldDefinition, 
-                graphQLInputValueDefinitionConverter, 
+                graphQLFieldDefinition,
+                graphQLInputValueDefinitionConverter,
                 graphQLDocumentAdapter,
                 stringBuilder
             );

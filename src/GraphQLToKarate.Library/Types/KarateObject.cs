@@ -1,6 +1,6 @@
-﻿using System.Text;
-using GraphQLToKarate.Library.Extensions;
+﻿using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
+using System.Text;
 
 namespace GraphQLToKarate.Library.Types;
 

@@ -34,7 +34,8 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         stringBuilder.AppendLine($"{SchemaToken.TripleQuote}".Indent(Indent.Double));
     }
 
-    private static void BuildVariablesString(ICollection<GraphQLArgumentTypeBase> arguments,
+    private static void BuildVariablesString(
+        ICollection<GraphQLArgumentTypeBase> arguments,
         StringBuilder stringBuilder)
     {
         if (!arguments.Any())

@@ -13,6 +13,8 @@ public sealed class GraphQLToKarateConverterBuilder :
     IGraphQLToKarateConverterBuilder,
     IConfigurableGraphQLToKarateConverterBuilder
 {
+    private readonly ILogger<GraphQLToKarateConverter> _graphQLToKarateConverterLogger;
+
     private IGraphQLTypeConverter _graphQLTypeConverter = new GraphQLTypeConverter();
 
     private bool _excludeQueriesSetting;
@@ -32,8 +34,6 @@ public sealed class GraphQLToKarateConverterBuilder :
     private ISet<string> _mutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
     private ICustomScalarMapping _customScalarMapping = new CustomScalarMapping();
-
-    private readonly ILogger<GraphQLToKarateConverter> _graphQLToKarateConverterLogger;
 
     public GraphQLToKarateConverterBuilder(ILogger<GraphQLToKarateConverter> graphQLToKarateConverterLogger) => _graphQLToKarateConverterLogger = graphQLToKarateConverterLogger;
 
