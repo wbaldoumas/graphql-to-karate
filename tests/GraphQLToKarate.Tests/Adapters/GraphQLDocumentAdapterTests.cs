@@ -352,7 +352,8 @@ internal sealed class GraphQLDocumentAdapterTests
         IHasFieldsDefinitionNode? expectedResult)
     {
         // act
-        var graphQLTypeDefinitionWithFields = graphQLDocumentAdapter.GetGraphQLTypeDefinitionWithFields(graphQLTypeDefinitionName);
+        var graphQLTypeDefinitionWithFields =
+            graphQLDocumentAdapter.GetGraphQLTypeDefinitionWithFields(graphQLTypeDefinitionName);
 
         // assert
         graphQLTypeDefinitionWithFields.Should().BeEquivalentTo(expectedResult);
@@ -366,6 +367,46 @@ internal sealed class GraphQLDocumentAdapterTests
             const string graphQLInterfaceTypeDefinitionName = "interface";
             const string otherTypeDefinitionName = "other";
 
+            var mainField = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("mainField")
+            };
+
+            var inaccessibleField = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("inaccessibleField"),
+                Directives = new GraphQLDirectives
+                {
+                    Items = new List<GraphQLDirective>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("inaccessible")
+                        }
+                    }
+                }
+            };
+
+            var externalField = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("externalField"),
+                Directives = new GraphQLDirectives
+                {
+                    Items = new List<GraphQLDirective>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("external")
+                        }
+                    }
+                }
+            };
+
+            var extendedField = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("extendedField")
+            };
+
             var graphQLObjectTypeDefinition = new GraphQLObjectTypeDefinition
             {
                 Name = new GraphQLName(graphQLObjectTypeDefinitionName),
@@ -373,10 +414,9 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLFieldDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("mainField")
-                        }
+                        mainField,
+                        inaccessibleField,
+                        externalField
                     }
                 }
             };
@@ -388,10 +428,9 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLFieldDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("mainField")
-                        }
+                        mainField,
+                        inaccessibleField,
+                        externalField
                     }
                 }
             };
@@ -418,10 +457,9 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLFieldDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("extendedField")
-                        }
+                        extendedField,
+                        inaccessibleField,
+                        externalField
                     }
                 }
             };
@@ -433,10 +471,9 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLFieldDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("extendedField")
-                        }
+                        extendedField,
+                        inaccessibleField,
+                        externalField
                     }
                 }
             };
@@ -462,14 +499,21 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLFieldDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("mainField")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("extendedField")
-                        }
+                        mainField,
+                        extendedField
+                    }
+                }
+            };
+
+            var expectedGraphQLInterfaceTypeDefinition = new GraphQLObjectTypeDefinition
+            {
+                Name = graphQLInterfaceTypeDefinition.Name,
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>
+                    {
+                        mainField,
+                        extendedField
                     }
                 }
             };
@@ -485,25 +529,6 @@ internal sealed class GraphQLDocumentAdapterTests
                 graphQLObjectTypeDefinitionName,
                 expectedGraphQLObjectTypeDefinition
             ).SetName("When has fields type definition name is passed, has fields type definition is returned.");
-
-            var expectedGraphQLInterfaceTypeDefinition = new GraphQLObjectTypeDefinition
-            {
-                Name = graphQLInterfaceTypeDefinition.Name,
-                Fields = new GraphQLFieldsDefinition
-                {
-                    Items = new List<GraphQLFieldDefinition>
-                    {
-                        new()
-                        {
-                            Name = new GraphQLName("mainField")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("extendedField")
-                        }
-                    }
-                }
-            };
 
             yield return new TestCaseData(
                 graphQLDocumentAdapter,
@@ -534,6 +559,21 @@ internal sealed class GraphQLDocumentAdapterTests
             const string unionTypeDefinitionName = "test";
             const string otherTypeDefinitionName = "other";
 
+            var mainType = new GraphQLNamedType
+            {
+                Name = new GraphQLName("mainType")
+            };
+
+            var secondType = new GraphQLNamedType
+            {
+                Name = new GraphQLName("secondType")
+            };
+
+            var thirdType = new GraphQLNamedType
+            {
+                Name = new GraphQLName("thirdType")
+            };
+
             var graphQLUnionTypeDefinition = new GraphQLUnionTypeDefinition
             {
                 Name = new GraphQLName(unionTypeDefinitionName),
@@ -541,14 +581,8 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLNamedType>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("mainType")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("secondType")
-                        }
+                        mainType,
+                        secondType
                     }
                 }
             };
@@ -560,10 +594,7 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLNamedType>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("thirdType")
-                        }
+                        thirdType
                     }
                 }
             };
@@ -602,18 +633,9 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLNamedType>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("mainType")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("secondType")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("thirdType")
-                        }
+                        mainType,
+                        secondType,
+                        thirdType
                     }
                 }
             };
@@ -658,6 +680,26 @@ internal sealed class GraphQLDocumentAdapterTests
 
             const string graphQLEnumTypeDefinitionName = "Color";
 
+            var redEnumValueDefinition = new GraphQLEnumValueDefinition
+            {
+                Name = new GraphQLName("RED")
+            };
+
+            var blueEnumValueDefinition = new GraphQLEnumValueDefinition
+            {
+                Name = new GraphQLName("BLUE")
+            };
+
+            var greenEnumValueDefinition = new GraphQLEnumValueDefinition
+            {
+                Name = new GraphQLName("GREEN")
+            };
+
+            var yellowEnumValueDefinition = new GraphQLEnumValueDefinition
+            {
+                Name = new GraphQLName("YELLOW")
+            };
+
             var graphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition
             {
                 Name = new GraphQLName(graphQLEnumTypeDefinitionName),
@@ -665,14 +707,8 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLEnumValueDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("RED")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("BLUE")
-                        }
+                        redEnumValueDefinition,
+                        blueEnumValueDefinition
                     }
                 }
             };
@@ -684,14 +720,8 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLEnumValueDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("GREEN")
-                        },
-                        new()
-                        {
-                            Name = new GraphQLName("YELLOW")
-                        }
+                        greenEnumValueDefinition,
+                        yellowEnumValueDefinition
                     }
                 }
             };
@@ -727,35 +757,25 @@ internal sealed class GraphQLDocumentAdapterTests
                 }
             );
 
+            var expectedGraphQLEnumTypeDefinition = new GraphQLEnumTypeDefinition
+            {
+                Name = new GraphQLName(graphQLEnumTypeDefinitionName),
+                Values = new GraphQLEnumValuesDefinition
+                {
+                    Items = new List<GraphQLEnumValueDefinition>
+                    {
+                        redEnumValueDefinition,
+                        blueEnumValueDefinition,
+                        greenEnumValueDefinition,
+                        yellowEnumValueDefinition
+                    }
+                }
+            };
+
             yield return new TestCaseData(
                 graphQLDocumentAdapter,
                 graphQLEnumTypeDefinition.NameValue(),
-                new GraphQLEnumTypeDefinition
-                {
-                    Name = new GraphQLName(graphQLEnumTypeDefinitionName),
-                    Values = new GraphQLEnumValuesDefinition
-                    {
-                        Items = new List<GraphQLEnumValueDefinition>
-                        {
-                            new()
-                            {
-                                Name = new GraphQLName("RED")
-                            },
-                            new()
-                            {
-                                Name = new GraphQLName("BLUE")
-                            },
-                            new()
-                            {
-                                Name = new GraphQLName("GREEN")
-                            },
-                            new()
-                            {
-                                Name = new GraphQLName("YELLOW")
-                            }
-                        }
-                    }
-                }
+                expectedGraphQLEnumTypeDefinition
             ).SetName("When GraphQL document has specific enum type definition, enum type definition is found");
         }
     }
@@ -784,17 +804,57 @@ internal sealed class GraphQLDocumentAdapterTests
                 null
             ).SetName("When GraphQL document is empty, input object type definition is not found");
 
+            const string inputObjectTypeDefinitionName = "Hello";
+
+            var mainField = new GraphQLInputValueDefinition
+            {
+                Name = new GraphQLName("mainField")
+            };
+
+            var otherField = new GraphQLInputValueDefinition
+            {
+                Name = new GraphQLName("otherField")
+            };
+
+            var inaccessibleField = new GraphQLInputValueDefinition
+            {
+                Name = new GraphQLName("inaccessibleField"),
+                Directives = new GraphQLDirectives
+                {
+                    Items = new List<GraphQLDirective>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("inaccessible")
+                        }
+                    }
+                }
+            };
+
+            var externalField = new GraphQLInputValueDefinition
+            {
+                Name = new GraphQLName("externalField"),
+                Directives = new GraphQLDirectives
+                {
+                    Items = new List<GraphQLDirective>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("external")
+                        }
+                    }
+                }
+            };
+
             var graphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
             {
-                Name = new GraphQLName("Hello"),
+                Name = new GraphQLName(inputObjectTypeDefinitionName),
                 Fields = new GraphQLInputFieldsDefinition
                 {
                     Items = new List<GraphQLInputValueDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("mainField")
-                        }
+                        mainField,
+                        inaccessibleField
                     }
                 }
             };
@@ -806,10 +866,8 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLInputValueDefinition>
                     {
-                        new()
-                        {
-                            Name = new GraphQLName("otherField")
-                        }
+                        otherField,
+                        externalField
                     }
                 }
             };
@@ -841,6 +899,19 @@ internal sealed class GraphQLDocumentAdapterTests
                 }
             );
 
+            var expectedGraphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
+            {
+                Name = new GraphQLName(inputObjectTypeDefinitionName),
+                Fields = new GraphQLInputFieldsDefinition
+                {
+                    Items = new List<GraphQLInputValueDefinition>
+                    {
+                        mainField,
+                        otherField
+                    }
+                }
+            };
+
             yield return new TestCaseData(
                 graphQLDocumentAdapter,
                 "test",
@@ -851,25 +922,8 @@ internal sealed class GraphQLDocumentAdapterTests
 
             yield return new TestCaseData(
                 graphQLDocumentAdapter,
-                graphQLInputObjectTypeDefinition.NameValue(),
-                new GraphQLInputObjectTypeDefinition
-                {
-                    Name = new GraphQLName("Hello"),
-                    Fields = new GraphQLInputFieldsDefinition
-                    {
-                        Items = new List<GraphQLInputValueDefinition>
-                        {
-                            new()
-                            {
-                                Name = new GraphQLName("mainField")
-                            },
-                            new()
-                            {
-                                Name = new GraphQLName("otherField")
-                            }
-                        }
-                    }
-                }
+                inputObjectTypeDefinitionName,
+                expectedGraphQLInputObjectTypeDefinition
             ).SetName(
                 "When GraphQL document has specific input object type definition, input object type definition is found"
             );
@@ -890,49 +944,70 @@ internal sealed class GraphQLDocumentAdapterTests
     {
         get
         {
+            const string objectTypeDefinitionName = "SomeObjectType";
+            const string interfaceTypeDefinitionName = "SomeInterfaceType";
+            const string queryName = GraphQLToken.Query;
+
+            var graphQLObjectTypeDefinition = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName(objectTypeDefinitionName),
+                Fields = new GraphQLFieldsDefinition
+                {
+                    Items = new List<GraphQLFieldDefinition>()
+                }
+            };
+
+            var graphQLInterfaceTypeDefinition = new GraphQLInterfaceTypeDefinition
+            {
+                Name = new GraphQLName(interfaceTypeDefinitionName)
+            };
+
+            var graphQLDocumentAdapter1 = new GraphQLDocumentAdapter(
+                new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        graphQLInterfaceTypeDefinition
+                    }
+                }
+            );
+
+            var graphQLDocumentAdapter2 = new GraphQLDocumentAdapter(
+                new GraphQLDocument
+                {
+                    Definitions = new List<ASTNode>
+                    {
+                        graphQLInterfaceTypeDefinition,
+                        graphQLObjectTypeDefinition,
+                        new GraphQLObjectTypeDefinition
+                        {
+                            Name = new GraphQLName(queryName)
+                        }
+                    }
+                }
+            );
+
             yield return new TestCaseData(
                 new GraphQLDocumentAdapter(new GraphQLDocument()),
                 new List<GraphQLObjectTypeDefinition>()
             ).SetName("GraphQL document with no definitions generates expected result");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
-                    {
-                        new GraphQLInterfaceTypeDefinition
-                        {
-                            Name = new GraphQLName("SomeInterfaceType")
-                        }
-                    }
-                }),
+                graphQLDocumentAdapter1,
                 new List<GraphQLObjectTypeDefinition>()
             ).SetName("GraphQL document with no object type definitions generates expected result");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
-                    {
-                        new GraphQLInterfaceTypeDefinition
-                        {
-                            Name = new GraphQLName("SomeInterfaceType")
-                        },
-                        new GraphQLObjectTypeDefinition
-                        {
-                            Name = new GraphQLName("SomeObjectType")
-                        },
-                        new GraphQLObjectTypeDefinition
-                        {
-                            Name = new GraphQLName(GraphQLToken.Query)
-                        }
-                    }
-                }),
+                graphQLDocumentAdapter2,
                 new List<GraphQLObjectTypeDefinition>
                 {
                     new()
                     {
-                        Name = new GraphQLName("SomeObjectType")
+                        Name = new GraphQLName(objectTypeDefinitionName),
+                        Fields = new GraphQLFieldsDefinition
+                        {
+                            Items = new List<GraphQLFieldDefinition>()
+                        }
                     }
                 }
             ).SetName("GraphQL document with one object type definitions generates expected result");
@@ -953,49 +1028,64 @@ internal sealed class GraphQLDocumentAdapterTests
     {
         get
         {
+            const string interfaceTypeName = "SomeInterfaceType";
+            const string objectTypeName = "SomeObjectType";
+            const string queryTypeName = GraphQLToken.Query;
+
+            var interfaceTypeDefinition = new GraphQLInterfaceTypeDefinition
+            {
+                Name = new GraphQLName(interfaceTypeName)
+            };
+
+            var objectTypeDefinition = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName(objectTypeName)
+            };
+
+            var queryObjectTypeDefinition = new GraphQLObjectTypeDefinition
+            {
+                Name = new GraphQLName(queryTypeName)
+            };
+
+            var graphQLDocumentAdapter1 = new GraphQLDocumentAdapter(new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    objectTypeDefinition
+                }
+            });
+
+            var graphQLDocumentAdapter2 = new GraphQLDocumentAdapter(new GraphQLDocument
+            {
+                Definitions = new List<ASTNode>
+                {
+                    interfaceTypeDefinition,
+                    objectTypeDefinition,
+                    queryObjectTypeDefinition
+                }
+            });
+
             yield return new TestCaseData(
                 new GraphQLDocumentAdapter(new GraphQLDocument()),
                 new List<GraphQLInterfaceTypeDefinition>()
             ).SetName("GraphQL document with no definitions generates expected result");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
-                    {
-                        new GraphQLObjectTypeDefinition
-                        {
-                            Name = new GraphQLName("SomeObjectType")
-                        }
-                    }
-                }),
+                graphQLDocumentAdapter1,
                 new List<GraphQLInterfaceTypeDefinition>()
             ).SetName("GraphQL document with no interface type definitions generates expected result");
 
             yield return new TestCaseData(
-                new GraphQLDocumentAdapter(new GraphQLDocument
-                {
-                    Definitions = new List<ASTNode>
-                    {
-                        new GraphQLInterfaceTypeDefinition
-                        {
-                            Name = new GraphQLName("SomeInterfaceType")
-                        },
-                        new GraphQLObjectTypeDefinition
-                        {
-                            Name = new GraphQLName("SomeObjectType")
-                        },
-                        new GraphQLObjectTypeDefinition
-                        {
-                            Name = new GraphQLName(GraphQLToken.Query)
-                        }
-                    }
-                }),
+                graphQLDocumentAdapter2,
                 new List<GraphQLInterfaceTypeDefinition>
                 {
                     new()
                     {
-                        Name = new GraphQLName("SomeInterfaceType")
+                        Name = new GraphQLName(interfaceTypeName),
+                        Fields = new GraphQLFieldsDefinition
+                        {
+                            Items = new List<GraphQLFieldDefinition>()
+                        }
                     }
                 }
             ).SetName("GraphQL document with one interface type definition generates expected result");
@@ -1048,7 +1138,11 @@ internal sealed class GraphQLDocumentAdapterTests
                 }),
                 new GraphQLObjectTypeDefinition
                 {
-                    Name = new GraphQLName(GraphQLToken.Query)
+                    Name = new GraphQLName(GraphQLToken.Query),
+                    Fields = new GraphQLFieldsDefinition
+                    {
+                        Items = new List<GraphQLFieldDefinition>()
+                    }
                 }
             ).SetName("GraphQL document with query definition returns expected result.");
         }
@@ -1100,7 +1194,11 @@ internal sealed class GraphQLDocumentAdapterTests
                 }),
                 new GraphQLObjectTypeDefinition
                 {
-                    Name = new GraphQLName(GraphQLToken.Mutation)
+                    Name = new GraphQLName(GraphQLToken.Mutation),
+                    Fields = new GraphQLFieldsDefinition
+                    {
+                        Items = new List<GraphQLFieldDefinition>()
+                    }
                 }
             ).SetName("GraphQL document with mutation definition returns expected result.");
         }

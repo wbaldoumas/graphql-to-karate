@@ -20,6 +20,9 @@ dotnet_diagnostic.SA1101.severity = none
 # A constructor should not follow a property
 dotnet_diagnostic.SA1201.severity = none
 
+# Static members should  not follow non-static members
+dotnet_diagnostic.SA1204.severity = none
+
 # The 'required' modifier should appear before 'public'
 dotnet_diagnostic.SA1206.severity = none
 

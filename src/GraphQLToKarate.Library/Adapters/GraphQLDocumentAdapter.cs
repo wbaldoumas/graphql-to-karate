@@ -29,10 +29,14 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     {
         graphQLToKarateConverterSettings ??= new GraphQLToKarateSettings();
 
-        _graphQLTypeDefinitionsWithFieldsByName = new Dictionary<string, IHasFieldsDefinitionNode>(StringComparer.OrdinalIgnoreCase);
-        _graphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(StringComparer.OrdinalIgnoreCase);
-        _graphQLUnionTypeDefinitionsByName = new Dictionary<string, GraphQLUnionTypeDefinition>(StringComparer.OrdinalIgnoreCase);
-        _graphQLInputObjectTypeDefinitionsByName = new Dictionary<string, GraphQLInputObjectTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+        _graphQLTypeDefinitionsWithFieldsByName =
+            new Dictionary<string, IHasFieldsDefinitionNode>(StringComparer.OrdinalIgnoreCase);
+        _graphQLEnumTypeDefinitionsByName =
+            new Dictionary<string, GraphQLEnumTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+        _graphQLUnionTypeDefinitionsByName =
+            new Dictionary<string, GraphQLUnionTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+        _graphQLInputObjectTypeDefinitionsByName =
+            new Dictionary<string, GraphQLInputObjectTypeDefinition>(StringComparer.OrdinalIgnoreCase);
 
         // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
         // this actually can be null, but the GraphQLParser library doesn't mark it as nullable
@@ -91,6 +95,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
                         graphQLObjectTypeDefinition.NameValue(),
                         graphQLObjectTypeDefinition
                     );
+                    ApplyHasFieldsDefinitionTypeDirectives(graphQLObjectTypeDefinition);
                     break;
                 case GraphQLInterfaceTypeDefinition graphQLInterfaceTypeDefinition:
                     _graphQLTypeDefinitionsWithFieldsByName.Add(
@@ -114,6 +119,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         }
 
         MergeTypeExtensions(graphQLDocument);
+        ApplyDirectives();
     }
 
     public bool IsGraphQLEnumTypeDefinition(string graphQLTypeDefinitionName) =>
@@ -152,6 +158,71 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             out var graphQLInputObjectTypeDefinition)
             ? graphQLInputObjectTypeDefinition
             : null;
+
+    private void ApplyDirectives()
+    {
+        foreach (var graphQLTypeDefinitionWithFields in _graphQLTypeDefinitionsWithFieldsByName.Values)
+        {
+            ApplyHasFieldsDefinitionTypeDirectives(graphQLTypeDefinitionWithFields);
+        }
+
+        foreach (var graphQLEnumTypeDefinition in _graphQLEnumTypeDefinitionsByName.Values)
+        {
+            ApplyEnumTypeDefinitionDirectives(graphQLEnumTypeDefinition);
+        }
+
+        foreach (var graphQLInputObjectTypeDefinition in _graphQLInputObjectTypeDefinitionsByName.Values)
+        {
+            ApplyInputObjectTypeDefinitionDirectives(graphQLInputObjectTypeDefinition);
+        }
+    }
+
+    private static void ApplyHasFieldsDefinitionTypeDirectives<T>(T graphQLHasFieldsDefinitionType)
+        where T : IHasFieldsDefinitionNode
+    {
+        graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition
+        {
+            Items = new List<GraphQLFieldDefinition>()
+        };
+
+        var accessibleGraphQLFieldDefinitions = graphQLHasFieldsDefinitionType.Fields.Items.Where(
+            graphQLFieldDefinition => !(graphQLFieldDefinition.IsInaccessible() ||
+                                        graphQLFieldDefinition.IsExternal())
+        ).ToList();
+
+        graphQLHasFieldsDefinitionType.Fields.Items = accessibleGraphQLFieldDefinitions;
+    }
+
+    private static void ApplyInputObjectTypeDefinitionDirectives(
+        GraphQLInputObjectTypeDefinition inputObjectTypeDefinition)
+    {
+        inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition
+        {
+            Items = new List<GraphQLInputValueDefinition>()
+        };
+
+        var accessibleGraphQLInputValueDefinitions = inputObjectTypeDefinition.Fields.Items.Where(
+            graphQLInputValueDefinition => !(graphQLInputValueDefinition.IsInaccessible() ||
+                                             graphQLInputValueDefinition.IsExternal())
+        ).ToList();
+
+        inputObjectTypeDefinition.Fields.Items = accessibleGraphQLInputValueDefinitions;
+    }
+
+    private static void ApplyEnumTypeDefinitionDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
+    {
+        graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition
+        {
+            Items = new List<GraphQLEnumValueDefinition>()
+        };
+
+        var accessibleGraphQLEnumValueDefinitions = graphQLEnumTypeDefinition.Values.Items.Where(
+            graphQLEnumValueDefinition => !(graphQLEnumValueDefinition.IsInaccessible() ||
+                                            graphQLEnumValueDefinition.IsExternal())
+        ).ToList();
+
+        graphQLEnumTypeDefinition.Values.Items = accessibleGraphQLEnumValueDefinitions;
+    }
 
     private void MergeTypeExtensions(GraphQLDocument graphQLDocument)
     {
