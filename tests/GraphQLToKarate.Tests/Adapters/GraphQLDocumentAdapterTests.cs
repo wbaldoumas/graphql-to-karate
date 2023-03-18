@@ -816,6 +816,36 @@ internal sealed class GraphQLDocumentAdapterTests
                 Name = new GraphQLName("otherField")
             };
 
+            var inaccessibleField = new GraphQLInputValueDefinition
+            {
+                Name = new GraphQLName("inaccessibleField"),
+                Directives = new GraphQLDirectives
+                {
+                    Items = new List<GraphQLDirective>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("inaccessible")
+                        }
+                    }
+                }
+            };
+
+            var externalField = new GraphQLInputValueDefinition
+            {
+                Name = new GraphQLName("externalField"),
+                Directives = new GraphQLDirectives
+                {
+                    Items = new List<GraphQLDirective>
+                    {
+                        new()
+                        {
+                            Name = new GraphQLName("external")
+                        }
+                    }
+                }
+            };
+
             var graphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
             {
                 Name = new GraphQLName(inputObjectTypeDefinitionName),
@@ -823,7 +853,8 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLInputValueDefinition>
                     {
-                        mainField
+                        mainField,
+                        inaccessibleField
                     }
                 }
             };
@@ -835,7 +866,8 @@ internal sealed class GraphQLDocumentAdapterTests
                 {
                     Items = new List<GraphQLInputValueDefinition>
                     {
-                        otherField
+                        otherField,
+                        externalField
                     }
                 }
             };

@@ -1,5 +1,4 @@
 ﻿using GraphQLParser.AST;
-using GraphQLToKarate.Library.Apollo;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Settings;
 
@@ -30,10 +29,14 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     {
         graphQLToKarateConverterSettings ??= new GraphQLToKarateSettings();
 
-        _graphQLTypeDefinitionsWithFieldsByName = new Dictionary<string, IHasFieldsDefinitionNode>(StringComparer.OrdinalIgnoreCase);
-        _graphQLEnumTypeDefinitionsByName = new Dictionary<string, GraphQLEnumTypeDefinition>(StringComparer.OrdinalIgnoreCase);
-        _graphQLUnionTypeDefinitionsByName = new Dictionary<string, GraphQLUnionTypeDefinition>(StringComparer.OrdinalIgnoreCase);
-        _graphQLInputObjectTypeDefinitionsByName = new Dictionary<string, GraphQLInputObjectTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+        _graphQLTypeDefinitionsWithFieldsByName =
+            new Dictionary<string, IHasFieldsDefinitionNode>(StringComparer.OrdinalIgnoreCase);
+        _graphQLEnumTypeDefinitionsByName =
+            new Dictionary<string, GraphQLEnumTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+        _graphQLUnionTypeDefinitionsByName =
+            new Dictionary<string, GraphQLUnionTypeDefinition>(StringComparer.OrdinalIgnoreCase);
+        _graphQLInputObjectTypeDefinitionsByName =
+            new Dictionary<string, GraphQLInputObjectTypeDefinition>(StringComparer.OrdinalIgnoreCase);
 
         // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
         // this actually can be null, but the GraphQLParser library doesn't mark it as nullable
@@ -167,6 +170,11 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         {
             ApplyEnumTypeDefinitionDirectives(graphQLEnumTypeDefinition);
         }
+
+        foreach (var graphQLInputObjectTypeDefinition in _graphQLInputObjectTypeDefinitionsByName.Values)
+        {
+            ApplyInputObjectTypeDefinitionDirectives(graphQLInputObjectTypeDefinition);
+        }
     }
 
     private static void ApplyHasFieldsDefinitionTypeDirectives<T>(T graphQLHasFieldsDefinitionType)
@@ -177,35 +185,40 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             Items = new List<GraphQLFieldDefinition>()
         };
 
-        // remove fields with @inaccessible or @external directives
         var accessibleGraphQLFieldDefinitions = graphQLHasFieldsDefinitionType.Fields.Items.Where(
-            graphQLFieldDefinition => !(
-                graphQLFieldDefinition.Directives?.Any(
-                    directive => directive.NameValue().Equals(Directives.Inaccessible, StringComparison.OrdinalIgnoreCase) ||
-                                 directive.NameValue().Equals(Directives.External, StringComparison.OrdinalIgnoreCase)
-                ) ?? false
-            )
+            graphQLFieldDefinition => !(graphQLFieldDefinition.IsInaccessible() ||
+                                        graphQLFieldDefinition.IsExternal())
         ).ToList();
 
         graphQLHasFieldsDefinitionType.Fields.Items = accessibleGraphQLFieldDefinitions;
     }
 
+    private static void ApplyInputObjectTypeDefinitionDirectives(
+        GraphQLInputObjectTypeDefinition inputObjectTypeDefinition)
+    {
+        inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition
+        {
+            Items = new List<GraphQLInputValueDefinition>()
+        };
+
+        var accessibleGraphQLInputValueDefinitions = inputObjectTypeDefinition.Fields.Items.Where(
+            graphQLInputValueDefinition => !(graphQLInputValueDefinition.IsInaccessible() ||
+                                             graphQLInputValueDefinition.IsExternal())
+        ).ToList();
+
+        inputObjectTypeDefinition.Fields.Items = accessibleGraphQLInputValueDefinitions;
+    }
+
     private static void ApplyEnumTypeDefinitionDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
     {
-        // remove enum values with @inaccessible or @external directives
         graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition
         {
             Items = new List<GraphQLEnumValueDefinition>()
         };
 
         var accessibleGraphQLEnumValueDefinitions = graphQLEnumTypeDefinition.Values.Items.Where(
-            graphQLEnumValueDefinition => !(
-                graphQLEnumValueDefinition.Directives?.Any(
-                    directive =>
-                        directive.NameValue().Equals(Directives.Inaccessible, StringComparison.OrdinalIgnoreCase) ||
-                        directive.NameValue().Equals(Directives.External, StringComparison.OrdinalIgnoreCase)
-                ) ?? false
-            )
+            graphQLEnumValueDefinition => !(graphQLEnumValueDefinition.IsInaccessible() ||
+                                            graphQLEnumValueDefinition.IsExternal())
         ).ToList();
 
         graphQLEnumTypeDefinition.Values.Items = accessibleGraphQLEnumValueDefinitions;
