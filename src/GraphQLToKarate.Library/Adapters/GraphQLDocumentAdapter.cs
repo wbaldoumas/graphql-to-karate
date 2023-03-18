@@ -1,4 +1,5 @@
 ﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Apollo;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Settings;
 
@@ -91,6 +92,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
                         graphQLObjectTypeDefinition.NameValue(),
                         graphQLObjectTypeDefinition
                     );
+                    ApplyHasFieldsDefinitionTypeDirectives(graphQLObjectTypeDefinition);
                     break;
                 case GraphQLInterfaceTypeDefinition graphQLInterfaceTypeDefinition:
                     _graphQLTypeDefinitionsWithFieldsByName.Add(
@@ -114,6 +116,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         }
 
         MergeTypeExtensions(graphQLDocument);
+        ApplyDirectives();
     }
 
     public bool IsGraphQLEnumTypeDefinition(string graphQLTypeDefinitionName) =>
@@ -152,6 +155,61 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             out var graphQLInputObjectTypeDefinition)
             ? graphQLInputObjectTypeDefinition
             : null;
+
+    private void ApplyDirectives()
+    {
+        foreach (var graphQLTypeDefinitionWithFields in _graphQLTypeDefinitionsWithFieldsByName.Values)
+        {
+            ApplyHasFieldsDefinitionTypeDirectives(graphQLTypeDefinitionWithFields);
+        }
+
+        foreach (var graphQLEnumTypeDefinition in _graphQLEnumTypeDefinitionsByName.Values)
+        {
+            ApplyEnumTypeDefinitionDirectives(graphQLEnumTypeDefinition);
+        }
+    }
+
+    private static void ApplyHasFieldsDefinitionTypeDirectives<T>(T graphQLHasFieldsDefinitionType)
+        where T : IHasFieldsDefinitionNode
+    {
+        graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition
+        {
+            Items = new List<GraphQLFieldDefinition>()
+        };
+
+        // remove fields with @inaccessible or @external directives
+        var accessibleGraphQLFieldDefinitions = graphQLHasFieldsDefinitionType.Fields.Items.Where(
+            graphQLFieldDefinition => !(
+                graphQLFieldDefinition.Directives?.Any(
+                    directive => directive.NameValue().Equals(Directives.Inaccessible, StringComparison.OrdinalIgnoreCase) ||
+                                 directive.NameValue().Equals(Directives.External, StringComparison.OrdinalIgnoreCase)
+                ) ?? false
+            )
+        ).ToList();
+
+        graphQLHasFieldsDefinitionType.Fields.Items = accessibleGraphQLFieldDefinitions;
+    }
+
+    private static void ApplyEnumTypeDefinitionDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
+    {
+        // remove enum values with @inaccessible or @external directives
+        graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition
+        {
+            Items = new List<GraphQLEnumValueDefinition>()
+        };
+
+        var accessibleGraphQLEnumValueDefinitions = graphQLEnumTypeDefinition.Values.Items.Where(
+            graphQLEnumValueDefinition => !(
+                graphQLEnumValueDefinition.Directives?.Any(
+                    directive =>
+                        directive.NameValue().Equals(Directives.Inaccessible, StringComparison.OrdinalIgnoreCase) ||
+                        directive.NameValue().Equals(Directives.External, StringComparison.OrdinalIgnoreCase)
+                ) ?? false
+            )
+        ).ToList();
+
+        graphQLEnumTypeDefinition.Values.Items = accessibleGraphQLEnumValueDefinitions;
+    }
 
     private void MergeTypeExtensions(GraphQLDocument graphQLDocument)
     {
