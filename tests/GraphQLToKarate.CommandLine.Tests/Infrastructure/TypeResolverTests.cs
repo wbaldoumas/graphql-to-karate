@@ -53,6 +53,4 @@ internal sealed class TypeResolverTests
         // assert
         (host as IDisposable)!.Received().Dispose();
     }
-
-
 }

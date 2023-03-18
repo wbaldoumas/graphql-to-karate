@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
-using System.Globalization;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GraphQLToKarate.CommandLine.Infrastructure;
 using NUnit.Framework;
 using Serilog.Events;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 

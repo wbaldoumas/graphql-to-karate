@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using GraphQLParser.AST;
+﻿using GraphQLParser.AST;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GraphQLToKarate.Tests.Mocks;
 

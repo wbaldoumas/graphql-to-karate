@@ -89,7 +89,6 @@ internal sealed class GraphQLListTypeConverterTests
                 )
             ).SetName("List of nullable Float GraphQL type is converted to list of nullable number Karate type.");
 
-
             yield return new TestCaseData(
                 testFieldName,
                 new GraphQLListType
@@ -106,7 +105,6 @@ internal sealed class GraphQLListTypeConverterTests
                     )
                 )
             ).SetName("List of nullable Int GraphQL type is converted to list of nullable number Karate type.");
-
 
             yield return new TestCaseData(
                 testFieldName,
@@ -246,7 +244,6 @@ internal sealed class GraphQLListTypeConverterTests
                 )
             ).SetName("List of non-nullable Float GraphQL type is converted to list of non-nullable number Karate type.");
 
-
             yield return new TestCaseData(
                 testFieldName,
                 new GraphQLListType
@@ -266,7 +263,6 @@ internal sealed class GraphQLListTypeConverterTests
                     )
                 )
             ).SetName("List of non-nullable Int GraphQL type is converted to list of non-nullable number Karate type.");
-
 
             yield return new TestCaseData(
                 testFieldName,
@@ -382,7 +378,7 @@ internal sealed class GraphQLListTypeConverterTests
     {
         // arrange
         var unsupportedGraphQLType = new UnsupportedGraphQLType();
-        
+
         var graphQLListType = new GraphQLListType
         {
             Type = unsupportedGraphQLType

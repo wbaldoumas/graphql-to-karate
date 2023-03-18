@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLToKarate.CommandLine.Commands;
 using GraphQLToKarate.CommandLine.Infrastructure;
+using GraphQLToKarate.CommandLine.Prompts;
 using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Mappings;
@@ -10,7 +11,6 @@ using NSubstitute;
 using NUnit.Framework;
 using Spectre.Console.Cli;
 using System.IO.Abstractions;
-using GraphQLToKarate.CommandLine.Prompts;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 
@@ -86,7 +86,7 @@ internal sealed class CommandAppConfiguratorTests
             QueryOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
             MutationOperationFilter = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         };
-        
+
         _mockConvertCommandSettingsLoader!
             .LoadAsync(Arg.Any<ConvertCommandSettings>())
             .Returns(loadedConvertCommandSettings);

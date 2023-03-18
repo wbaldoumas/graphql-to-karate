@@ -106,14 +106,14 @@ internal sealed class KarateScenarioBuilderTests
                     {
                         new GraphQLNonNullArgumentType(
                             new GraphQLArgumentType(
-                                "id", 
-                                "id", 
+                                "id",
+                                "id",
                                 GraphQLToken.String,
                                 "\"an example value\""
                             )
                         ),
                         new GraphQLArgumentType(
-                            "isCompleted", 
+                            "isCompleted",
                             "isCompleted",
                             GraphQLToken.Boolean,
                             "true"
@@ -122,8 +122,8 @@ internal sealed class KarateScenarioBuilderTests
                             new GraphQLListArgumentType(
                                 new GraphQLNonNullArgumentType(
                                     new GraphQLArgumentType(
-                                        "filter", 
-                                        "filter", 
+                                        "filter",
+                                        "filter",
                                         "Color",
                                         "[ RED, BLUE ]"
                                     )
@@ -194,7 +194,7 @@ internal sealed class KarateScenarioBuilderTests
                 {
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
-                    OperationString = 
+                    OperationString =
                     """
                     query TodoTest {
                       todo {

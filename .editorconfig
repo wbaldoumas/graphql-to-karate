@@ -58,3 +58,10 @@ dotnet_diagnostic.SA1642.severity = none
 
 # max method length
 MA0051.maximum_lines_per_method = 120
+
+[*Tests.cs]
+# parameter spans multiple lines - not helpful for block strings
+dotnet_diagnostic.SA1118.severity = none
+
+# ordering rules - disabling these since it's nice to group test data
+dotnet_diagnostic.SA1203.severity = none

@@ -1,8 +1,8 @@
-﻿using System.IO.Abstractions;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GraphQLToKarate.Library.Mappings;
 using NSubstitute;
 using NUnit.Framework;
+using System.IO.Abstractions;
 
 namespace GraphQLToKarate.Tests.Mappings;
 
