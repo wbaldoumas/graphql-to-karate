@@ -647,7 +647,7 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                         new()
                         {
                             Name = new GraphQLName(blogPostWithComments.Name)
-                        }, 
+                        },
                         new()
                         {
                             Name = new GraphQLName(blogPostWithArguments.Name)
@@ -917,7 +917,6 @@ internal sealed class GraphQLFieldDefinitionConverterTests
                     }
                 }
             ).SetName("Converter is able to convert simple query with scalar field arguments.");
-
 
             var personInterfaceQueryGraphQLFieldDefinition = new GraphQLFieldDefinition
             {

@@ -241,7 +241,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
 
         _mockGraphQLDocumentAdapter
             .GetGraphQLEnumTypeDefinition(graphQLType.NameValue())
-            .Returns((GraphQLEnumTypeDefinition?) null);
+            .Returns((GraphQLEnumTypeDefinition?)null);
 
         // act
         var act = () => _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);

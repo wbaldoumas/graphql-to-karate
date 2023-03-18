@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
 using GraphQLToKarate.CommandLine.Settings;
+using GraphQLToKarate.Library.Mappings;
+using GraphQLToKarate.Library.Tokens;
 using NSubstitute;
 using NUnit.Framework;
 using System.IO.Abstractions;
-using GraphQLToKarate.Library.Mappings;
-using GraphQLToKarate.Library.Tokens;
 
 namespace GraphQLToKarate.CommandLine.Tests.Settings;
 

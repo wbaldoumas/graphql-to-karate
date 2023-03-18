@@ -75,7 +75,6 @@ internal sealed class GraphQLNullTypeConverterTests
                 new KarateNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Nullable Float GraphQL type is converted to nullable number Karate type.");
 
-
             yield return new TestCaseData(
                 testFieldName,
                 new GraphQLNamedType

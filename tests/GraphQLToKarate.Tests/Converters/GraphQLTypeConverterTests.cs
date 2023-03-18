@@ -84,7 +84,6 @@ internal sealed class GraphQLTypeConverterTests
                 new KarateType(KarateToken.String, testFieldName)
             ).SetName("String GraphQL type is converted to string Karate type.");
 
-
             yield return new TestCaseData(
                 testFieldName,
                 new GraphQLNamedType

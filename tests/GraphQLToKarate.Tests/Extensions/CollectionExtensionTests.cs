@@ -7,10 +7,11 @@ namespace GraphQLToKarate.Tests.Extensions;
 [TestFixture]
 public class CollectionExtensionsTests
 {
-    [Test, TestCaseSource(nameof(TestCases))]
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
     public void NoneOrContains_should_return_expected_result(
-        ICollection<int> collection, 
-        int item, 
+        ICollection<int> collection,
+        int item,
         bool expected)
     {
         // Act

@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
-using System.Globalization;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GraphQLToKarate.CommandLine.Infrastructure;
 using NUnit.Framework;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
 
@@ -49,7 +49,6 @@ internal sealed class StringToSetConverterTests
         const string input = "  Foo, , Bar, Baz  ";
 
         // act
-
         var result = _subjectUnderTest!.ConvertFrom(null, CultureInfo.InvariantCulture, input);
 
         // assert

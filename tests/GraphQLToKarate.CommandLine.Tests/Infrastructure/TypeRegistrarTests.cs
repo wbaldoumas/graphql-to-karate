@@ -17,7 +17,6 @@ internal sealed class TypeRegistrarTests
     [Test]
     public void Test() => _tests!.RunAllTests();
 
-
     [Test]
     public void RegisterLazy_registers_type_as_expected()
     {

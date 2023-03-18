@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
-using FluentAssertions;
+﻿using FluentAssertions;
 using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Extensions;
 using NUnit.Framework;
+using System.ComponentModel;
 
 namespace GraphQLToKarate.Tests.Enums;
 
