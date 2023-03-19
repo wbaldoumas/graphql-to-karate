@@ -349,4 +349,33 @@ internal sealed class ConvertCommandSettingsLoaderTests
             .WithMessage(GraphQLToKarateConfigurationException.DefaultMessage)
             .WithInnerException(typeof(JsonException));
     }
+
+    [Test]
+    public async Task ConvertCommandSettingsLoader_throws_exception_when_configuration_is_null()
+    {
+        // arrange
+        var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
+        {
+            InputFile = "schema.graphql",
+            ConfigurationFile = "config.json",
+        };
+
+        _mockFile!
+            .ReadAllTextAsync(convertCommandSettings.InputFile)
+            .Returns(SomeGraphQLSchema);
+
+        _mockFile!
+            .ReadAllTextAsync(convertCommandSettings.ConfigurationFile)
+            .Returns("null");
+
+        // act
+        var act = async () => await _subjectUnderTest!.LoadAsync(convertCommandSettings);
+
+        // assert
+        await act
+            .Should()
+            .ThrowAsync<GraphQLToKarateConfigurationException>()
+            .WithMessage(GraphQLToKarateConfigurationException.DefaultMessage)
+            .WithInnerException(typeof(InvalidOperationException));
+    }
 }
