@@ -9,7 +9,7 @@ namespace GraphQLToKarate.CommandLine.Tests.Mappers;
 public class GraphQLToKarateUserConfigurationMapperTests
 {
     [Test]
-    public void Map_ShouldMapGraphQLToKarateUserConfigurationToLoadedConvertCommandSettings()
+    public void Map_should_map_to_expected_LoadedConvertCommandSettings()
     {
         // Arrange
         var graphQLToKarateUserConfigurationMapper = new GraphQLToKarateUserConfigurationMapper();
