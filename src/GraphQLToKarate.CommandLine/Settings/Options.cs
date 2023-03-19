@@ -15,7 +15,7 @@ internal static class Options
 
     // --output file
     public const string OutputFileOptionName = "--output-file";
-    public const string OutputFileOptionDescription = "The path of the output Karate feature file";
+    public const string OutputFileOptionDescription = "The output file to write the Karate feature to";
     public const string OutputFileOptionDefaultValue = "graphql.feature";
     public const string OutputFileOptionDefaultAttributeValue = "graphql.feature";
 
@@ -33,13 +33,13 @@ internal static class Options
 
     // --exclude-queries
     public const string ExcludeQueriesOptionName = "--exclude-queries";
-    public const string ExcludeQueriesOptionDescription = "Whether to exclude queries or not";
+    public const string ExcludeQueriesOptionDescription = "Whether to exclude queries from the Karate feature or not";
     public const bool ExcludeQueriesOptionDefaultValue = false;
     public const string ExcludeQueriesOptionDefaultAttributeValue = "false";
 
     // --include-mutations
     public const string IncludeMutationsOptionName = "--include-mutations";
-    public const string IncludeMutationsOptionDescription = "Whether to include mutations or not";
+    public const string IncludeMutationsOptionDescription = "Whether to include mutations in the Karate feature or not";
     public const bool IncludeMutationsOptionDefaultValue = false;
     public const string IncludeMutationsOptionDefaultAttributeValue = "false";
 
@@ -58,19 +58,25 @@ internal static class Options
 
     // --query-operation-filter
     public const string QueryOperationFilterOptionName = "--query-operation-filter";
-    public const string QueryOperationFilterOptionDescription = "A comma-separated list of GraphQL query operations to include in the Karate feature";
+    public const string QueryOperationFilterOptionDescription = "A comma-separated list of GraphQL query operations to include in the Karate feature. If empty, all query operations will be included.";
     public static readonly ISet<string> QueryOperationFilterOptionDefaultValue = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public const string QueryOperationFilterOptionDefaultAttributeValue = "";
 
     // --mutation-operation-filter
     public const string MutationOperationFilterOptionName = "--mutation-operation-filter";
-    public const string MutationOperationFilterOptionDescription = "A comma-separated list of GraphQL mutation operations to include in the Karate feature";
+    public const string MutationOperationFilterOptionDescription = "A comma-separated list of GraphQL mutation operations to include in the Karate feature. If empty, all mutation operations will be included.";
     public static readonly ISet<string> MutationOperationFilterOptionDefaultValue = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public const string MutationOperationFilterOptionDefaultAttributeValue = "";
 
     // --type-filter
     public const string TypeFilterOptionName = "--type-filter";
-    public const string TypeFilterOptionDescription = "A comma-separated list of GraphQL types to include in the Karate feature";
+    public const string TypeFilterOptionDescription = "A comma-separated list of GraphQL types to include in the Karate feature. If empty, all types will be included.";
     public static readonly ISet<string> TypeFilterOptionDefaultValue = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
     public const string TypeFilterOptionDefaultAttributeValue = "";
+
+    // --configuration-file
+    public const string ConfigurationFileOptionName = "--configuration-file";
+    public const string ConfigurationFileOptionDescription = "The path of the configuration file";
+    public const string ConfigurationFileOptionDefaultValue = "";
+    public const string ConfigurationFileOptionDefaultAttributeValue = "";
 }
