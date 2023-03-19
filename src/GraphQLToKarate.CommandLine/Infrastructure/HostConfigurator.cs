@@ -1,4 +1,5 @@
-﻿using GraphQLToKarate.CommandLine.Prompts;
+﻿using GraphQLToKarate.CommandLine.Mappers;
+using GraphQLToKarate.CommandLine.Prompts;
 using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
 using GraphQLToKarate.Library.Mappings;
@@ -28,7 +29,8 @@ internal static class HostConfigurator
             serviceCollection.AddSingleton<IFileSystem, FileSystem>();
             serviceCollection.AddSingleton<IFile, FileWrapper>();
             serviceCollection.AddTransient<ConvertCommandSettings>();
-            serviceCollection.AddTransient<IConvertCommandSettingsLoader, ConvertCommandSettingsLoader>();
+            serviceCollection.AddSingleton<IGraphQLToKarateUserConfigurationMapper, GraphQLToKarateUserConfigurationMapper>();
+            serviceCollection.AddSingleton<IConvertCommandSettingsLoader, ConvertCommandSettingsLoader>();
             serviceCollection.AddTransient<IGraphQLToKarateConverterBuilder, GraphQLToKarateConverterBuilder>();
             serviceCollection.AddSingleton<ICustomScalarMappingValidator, CustomScalarMappingLoader>();
             serviceCollection.AddSingleton<ICustomScalarMappingLoader, CustomScalarMappingLoader>();

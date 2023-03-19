@@ -80,6 +80,11 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
     [DefaultValue(typeof(string), Options.TypeFilterOptionDefaultAttributeValue)]
     public ISet<string> TypeFilter { get; set; } = Options.TypeFilterOptionDefaultValue;
 
+    [CommandOption(Options.ConfigurationFileOptionName)]
+    [Description(Options.ConfigurationFileOptionDescription)]
+    [DefaultValue(typeof(string), Options.ConfigurationFileOptionDefaultAttributeValue)]
+    public string ConfigurationFile { get; set; } = Options.ConfigurationFileOptionDefaultValue;
+
     public override ValidationResult Validate()
     {
         if (string.IsNullOrEmpty(InputFile))

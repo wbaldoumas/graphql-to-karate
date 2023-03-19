@@ -1,0 +1,94 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "JSON schema for graphql-to-karate (https://github.com/wbaldoumas/graphql-to-karate)",
+    "description": "A JSON schema for the graphql-to-karate configuration file",
+    "properties": {
+        "outputFile": {
+            "type": "string",
+            "title": "Output File",
+            "description": "The output file to write the Karate feature to",
+            "default": "graphql.feature"
+        },
+        "queryName": {
+            "type": "string",
+            "title": "Query Name",
+            "description": "The name of the GraphQL query type",
+            "default": "Query"
+        },
+        "mutationName": {
+            "type": "string",
+            "title": "Mutation Name",
+            "description": "The name of the GraphQL mutation type",
+            "default": "Mutation"
+        },
+        "excludeQueries": {
+            "type": "boolean",
+            "title": "Exclude Queries",
+            "description": "Whether to exclude queries from the Karate feature or not",
+            "default": false
+        },
+        "includeMutations": {
+            "type": "boolean",
+            "title": "Include Mutations",
+            "description": "Whether to include mutations in the Karate feature or not",
+            "default": false
+        },
+        "baseUrl": {
+            "type": "string",
+            "title": "Base URL",
+            "description": "The base URL to be used in the Karate feature",
+            "default": "\"https://your-awesome-api.com\""
+        },
+        "customScalarMapping": {
+            "type": "object",
+            "title": "Custom Scalar Mapping",
+            "description": "A mapping of custom scalar types to their equivalent Karate types",
+            "default": {},
+            "additionalProperties": {
+                "type": "string"
+            },
+            "examples": [
+                {
+                    "DateTime": "string",
+                    "Long": "number",
+                    "BigDecimal": "number",
+                    "UUID": "string"
+                }
+            ]
+        },
+        "typeFilter": {
+            "type": "array",
+            "title": "Type Filter",
+            "description": "A list of types to include in the Karate feature. If empty, all types will be included",
+            "default": [],
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "queryOperationFilter": {
+            "type": "array",
+            "title": "Query Operation Filter",
+            "description": "A list of query operations to include in the Karate feature. If empty, all query operations will be included",
+            "default": [],
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        },
+        "mutationOperationFilter": {
+            "type": "array",
+            "title": "Mutation Operation Filter",
+            "description": "A list of mutation operations to include in the Karate feature. If empty, all mutation operations will be included",
+            "default": [],
+            "items": [
+                {
+                    "type": "string"
+                }
+            ]
+        }
+    }
+}
