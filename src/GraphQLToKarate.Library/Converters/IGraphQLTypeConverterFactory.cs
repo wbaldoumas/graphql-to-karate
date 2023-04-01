@@ -1,4 +1,6 @@
-﻿namespace GraphQLToKarate.Library.Converters;
+﻿using GraphQLParser.AST;
+
+namespace GraphQLToKarate.Library.Converters;
 
 /// <summary>
 ///     Used to create various <see cref="IGraphQLTypeConverter"/> implementations.
@@ -12,4 +14,6 @@ public interface IGraphQLTypeConverterFactory
     IGraphQLTypeConverter CreateGraphQLNonNullTypeConverter();
 
     IGraphQLTypeConverter CreateGraphQLNullTypeConverter();
+
+    IGraphQLTypeConverter CreateGraphQLTypeConverter(GraphQLType graphQLType);
 }

@@ -12,9 +12,9 @@ public sealed class GraphQLOperation
 
     public string OperationName => $"{Name.FirstCharToUpper()}Test";
 
-    public string ReturnTypeName => _graphQLFieldDefinition.Type.GetUnwrappedTypeName();
+    public GraphQLType ReturnType => _graphQLFieldDefinition.Type;
 
-    public bool IsNullableReturnType => _graphQLFieldDefinition.Type is not GraphQLNonNullType;
+    public string ReturnTypeName => _graphQLFieldDefinition.Type.GetUnwrappedTypeName();
 
     public bool IsListReturnType => _graphQLFieldDefinition.Type.IsListType();
 

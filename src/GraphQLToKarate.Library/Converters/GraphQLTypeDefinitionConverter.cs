@@ -1,6 +1,5 @@
 ﻿using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
-using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Types;
 
@@ -26,13 +25,7 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
 
         var karateTypes =
             from graphQLFieldDefinition in graphQLTypeDefinition.Fields
-            let converter = graphQLFieldDefinition.Type switch
-            {
-                GraphQLNonNullType => _graphQLTypeConverterFactory.CreateGraphQLNonNullTypeConverter(),
-                GraphQLNamedType => _graphQLTypeConverterFactory.CreateGraphQLNullTypeConverter(),
-                GraphQLListType => _graphQLTypeConverterFactory.CreateGraphQLNullTypeConverter(),
-                _ => throw new InvalidGraphQLTypeException()
-            }
+            let converter = _graphQLTypeConverterFactory.CreateGraphQLTypeConverter(graphQLFieldDefinition.Type)
             select converter.Convert(
                 graphQLFieldDefinition.NameValue(),
                 graphQLFieldDefinition.Type,

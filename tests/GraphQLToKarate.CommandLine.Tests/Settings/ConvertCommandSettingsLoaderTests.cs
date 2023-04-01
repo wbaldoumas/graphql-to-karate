@@ -220,7 +220,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
         {
             InputFile = "schema.graphql",
-            ConfigurationFile = "config.json",
+            ConfigurationFile = "config.json"
         };
 
         _mockFile!
@@ -328,7 +328,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
         {
             InputFile = "schema.graphql",
-            ConfigurationFile = "config.json",
+            ConfigurationFile = "config.json"
         };
 
         _mockFile!
@@ -357,7 +357,7 @@ internal sealed class ConvertCommandSettingsLoaderTests
         var convertCommandSettings = new ConvertCommandSettings(_mockFile!, _mockCustomScalarMappingLoader!)
         {
             InputFile = "schema.graphql",
-            ConfigurationFile = "config.json",
+            ConfigurationFile = "config.json"
         };
 
         _mockFile!

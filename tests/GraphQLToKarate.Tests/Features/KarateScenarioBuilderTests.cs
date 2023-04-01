@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using GraphQLParser.AST;
 using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Features;
 using GraphQLToKarate.Library.Tokens;
@@ -19,7 +20,7 @@ internal sealed class KarateScenarioBuilderTests
     [SetUp]
     public void SetUp()
     {
-        _subjectUnderTest = new KarateScenarioBuilder();
+        _subjectUnderTest = new KarateScenarioBuilder(new GraphQLTypeConverterFactory(new GraphQLTypeConverter()));
         _mockGraphQLDocumentAdapter = Substitute.For<IGraphQLDocumentAdapter>();
     }
 
@@ -28,6 +29,7 @@ internal sealed class KarateScenarioBuilderTests
     public void ScenarioBuilder_builds_expected_scenario_string(
         GraphQLOperation graphQLOperation,
         GraphQLUnionTypeDefinition? graphQLUnionTypeDefinitionReturn,
+        bool isGraphQLTypeDefinitionWithFields,
         string expectedScenarioString)
     {
         // arrange
@@ -39,6 +41,13 @@ internal sealed class KarateScenarioBuilderTests
         {
             _mockGraphQLDocumentAdapter!
                 .IsGraphQLUnionTypeDefinition(Arg.Any<string>())
+                .Returns(true);
+        }
+
+        if (isGraphQLTypeDefinitionWithFields)
+        {
+            _mockGraphQLDocumentAdapter!
+                .IsGraphQLTypeDefinitionWithFields(Arg.Any<string>())
                 .Returns(true);
         }
 
@@ -78,6 +87,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
                 },
                 null,
+                true,
                 """"
                 Scenario: Perform a todo query and validate the response
                   * text query =
@@ -145,6 +155,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
                 },
                 null,
+                true,
                 """"
                 Scenario: Perform a todo query and validate the response
                   * text query =
@@ -160,12 +171,12 @@ internal sealed class KarateScenarioBuilderTests
                       }
                     """
 
-                  * text variables =
+                  * def variables =
                     """
                       {
-                        "id": "an example value",
-                        "isCompleted": true,
-                        "filter": [ RED, BLUE ]
+                        id: "an example value",
+                        isCompleted: true,
+                        filter: [ RED, BLUE ]
                       }
                     """
 
@@ -205,6 +216,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
                 },
                 null,
+                true,
                 """"
                 Scenario: Perform a todo query and validate the response
                   * text query =
@@ -221,7 +233,7 @@ internal sealed class KarateScenarioBuilderTests
                   And request { query: '#(query)', operationName: "TodoTest" }
                   When method post
                   Then status 200
-                  And match each response.data.todo == "##(todoSchema)"
+                  And match response.data.todo == "##[] ##(todoSchema)"
                 """"
             ).SetName("Simple query without arguments and list return is generated as a valid scenario.");
 
@@ -256,6 +268,7 @@ internal sealed class KarateScenarioBuilderTests
                     """
                 },
                 null,
+                true,
                 """"
                 Scenario: Perform a todo query and validate the response
                   * text query =
@@ -272,7 +285,7 @@ internal sealed class KarateScenarioBuilderTests
                   And request { query: '#(query)', operationName: "TodoTest" }
                   When method post
                   Then status 200
-                  And match each response.data.todo == todoSchema
+                  And match response.data.todo == "#[] ##(todoSchema)"
                 """"
             ).SetName("Simple query without arguments and non-null list return is generated as a valid scenario.");
 
@@ -281,12 +294,9 @@ internal sealed class KarateScenarioBuilderTests
                 Name = new GraphQLName("todoUnion"),
                 Type = new GraphQLNonNullType
                 {
-                    Type = new GraphQLListType
+                    Type = new GraphQLNamedType
                     {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName("TodoUnion")
-                        }
+                        Name = new GraphQLName("TodoUnion")
                     }
                 }
             };
@@ -329,6 +339,93 @@ internal sealed class KarateScenarioBuilderTests
                         }
                     }
                 },
+                false,
+                """"
+                Scenario: Perform a todoUnion query and validate the response
+                  * text query =
+                    """
+                      query TodoUnionTest {
+                        todoUnion {
+                          ... on Todo {
+                            id
+                            name
+                          }
+                          ... on TodoError {
+                            message
+                          }
+                        }
+                      }
+                    """
+
+                  * def isValid =
+                    """
+                    response =>
+                      karate.match(response, todoSchema).pass ||
+                      karate.match(response, todoErrorSchema).pass
+                    """
+
+                  Given path "/graphql"
+                  And request { query: '#(query)', operationName: "TodoUnionTest" }
+                  When method post
+                  Then status 200
+                  And match response.data.todoUnion == "#? isValid(_)"
+                """"
+            ).SetName("Simple query with union return type is validated as expected.");
+
+            var graphQLFieldDefinitionWithListUnionReturnType = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("todoUnion"),
+                Type = new GraphQLNonNullType
+                {
+                    Type = new GraphQLListType
+                    {
+                        Type = new GraphQLNamedType
+                        {
+                            Name = new GraphQLName("TodoUnion")
+                        }
+                    }
+                }
+            };
+
+            yield return new TestCaseData(
+                new GraphQLOperation(graphQLFieldDefinitionWithListUnionReturnType)
+                {
+                    Type = GraphQLOperationType.Query,
+                    Arguments = new List<GraphQLArgumentTypeBase>(),
+                    OperationString =
+                    """
+                    query TodoUnionTest {
+                      todoUnion {
+                        ... on Todo {
+                          id
+                          name
+                        }
+                        ... on TodoError {
+                          message
+                        }
+                      }
+                    }
+                    """
+                },
+                new GraphQLUnionTypeDefinition
+                {
+                    Name = new GraphQLName("TodoUnion"),
+                    Types = new GraphQLUnionMemberTypes
+                    {
+                        Items = new List<GraphQLNamedType>
+                        {
+                            new()
+                            {
+                                Name = new GraphQLName("Todo")
+                            },
+                            new()
+                            {
+                                Name = new GraphQLName("TodoError")
+                            }
+                        }
+                    }
+                },
+                false,
                 """"
                 Scenario: Perform a todoUnion query and validate the response
                   * text query =
@@ -359,7 +456,47 @@ internal sealed class KarateScenarioBuilderTests
                   Then status 200
                   And match each response.data.todoUnion == "#? isValid(_)"
                 """"
-            ).SetName("Simple query with union return type is validated as expected.");
+            ).SetName("Simple query with list union return type is validated as expected.");
+
+            var graphQLFieldDefinitionWithScalarReturnType = new GraphQLFieldDefinition
+            {
+                Name = new GraphQLName("todoCount"),
+                Type = new GraphQLNamedType
+                {
+                    Name = new GraphQLName("Int")
+                }
+            };
+
+            yield return new TestCaseData(
+                new GraphQLOperation(graphQLFieldDefinitionWithScalarReturnType)
+                {
+                    Type = GraphQLOperationType.Query,
+                    Arguments = new List<GraphQLArgumentTypeBase>(),
+                    OperationString =
+                    """
+                    query TodoCountTest {
+                      todoCount
+                    }
+                    """
+                },
+                null,
+                false,
+                """"
+                Scenario: Perform a todoCount query and validate the response
+                  * text query =
+                    """
+                      query TodoCountTest {
+                        todoCount
+                      }
+                    """
+
+                  Given path "/graphql"
+                  And request { query: '#(query)', operationName: "TodoCountTest" }
+                  When method post
+                  Then status 200
+                  And match response.data.todoCount == "##number"
+                """"
+            ).SetName("Simple query with scalar return type is generated as a valid scenario.");
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace GraphQLToKarate.Library.Converters;
+﻿using GraphQLParser.AST;
+
+namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLTypeConverterFactory"/>
 public sealed class GraphQLTypeConverterFactory : IGraphQLTypeConverterFactory
@@ -20,4 +22,10 @@ public sealed class GraphQLTypeConverterFactory : IGraphQLTypeConverterFactory
     public IGraphQLTypeConverter CreateGraphQLNonNullTypeConverter() => _graphQLNonNullTypeConverter ??= new GraphQLNonNullTypeConverter(this);
 
     public IGraphQLTypeConverter CreateGraphQLNullTypeConverter() => _graphQLNullTypeConverter ??= new GraphQLNullTypeConverter(this);
+
+    public IGraphQLTypeConverter CreateGraphQLTypeConverter(GraphQLType graphQLType) => graphQLType switch
+    {
+        GraphQLNonNullType => CreateGraphQLNonNullTypeConverter(),
+        _ => CreateGraphQLNullTypeConverter()
+    };
 }
