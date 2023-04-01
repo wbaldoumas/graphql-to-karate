@@ -456,7 +456,7 @@ internal sealed class KarateScenarioBuilderTests
                   Then status 200
                   And match each response.data.todoUnion == "#? isValid(_)"
                 """"
-            ).SetName("Simple query with union return type is validated as expected.");
+            ).SetName("Simple query with list union return type is validated as expected.");
 
             var graphQLFieldDefinitionWithScalarReturnType = new GraphQLFieldDefinition
             {
