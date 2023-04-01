@@ -1,12 +1,4 @@
 {
     "outputFile": "configured-contries.feature",
-    "baseUrl": "\"https://countries.trevorblades.com\"",
-    "customScalarMapping": {
-        "Date": "string",
-        "DateTime": "string",
-        "Long": "number"
-    },
-    "queryOperationFilter": [
-        "countries"
-    ]
+    "baseUrl": "\"https://countries.trevorblades.com\""
 }

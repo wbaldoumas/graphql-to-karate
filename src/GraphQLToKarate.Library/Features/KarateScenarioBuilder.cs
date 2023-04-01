@@ -1,4 +1,5 @@
 ﻿using GraphQLToKarate.Library.Adapters;
+using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
@@ -9,6 +10,11 @@ namespace GraphQLToKarate.Library.Features;
 /// <inheritdoc cref="IKarateScenarioBuilder"/>
 public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
 {
+    private readonly IGraphQLTypeConverterFactory _graphQLTypeConverterFactory;
+
+    public KarateScenarioBuilder(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) =>
+        _graphQLTypeConverterFactory = graphQLTypeConverterFactory;
+
     public string Build(
         GraphQLOperation graphQLOperation,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
@@ -44,13 +50,13 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         }
 
         stringBuilder.AppendLine();
-        stringBuilder.AppendLine("* text variables =".Indent(Indent.Single));
+        stringBuilder.AppendLine("* def variables =".Indent(Indent.Single));
         stringBuilder.AppendLine($"{SchemaToken.TripleQuote}".Indent(Indent.Double));
         stringBuilder.AppendLine("{".Indent(Indent.Triple));
 
         foreach (var argumentVariable in arguments)
         {
-            stringBuilder.AppendLine($"\"{argumentVariable.VariableName}\": {argumentVariable.ExampleValue},".Indent(Indent.Quadruple));
+            stringBuilder.AppendLine($"{argumentVariable.VariableName}: {argumentVariable.ExampleValue},".Indent(Indent.Quadruple));
         }
 
         stringBuilder.TrimEnd(Environment.NewLine.Length + 1); // remove trailing comma
@@ -106,7 +112,7 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         stringBuilder.AppendLine(" }");
     }
 
-    private static void BuildKarateAssert(
+    private void BuildKarateAssert(
         GraphQLOperation graphQLOperation,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
         StringBuilder stringBuilder)
@@ -114,27 +120,21 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         stringBuilder.AppendLine("When method post".Indent(Indent.Single));
         stringBuilder.AppendLine("Then status 200".Indent(Indent.Single));
 
-        var matchCardinalityString = graphQLOperation.IsListReturnType
-            ? $"And match each response.data.{graphQLOperation.Name} == "
-            : $"And match response.data.{graphQLOperation.Name} == ";
-
-        stringBuilder.Append(matchCardinalityString.Indent(Indent.Single));
-
-        string schemaMatchString;
-
         if (graphQLDocumentAdapter.IsGraphQLUnionTypeDefinition(graphQLOperation.ReturnTypeName))
         {
-            schemaMatchString = "\"#? isValid(_)\"";
-        }
-        else if (graphQLOperation.IsNullableReturnType)
-        {
-            schemaMatchString = $"\"##({graphQLOperation.ReturnTypeName.FirstCharToLower()}Schema)\"";
+            var matchString = graphQLOperation.IsListReturnType
+                ? $"And match each response.data.{graphQLOperation.Name} == \"#? isValid(_)\""
+                : $"And match response.data.{graphQLOperation.Name} == \"#? isValid(_)\"";
+
+            stringBuilder.Append($"{matchString}".Indent(Indent.Single));
         }
         else
         {
-            schemaMatchString = $"{graphQLOperation.ReturnTypeName.FirstCharToLower()}Schema";
-        }
+            var karateType = _graphQLTypeConverterFactory
+                .CreateGraphQLTypeConverter(graphQLOperation.ReturnType)
+                .Convert(graphQLOperation.Name, graphQLOperation.ReturnType, graphQLDocumentAdapter);
 
-        stringBuilder.Append(schemaMatchString);
+            stringBuilder.Append($"And match response.data.{graphQLOperation.Name} == \"{karateType.Schema}\"".Indent(Indent.Single));
+        }
     }
 }

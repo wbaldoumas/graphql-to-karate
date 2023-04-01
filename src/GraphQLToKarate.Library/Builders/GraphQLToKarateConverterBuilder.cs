@@ -109,36 +109,39 @@ public sealed class GraphQLToKarateConverterBuilder :
         return this;
     }
 
-    public IGraphQLToKarateConverter Build() => new GraphQLToKarateConverter(
-        new GraphQLSchemaParser(),
-        new GraphQLTypeDefinitionConverter(
-            new GraphQLTypeConverterFactory(_graphQLTypeConverter)
-        ),
-        new GraphQLFieldDefinitionConverter(
-            new GraphQLInputValueDefinitionConverterFactory(
-                new GraphQLInputValueToExampleValueConverter(
-                    new GraphQLScalarToExampleValueConverter(_customScalarMapping)
+    public IGraphQLToKarateConverter Build()
+    {
+        var graphQLTypeConverterFactory = new GraphQLTypeConverterFactory(_graphQLTypeConverter);
+
+        return new GraphQLToKarateConverter(
+            new GraphQLSchemaParser(),
+            new GraphQLTypeDefinitionConverter(graphQLTypeConverterFactory),
+            new GraphQLFieldDefinitionConverter(
+                new GraphQLInputValueDefinitionConverterFactory(
+                    new GraphQLInputValueToExampleValueConverter(
+                        new GraphQLScalarToExampleValueConverter(_customScalarMapping)
+                    )
                 )
-            )
-        ),
-        new KarateFeatureBuilder(
-            new KarateScenarioBuilder(),
-            new KarateFeatureBuilderSettings
+            ),
+            new KarateFeatureBuilder(
+                new KarateScenarioBuilder(graphQLTypeConverterFactory),
+                new KarateFeatureBuilderSettings
+                {
+                    BaseUrl = _baseUrl,
+                    ExcludeQueries = _excludeQueriesSetting
+                }
+            ),
+            _graphQLToKarateConverterLogger,
+            new GraphQLToKarateSettings
             {
-                BaseUrl = _baseUrl,
-                ExcludeQueries = _excludeQueriesSetting
+                ExcludeQueries = _excludeQueriesSetting,
+                IncludeMutations = _includeMutationsSetting,
+                QueryName = _queryName,
+                MutationName = _mutationName,
+                TypeFilter = _typeFilter,
+                QueryOperationFilter = _queryOperationFilter,
+                MutationOperationFilter = _mutationOperationFilter
             }
-        ),
-        _graphQLToKarateConverterLogger,
-        new GraphQLToKarateSettings
-        {
-            ExcludeQueries = _excludeQueriesSetting,
-            IncludeMutations = _includeMutationsSetting,
-            QueryName = _queryName,
-            MutationName = _mutationName,
-            TypeFilter = _typeFilter,
-            QueryOperationFilter = _queryOperationFilter,
-            MutationOperationFilter = _mutationOperationFilter
-        }
-    );
+        );
+    }
 }
