@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/wbaldoumas/graphql-to-karate/main/configuration/schema/v1/schema.json",
     "outputFile": "configured-contries.feature",
     "baseUrl": "\"https://countries.trevorblades.com\""
 }
