@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLToKarate.Tests", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLToKarate.CommandLine", "GraphQLToKarate.CommandLine\GraphQLToKarate.CommandLine.csproj", "{8FC55E2E-E71A-43BE-B240-695F4A5384D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphQLToKarate.CommandLine.Tests", "..\tests\GraphQLToKarate.CommandLine.Tests\GraphQLToKarate.CommandLine.Tests.csproj", "{E7FE4B1C-96E2-4EC2-B803-C5A77BCBC5A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLToKarate.CommandLine.Tests", "..\tests\GraphQLToKarate.CommandLine.Tests\GraphQLToKarate.CommandLine.Tests.csproj", "{E7FE4B1C-96E2-4EC2-B803-C5A77BCBC5A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQLToKarate.Integration.Api", "..\tests\GraphQLToKarate.Integration.Api\GraphQLToKarate.Integration.Api.csproj", "{15B64BF3-6F2C-47F3-A809-1B2207D1B640}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E7FE4B1C-96E2-4EC2-B803-C5A77BCBC5A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7FE4B1C-96E2-4EC2-B803-C5A77BCBC5A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7FE4B1C-96E2-4EC2-B803-C5A77BCBC5A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B64BF3-6F2C-47F3-A809-1B2207D1B640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B64BF3-6F2C-47F3-A809-1B2207D1B640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B64BF3-6F2C-47F3-A809-1B2207D1B640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B64BF3-6F2C-47F3-A809-1B2207D1B640}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

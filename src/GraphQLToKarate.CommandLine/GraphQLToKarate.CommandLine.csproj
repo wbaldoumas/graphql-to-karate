@@ -10,7 +10,6 @@
     <Version>0.0.1</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishReadyToRun>true</PublishReadyToRun>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
