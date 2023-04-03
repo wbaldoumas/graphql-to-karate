@@ -1,0 +1,23 @@
+scalar DateTime
+
+type Query {
+  userById(id: ID!): User!
+}
+
+interface Node {
+  id: ID
+}
+
+type User implements Node {
+  name: String!
+  role: UserRole!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID
+}
+
+enum UserRole {
+  GUEST
+  STANDARD
+  ADMINISTRATOR
+}

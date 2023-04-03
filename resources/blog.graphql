@@ -1,0 +1,106 @@
+# Custom scalar types
+scalar DateTime
+
+# Enumerations
+enum UserRole {
+  GUEST
+  STANDARD
+  ADMINISTRATOR
+}
+
+# Interface
+interface Node {
+  id: ID!
+}
+
+# Union type
+union SearchResult = User | BlogPost | Comment
+
+# Input types
+input CreateUserInput {
+  name: String!
+  password: String!
+  role: UserRole
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  role: UserRole
+}
+
+input PageInfoInput {
+  limit: Int
+  offset: Int
+}
+
+# Object types
+type User implements Node {
+  id: ID!
+  name: String!
+  role: UserRole!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BlogPost implements Node {
+  id: ID!
+  title: String!
+  content: String!
+  author: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Comment implements Node {
+  id: ID!
+  content: String!
+  author: User!
+  blogPost: BlogPost!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  totalCount: Int!
+}
+
+type UserConnection {
+  nodes: [User!]!
+  pageInfo: PageInfo!
+}
+
+type BlogPostConnection {
+  nodes: [BlogPost!]!
+  pageInfo: PageInfo!
+}
+
+type CommentConnection {
+  nodes: [Comment!]!
+  pageInfo: PageInfo!
+}
+
+# Root types
+type Query {
+  user(id: ID!): User
+  blogPost(id: ID!): BlogPost
+  comment(id: ID!): Comment
+  users(pageInfo: PageInfoInput): UserConnection!
+  blogPosts(pageInfo: PageInfoInput): BlogPostConnection!
+  comments(pageInfo: PageInfoInput): CommentConnection!
+  search(query: String!): [SearchResult!]!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+  # Add more mutations for blog posts and comments
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
