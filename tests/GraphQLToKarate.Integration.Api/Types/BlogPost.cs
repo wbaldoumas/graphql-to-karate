@@ -1,6 +1,6 @@
 ﻿namespace GraphQLToKarate.Integration.Api.Types;
 
-public sealed class BlogPost : Node
+public sealed class BlogPost : Node, ISearchResult
 {
     public required string Title { get; init; }
 

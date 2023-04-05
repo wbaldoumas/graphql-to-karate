@@ -7,6 +7,7 @@ type Query {
   users(pageInfo: PageInfoInput): UserConnection!
   blogPosts(pageInfo: PageInfoInput): BlogPostConnection!
   comments(pageInfo: PageInfoInput): CommentConnection!
+  search(query: String!): [SearchResult!]!
 }
 
 type Mutation {
@@ -84,12 +85,9 @@ input CreateUserInput {
   role: UserRole!
 }
 
+union SearchResult = User | BlogPost | Comment
+
 input PageInfoInput {
   limit: Int
   offset: Int
-}
-
-schema {
-  query: Query
-  mutation: Mutation
 }

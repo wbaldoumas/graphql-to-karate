@@ -84,4 +84,11 @@ public sealed class Query
             TotalCount = 5
         }
     };
+
+    public ISearchResult[] Search(string query) => new ISearchResult[]
+    {
+        GetUserById(Guid.NewGuid().ToString()),
+        GetBlogPostById(Guid.NewGuid().ToString()),
+        GetCommentById(Guid.NewGuid().ToString())
+    };
 }

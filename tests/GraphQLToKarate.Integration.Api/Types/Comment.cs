@@ -1,6 +1,6 @@
 ﻿namespace GraphQLToKarate.Integration.Api.Types;
 
-public sealed class Comment : Node
+public sealed class Comment : Node, ISearchResult
 {
     public required string Content { get; init; }
 

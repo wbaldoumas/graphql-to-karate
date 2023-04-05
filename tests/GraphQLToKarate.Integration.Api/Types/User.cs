@@ -1,6 +1,6 @@
 ﻿namespace GraphQLToKarate.Integration.Api.Types;
 
-public sealed class User : Node
+public sealed class User : Node, ISearchResult
 {
     public required string Name { get; init; }
 
