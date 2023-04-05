@@ -6,6 +6,7 @@ builder.Services
     .AddGraphQLServer()
     .AddType<DateTime>()
     .AddQueryType<Query>()
+    .AddMutationType<Mutation>()
     .AddType<UserRole>()
     .AddType<Node>()
     .AddType<User>()
