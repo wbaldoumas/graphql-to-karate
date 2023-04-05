@@ -2,10 +2,18 @@ scalar DateTime
 
 type Query {
   userById(id: ID!): User!
+  blogPostById(id: ID!): BlogPost!
+  commentById(id: ID!): Comment!
+}
+
+enum UserRole {
+  GUEST
+  STANDARD
+  ADMINISTRATOR
 }
 
 interface Node {
-  id: ID
+  id: ID!
 }
 
 type User implements Node {
@@ -13,11 +21,23 @@ type User implements Node {
   role: UserRole!
   createdAt: DateTime!
   updatedAt: DateTime!
-  id: ID
+  id: ID!
 }
 
-enum UserRole {
-  GUEST
-  STANDARD
-  ADMINISTRATOR
+type BlogPost implements Node {
+  title: String!
+  content: String!
+  author: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
+}
+
+type Comment implements Node {
+  content: String!
+  author: User!
+  blogPost: BlogPost!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  id: ID!
 }
