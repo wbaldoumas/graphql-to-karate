@@ -4,6 +4,9 @@ type Query {
   userById(id: ID!): User!
   blogPostById(id: ID!): BlogPost!
   commentById(id: ID!): Comment!
+  users(pageInfo: PageInfoInput): UserConnection!
+  blogPosts(pageInfo: PageInfoInput): BlogPostConnection!
+  comments(pageInfo: PageInfoInput): CommentConnection!
 }
 
 enum UserRole {
@@ -40,4 +43,30 @@ type Comment implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  totalCount: Int!
+}
+
+type UserConnection {
+  nodes: [User!]!
+  pageInfo: PageInfo!
+}
+
+type BlogPostConnection {
+  nodes: [BlogPost!]!
+  pageInfo: PageInfo!
+}
+
+type CommentConnection {
+  nodes: [Comment!]!
+  pageInfo: PageInfo!
+}
+
+input PageInfoInput {
+  limit: Int
+  offset: Int
 }

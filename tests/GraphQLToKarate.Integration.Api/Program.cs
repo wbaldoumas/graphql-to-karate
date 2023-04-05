@@ -10,7 +10,11 @@ builder.Services
     .AddType<Node>()
     .AddType<User>()
     .AddType<BlogPost>()
-    .AddType<Comment>();
+    .AddType<Comment>()
+    .AddType<PageInfo>()
+    .AddType<UserConnection>()
+    .AddType<BlogPostConnection>()
+    .AddType<CommentConnection>();
 
 var app = builder.Build();
 
