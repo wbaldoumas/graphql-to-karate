@@ -9,6 +9,12 @@ type Query {
   comments(pageInfo: PageInfoInput): CommentConnection!
 }
 
+type Mutation {
+  createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+}
+
 enum UserRole {
   GUEST
   STANDARD
@@ -66,7 +72,24 @@ type CommentConnection {
   pageInfo: PageInfo!
 }
 
+input UpdateUserInput {
+  id: String!
+  name: String!
+  role: UserRole!
+}
+
+input CreateUserInput {
+  name: String!
+  password: String!
+  role: UserRole!
+}
+
 input PageInfoInput {
   limit: Int
   offset: Int
+}
+
+schema {
+  query: Query
+  mutation: Mutation
 }
