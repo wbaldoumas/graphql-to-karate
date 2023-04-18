@@ -4,7 +4,6 @@ using GraphQLToKarate.Library.Exceptions;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using QuikGraph;
-using QuikGraph.Algorithms;
 using System.Text;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -74,7 +73,7 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
             inputValueRelationships.AddEdge(edge);
 
             // If adding the edge generates a cycle, remove it and generate a placeholder value to prevent infinite recursion...
-            if (!inputValueRelationships.IsDirectedAcyclicGraph())
+            if (inputValueRelationships.IsCyclic())
             {
                 inputValueRelationships.RemoveEdge(edge);
 
