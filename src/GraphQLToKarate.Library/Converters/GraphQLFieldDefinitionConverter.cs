@@ -5,7 +5,6 @@ using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Tokens;
 using GraphQLToKarate.Library.Types;
 using QuikGraph;
-using QuikGraph.Algorithms;
 using System.Text;
 
 namespace GraphQLToKarate.Library.Converters;
@@ -181,26 +180,26 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
-        AdjacencyGraph<string, Edge<string>> fieldRelationships,
+        AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
         int indentationLevel)
     {
         foreach (var childGraphQLFieldDefinition in graphQLTypeDefinitionWithFields.Fields!)
         {
             var childGraphQLFieldDefinitionTypeName = childGraphQLFieldDefinition.Type.GetUnwrappedTypeName();
 
-            fieldRelationships.AddVertex(childGraphQLFieldDefinitionTypeName);
+            fieldRelationshipsGraph.AddVertex(childGraphQLFieldDefinitionTypeName);
 
             var edge = new Edge<string>(
                 graphQLFieldDefinitionTypeName,
                 childGraphQLFieldDefinitionTypeName
             );
 
-            fieldRelationships.AddEdge(edge);
+            fieldRelationshipsGraph.AddEdge(edge);
 
             // if adding the child field creates a cyclic graph, remove it and skip it.
-            if (!fieldRelationships.IsDirectedAcyclicGraph())
+            if (fieldRelationshipsGraph.IsCyclic())
             {
-                fieldRelationships.RemoveEdge(edge);
+                fieldRelationshipsGraph.RemoveEdge(edge);
 
                 continue;
             }
@@ -211,7 +210,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
                 graphQLOperationType,
                 graphQLInputValueDefinitionConverter,
                 stringBuilder,
-                fieldRelationships,
+                fieldRelationshipsGraph,
                 indentationLevel
             );
         }
@@ -223,7 +222,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
         GraphQLOperationType graphQLOperationType,
         IGraphQLInputValueDefinitionConverter graphQLInputValueDefinitionConverter,
         StringBuilder stringBuilder,
-        AdjacencyGraph<string, Edge<string>> fieldRelationships,
+        AdjacencyGraph<string, Edge<string>> fieldRelationshipsGraph,
         int indentationLevel)
     {
         var graphQLFieldDefinitionTypeName = graphQLFieldDefinition.Type.GetUnwrappedTypeName();
@@ -237,7 +236,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
                     graphQLDocumentAdapter,
                     graphQLOperationType,
                     graphQLInputValueDefinitionConverter,
-                    fieldRelationships,
+                    fieldRelationshipsGraph,
                     indentationLevel + 2
                 )
             );
