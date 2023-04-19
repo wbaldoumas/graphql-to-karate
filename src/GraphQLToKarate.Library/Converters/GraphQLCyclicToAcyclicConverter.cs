@@ -6,7 +6,7 @@ using QuikGraph;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLCyclicToAcyclicConverter"/>
-internal sealed class GraphQLCyclicToAcyclicConverter : IGraphQLCyclicToAcyclicConverter
+public sealed class GraphQLCyclicToAcyclicConverter : IGraphQLCyclicToAcyclicConverter
 {
     public void Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
