@@ -29,6 +29,7 @@ interface Node {
 type User implements Node {
   name: String!
   role: UserRole!
+  blogPosts: [BlogPost!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   id: ID!
@@ -38,6 +39,7 @@ type BlogPost implements Node {
   title: String!
   content: String!
   author: User!
+  comments: [Comment!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   id: ID!
