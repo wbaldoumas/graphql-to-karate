@@ -7,6 +7,63 @@ public sealed class Query
         Id = id,
         Name = "John Doe",
         Role = UserRole.Administrator,
+        BlogPosts = new List<BlogPost>
+        {
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Title = "GraphQL to Karate",
+                Content = "GraphQL to Karate is a tool that converts GraphQL schemas to Karate tests.",
+                Author = new User
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "John Doe",
+                    Role = UserRole.Administrator,
+                    BlogPosts = new List<BlogPost>(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                Comments = new List<Comment>
+                {
+                    new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Content = "GraphQL to Karate is a tool that converts GraphQL schemas to Karate tests.",
+                        Author = new User
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = "John Doe",
+                            Role = UserRole.Administrator,
+                            BlogPosts = new List<BlogPost>(),
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        BlogPost = new BlogPost
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Title = "GraphQL to Karate",
+                            Content = "GraphQL to Karate is a tool that converts GraphQL schemas to Karate tests.",
+                            Author = new User
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Name = "John Doe",
+                                Role = UserRole.Administrator,
+                                BlogPosts = new List<BlogPost>(),
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow
+                            },
+                            Comments = new List<Comment>(),
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    }
+                },
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        },
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow
     };
@@ -17,6 +74,43 @@ public sealed class Query
         Title = "GraphQL to Karate",
         Content = "GraphQL to Karate is a tool that converts GraphQL schemas to Karate tests.",
         Author = GetUserById(Guid.NewGuid().ToString()),
+        Comments = new List<Comment>
+        {
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Content = "GraphQL to Karate is a tool that converts GraphQL schemas to Karate tests.",
+                Author = new User
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "John Doe",
+                    Role = UserRole.Administrator,
+                    BlogPosts = new List<BlogPost>(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                BlogPost = new BlogPost
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Title = "GraphQL to Karate",
+                    Content = "GraphQL to Karate is a tool that converts GraphQL schemas to Karate tests.",
+                    Author = new User
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "John Doe",
+                        Role = UserRole.Administrator,
+                        BlogPosts = new List<BlogPost>(),
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    },
+                    Comments = new List<Comment>(),
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            }
+        },
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow
     };

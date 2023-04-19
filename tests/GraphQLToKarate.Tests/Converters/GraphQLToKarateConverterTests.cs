@@ -23,6 +23,7 @@ internal sealed class GraphQLToKarateConverterTests
     private IGraphQLTypeDefinitionConverter? _mockGraphQLTypeDefinitionConverter;
     private IGraphQLFieldDefinitionConverter? _mockGraphQLFieldDefinitionConverter;
     private IKarateFeatureBuilder? _mockKarateFeatureBuilder;
+    private IGraphQLCyclicToAcyclicConverter? _mockGraphQLCyclicToAcyclicConverter;
     private ILogger<GraphQLToKarateConverter>? _mockLogger;
 
     [SetUp]
@@ -32,6 +33,7 @@ internal sealed class GraphQLToKarateConverterTests
         _mockGraphQLTypeDefinitionConverter = Substitute.For<IGraphQLTypeDefinitionConverter>();
         _mockGraphQLFieldDefinitionConverter = Substitute.For<IGraphQLFieldDefinitionConverter>();
         _mockKarateFeatureBuilder = Substitute.For<IKarateFeatureBuilder>();
+        _mockGraphQLCyclicToAcyclicConverter = Substitute.For<IGraphQLCyclicToAcyclicConverter>();
         _mockLogger = Substitute.For<ILogger<GraphQLToKarateConverter>>();
     }
 
@@ -92,6 +94,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );
@@ -193,6 +196,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );
@@ -296,6 +300,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );
@@ -391,6 +396,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );
@@ -481,6 +487,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );
@@ -571,6 +578,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );
@@ -646,6 +654,7 @@ internal sealed class GraphQLToKarateConverterTests
             _mockGraphQLTypeDefinitionConverter,
             _mockGraphQLFieldDefinitionConverter!,
             _mockKarateFeatureBuilder,
+            _mockGraphQLCyclicToAcyclicConverter!,
             _mockLogger!,
             settings
         );

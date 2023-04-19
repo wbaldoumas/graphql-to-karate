@@ -15,6 +15,8 @@ public sealed class GraphQLToKarateConverterBuilder :
 {
     private readonly ILogger<GraphQLToKarateConverter> _graphQLToKarateConverterLogger;
 
+    private readonly IGraphQLCyclicToAcyclicConverter _graphQLCyclicToAcyclicConverter;
+
     private IGraphQLTypeConverter _graphQLTypeConverter = new GraphQLTypeConverter();
 
     private bool _excludeQueriesSetting;
@@ -35,10 +37,15 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private ICustomScalarMapping _customScalarMapping = new CustomScalarMapping();
 
-    public GraphQLToKarateConverterBuilder(ILogger<GraphQLToKarateConverter> graphQLToKarateConverterLogger) => _graphQLToKarateConverterLogger = graphQLToKarateConverterLogger;
+    public GraphQLToKarateConverterBuilder(ILogger<GraphQLToKarateConverter> graphQLToKarateConverterLogger, IGraphQLCyclicToAcyclicConverter graphQLCyclicToAcyclicConverter)
+    {
+        _graphQLToKarateConverterLogger = graphQLToKarateConverterLogger;
+        _graphQLCyclicToAcyclicConverter = graphQLCyclicToAcyclicConverter;
+    }
 
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder(
-        _graphQLToKarateConverterLogger
+        _graphQLToKarateConverterLogger,
+        _graphQLCyclicToAcyclicConverter
     );
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
@@ -131,6 +138,7 @@ public sealed class GraphQLToKarateConverterBuilder :
                     ExcludeQueries = _excludeQueriesSetting
                 }
             ),
+            _graphQLCyclicToAcyclicConverter,
             _graphQLToKarateConverterLogger,
             new GraphQLToKarateSettings
             {

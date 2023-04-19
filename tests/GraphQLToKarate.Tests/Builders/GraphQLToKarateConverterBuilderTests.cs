@@ -12,9 +12,14 @@ namespace GraphQLToKarate.Tests.Builders;
 internal sealed class GraphQLToKarateConverterBuilderTests
 {
     private ILogger<GraphQLToKarateConverter>? _mockLogger;
+    private IGraphQLCyclicToAcyclicConverter? _mockGraphQLCyclicToAcyclicConverter;
 
     [SetUp]
-    public void SetUp() => _mockLogger = Substitute.For<ILogger<GraphQLToKarateConverter>>();
+    public void SetUp()
+    {
+        _mockLogger = Substitute.For<ILogger<GraphQLToKarateConverter>>();
+        _mockGraphQLCyclicToAcyclicConverter = Substitute.For<IGraphQLCyclicToAcyclicConverter>();
+    }
 
     [Test]
     [TestCase(true)]
@@ -28,7 +33,7 @@ internal sealed class GraphQLToKarateConverterBuilderTests
                 : new Dictionary<string, string>()
         );
 
-        var subjectUnderTest = new GraphQLToKarateConverterBuilder(_mockLogger!);
+        var subjectUnderTest = new GraphQLToKarateConverterBuilder(_mockLogger!, _mockGraphQLCyclicToAcyclicConverter!);
 
         // act
         var graphQLToKarateConverter = subjectUnderTest

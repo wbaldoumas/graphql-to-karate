@@ -1,4 +1,5 @@
-﻿using GraphQLToKarate.Library.Adapters;
+﻿using GraphQLParser.AST;
+using GraphQLToKarate.Library.Adapters;
 using GraphQLToKarate.Library.Enums;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Features;
@@ -16,6 +17,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
     private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
     private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
     private readonly IKarateFeatureBuilder _karateFeatureBuilder;
+    private readonly IGraphQLCyclicToAcyclicConverter _graphQLCyclicToAcyclicConverter;
     private readonly ILogger<GraphQLToKarateConverter> _logger;
     private readonly GraphQLToKarateSettings _graphQLToKarateSettings;
 
@@ -24,6 +26,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
         IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter,
         IKarateFeatureBuilder karateFeatureBuilder,
+        IGraphQLCyclicToAcyclicConverter graphQLCyclicToAcyclicConverter,
         ILogger<GraphQLToKarateConverter> logger,
         GraphQLToKarateSettings graphQLToKarateSettings)
     {
@@ -31,6 +34,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
         _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
         _karateFeatureBuilder = karateFeatureBuilder;
+        _graphQLCyclicToAcyclicConverter = graphQLCyclicToAcyclicConverter;
         _logger = logger;
         _graphQLToKarateSettings = graphQLToKarateSettings;
     }
@@ -39,6 +43,21 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
     {
         var graphQLDocument = _graphQLSchemaParser.Parse(schema);
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument, _graphQLToKarateSettings);
+
+        var defaultFieldsDefinitions = new GraphQLFieldsDefinition
+        {
+            Items = new List<GraphQLFieldDefinition>()
+        };
+
+        foreach (var hasFieldsDefinition in graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields ?? defaultFieldsDefinitions)
+        {
+            _graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
+        }
+
+        foreach (var hasFieldsDefinition in graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields ?? defaultFieldsDefinitions)
+        {
+            _graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
+        }
 
         var karateObjects = graphQLDocumentAdapter.GraphQLObjectTypeDefinitions.Select(
             graphQLObjectTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
@@ -53,8 +72,6 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                 )
             )
         );
-
-        var graphQLOperations = new List<GraphQLOperation>();
 
         if (graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields is null)
         {
@@ -75,6 +92,8 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                 "--mutation-name"
             );
         }
+
+        var graphQLOperations = new List<GraphQLOperation>();
 
         if (!_graphQLToKarateSettings.ExcludeQueries)
         {

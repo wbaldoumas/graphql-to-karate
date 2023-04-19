@@ -2,6 +2,7 @@
 using GraphQLToKarate.CommandLine.Prompts;
 using GraphQLToKarate.CommandLine.Settings;
 using GraphQLToKarate.Library.Builders;
+using GraphQLToKarate.Library.Converters;
 using GraphQLToKarate.Library.Mappings;
 using GraphQLToKarate.Library.Parsers;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ internal static class HostConfigurator
             serviceCollection.AddSingleton<ICustomScalarMappingValidator, CustomScalarMappingLoader>();
             serviceCollection.AddSingleton<ICustomScalarMappingLoader, CustomScalarMappingLoader>();
             serviceCollection.AddSingleton<IGraphQLSchemaParser, GraphQLSchemaParser>();
+            serviceCollection.AddSingleton<IGraphQLCyclicToAcyclicConverter, GraphQLCyclicToAcyclicConverter>();
             serviceCollection.AddSingleton<IConvertCommandSettingsPrompt, ConvertCommandSettingsPrompt>();
         })
         .UseSerilog((_, loggerConfiguration) =>

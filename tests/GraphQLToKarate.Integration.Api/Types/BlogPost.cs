@@ -8,6 +8,8 @@ public sealed class BlogPost : Node, ISearchResult
 
     public required User Author { get; init; }
 
+    public required IEnumerable<Comment> Comments { get; init; }
+
     public required DateTime CreatedAt { get; init; }
 
     public required DateTime UpdatedAt { get; init; }
