@@ -7,6 +7,7 @@ public sealed class Mutation
         Id = Guid.NewGuid().ToString(),
         Name = input.Name,
         Role = input.Role,
+        BlogPosts = new List<BlogPost>(),
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,
     };
@@ -16,6 +17,7 @@ public sealed class Mutation
         Id = input.Id,
         Name = input.Name,
         Role = input.Role,
+        BlogPosts = new List<BlogPost>(),
         CreatedAt = DateTime.UtcNow,
         UpdatedAt = DateTime.UtcNow,
     };
