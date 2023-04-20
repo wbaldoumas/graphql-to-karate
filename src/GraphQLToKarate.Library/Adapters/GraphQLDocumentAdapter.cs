@@ -95,13 +95,14 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
                         graphQLObjectTypeDefinition.NameValue(),
                         graphQLObjectTypeDefinition
                     );
-                    ApplyHasFieldsDefinitionTypeDirectives(graphQLObjectTypeDefinition);
+                    ApplyDirectives(graphQLObjectTypeDefinition);
                     break;
                 case GraphQLInterfaceTypeDefinition graphQLInterfaceTypeDefinition:
                     _graphQLTypeDefinitionsWithFieldsByName.Add(
                         graphQLInterfaceTypeDefinition.NameValue(),
                         graphQLInterfaceTypeDefinition
                     );
+                    ApplyDirectives(graphQLInterfaceTypeDefinition);
                     break;
                 case GraphQLUnionTypeDefinition graphQLUnionTypeDefinition:
                     _graphQLUnionTypeDefinitionsByName.Add(
@@ -163,21 +164,21 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     {
         foreach (var graphQLTypeDefinitionWithFields in _graphQLTypeDefinitionsWithFieldsByName.Values)
         {
-            ApplyHasFieldsDefinitionTypeDirectives(graphQLTypeDefinitionWithFields);
+            ApplyDirectives(graphQLTypeDefinitionWithFields);
         }
 
         foreach (var graphQLEnumTypeDefinition in _graphQLEnumTypeDefinitionsByName.Values)
         {
-            ApplyEnumTypeDefinitionDirectives(graphQLEnumTypeDefinition);
+            ApplyDirectives(graphQLEnumTypeDefinition);
         }
 
         foreach (var graphQLInputObjectTypeDefinition in _graphQLInputObjectTypeDefinitionsByName.Values)
         {
-            ApplyInputObjectTypeDefinitionDirectives(graphQLInputObjectTypeDefinition);
+            ApplyDirectives(graphQLInputObjectTypeDefinition);
         }
     }
 
-    private static void ApplyHasFieldsDefinitionTypeDirectives<T>(T graphQLHasFieldsDefinitionType)
+    private static void ApplyDirectives<T>(T graphQLHasFieldsDefinitionType)
         where T : IHasFieldsDefinitionNode
     {
         graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition
@@ -193,7 +194,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         graphQLHasFieldsDefinitionType.Fields.Items = accessibleGraphQLFieldDefinitions;
     }
 
-    private static void ApplyInputObjectTypeDefinitionDirectives(
+    private static void ApplyDirectives(
         GraphQLInputObjectTypeDefinition inputObjectTypeDefinition)
     {
         inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition
@@ -209,7 +210,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         inputObjectTypeDefinition.Fields.Items = accessibleGraphQLInputValueDefinitions;
     }
 
-    private static void ApplyEnumTypeDefinitionDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
+    private static void ApplyDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
     {
         graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition
         {
@@ -231,25 +232,25 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             switch (graphQLTypeExtension)
             {
                 case GraphQLInterfaceTypeExtension graphQLInterfaceTypeExtension:
-                    MergeHasFieldsDefinitionTypeExtension(graphQLInterfaceTypeExtension);
+                    MergeTypeExtension(graphQLInterfaceTypeExtension);
                     break;
                 case GraphQLObjectTypeExtension graphQLObjectTypeExtension:
-                    MergeHasFieldsDefinitionTypeExtension(graphQLObjectTypeExtension);
+                    MergeTypeExtension(graphQLObjectTypeExtension);
                     break;
                 case GraphQLEnumTypeExtension graphQLEnumTypeExtension:
-                    MergeGraphQLEnumTypeExtension(graphQLEnumTypeExtension);
+                    MergeTypeExtension(graphQLEnumTypeExtension);
                     break;
                 case GraphQLUnionTypeExtension graphQLUnionTypeExtension:
-                    MergeGraphQLUnionTypeExtension(graphQLUnionTypeExtension);
+                    MergeTypeExtension(graphQLUnionTypeExtension);
                     break;
                 case GraphQLInputObjectTypeExtension graphQLInputObjectTypeExtension:
-                    MergeGraphQLInputObjectTypeExtension(graphQLInputObjectTypeExtension);
+                    MergeTypeExtension(graphQLInputObjectTypeExtension);
                     break;
             }
         }
     }
 
-    private void MergeHasFieldsDefinitionTypeExtension<T>(T graphQLTypeExtension)
+    private void MergeTypeExtension<T>(T graphQLTypeExtension)
         where T : GraphQLTypeExtension, IHasFieldsDefinitionNode
     {
         var hasFieldsDefinition = GetGraphQLTypeDefinitionWithFields(graphQLTypeExtension.NameValue());
@@ -265,7 +266,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         }
     }
 
-    private void MergeGraphQLEnumTypeExtension(GraphQLEnumTypeExtension graphQLEnumTypeExtension)
+    private void MergeTypeExtension(GraphQLEnumTypeExtension graphQLEnumTypeExtension)
     {
         var graphQLEnumTypeDefinition = GetGraphQLEnumTypeDefinition(graphQLEnumTypeExtension.NameValue());
 
@@ -280,7 +281,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         }
     }
 
-    private void MergeGraphQLUnionTypeExtension(GraphQLUnionTypeExtension graphQLUnionTypeExtension)
+    private void MergeTypeExtension(GraphQLUnionTypeExtension graphQLUnionTypeExtension)
     {
         var graphQLUnionTypeDefinition = GetGraphQLUnionTypeDefinition(graphQLUnionTypeExtension.NameValue());
 
@@ -295,7 +296,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
         }
     }
 
-    private void MergeGraphQLInputObjectTypeExtension(GraphQLInputObjectTypeExtension graphQLInputObjectTypeExtension)
+    private void MergeTypeExtension(GraphQLInputObjectTypeExtension graphQLInputObjectTypeExtension)
     {
         var graphQLInputObjectTypeDefinition = GetGraphQLInputObjectTypeDefinition(
             graphQLInputObjectTypeExtension.NameValue()

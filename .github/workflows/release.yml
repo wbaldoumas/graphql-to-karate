@@ -46,7 +46,6 @@ jobs:
 
           if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
               echo "The <Version> tag has not changed."
-              VERSION_CHANGED=0
           else
               echo "The <Version> tag has changed from $OLD_VERSION to $NEW_VERSION."
               VERSION_CHANGED=1
@@ -59,15 +58,15 @@ jobs:
         run: |
           # Linux
           dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/linux-x64 --self-contained true --runtime linux-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
-          zip -r ./publish/linux-x64.zip ./publish/linux-x64
+          zip -j -r ./publish/linux-x64.zip ./publish/linux-x64/*
 
           # Windows
           dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/win-x64 --self-contained true --runtime win-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
-          zip -r ./publish/win-x64.zip ./publish/win-x64
+          zip -j -r ./publish/win-x64.zip ./publish/win-x64/*
 
           # MacOS
           dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/osx-x64 --self-contained true --runtime osx-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
-          zip -r ./publish/osx-x64.zip ./publish/osx-x64
+          zip -j -r ./publish/osx-x64.zip ./publish/osx-x64/*
 
       - name: 📑 create github release
         if: env.VERSION_CHANGED == '1'
