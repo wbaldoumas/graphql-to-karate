@@ -85,6 +85,7 @@ input CreateUserInput {
   name: String!
   password: String!
   role: UserRole!
+  blogPost: CreateBlogPostInput!
 }
 
 union SearchResult = User | BlogPost | Comment
@@ -92,4 +93,10 @@ union SearchResult = User | BlogPost | Comment
 input PageInfoInput {
   limit: Int
   offset: Int
+}
+
+input CreateBlogPostInput {
+  title: String!
+  content: String!
+  author: CreateUserInput
 }

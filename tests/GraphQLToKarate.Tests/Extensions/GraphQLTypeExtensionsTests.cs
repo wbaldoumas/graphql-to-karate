@@ -129,4 +129,28 @@ internal sealed class GraphQLTypeExtensionsTests
             );
         }
     }
+
+    [Test]
+    [TestCaseSource(nameof(IsNullTypeTestCases))]
+    public void IsNullType_returns_expected_value(GraphQLType graphQLType, bool expectedIsNullType) =>
+        graphQLType.IsNullType().Should().Be(expectedIsNullType);
+
+    private static IEnumerable<TestCaseData> IsNullTypeTestCases
+    {
+        get
+        {
+            yield return new TestCaseData(
+                new GraphQLNamedType(),
+                true
+            );
+
+            yield return new TestCaseData(
+                new GraphQLNonNullType
+                {
+                    Type = new GraphQLNamedType()
+                },
+                false
+            );
+        }
+    }
 }

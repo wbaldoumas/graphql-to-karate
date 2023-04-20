@@ -288,9 +288,12 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
                     new()
                     {
                         Name = new GraphQLName("recursiveNestedValue"),
-                        Type = new GraphQLNamedType
+                        Type = new GraphQLNonNullType
                         {
-                            Name = new GraphQLName("TestInputObjectTypeDefinition")
+                            Type = new GraphQLNamedType
+                            {
+                                Name = new GraphQLName("TestInputObjectTypeDefinition")
+                            }
                         }
                     },
                     new()
@@ -440,7 +443,7 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
             )
             .Returns(exampleBooleanValue);
 
-        const string expectedExampleValue = $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"recursiveNestedValue\": <some TestInputObjectTypeDefinition value>, \"recursiveNestedListValue\": [ <some TestInputObjectTypeDefinition value> ], \"recursiveNestedNonNullListValue\": [ <some TestInputObjectTypeDefinition value> ] }} }}";
+        const string expectedExampleValue = $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"recursiveNestedValue\": <some TestInputObjectTypeDefinition value>, \"recursiveNestedNonNullListValue\": [ <some TestInputObjectTypeDefinition value> ] }} }}";
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(
