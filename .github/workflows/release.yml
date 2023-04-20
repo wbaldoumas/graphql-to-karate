@@ -8,7 +8,7 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: ✨ checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -16,7 +16,7 @@ jobs:
       - name: 🔨 set up .net 7
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 7.0.x      
 
       - name: 👌 extract version
         id: extract_version
@@ -112,3 +112,10 @@ jobs:
           asset_path: ./publish/osx-x64.zip
           asset_name: graphql-to-karate-${{ env.VERSION }}-osx-x64.zip
           asset_content_type: application/zip          
+
+      - name: Publish NuGet
+        uses: alirezanet/publish-nuget@v3.0.4
+        with:
+          PROJECT_FILE_PATH: src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj
+          TAG_COMMIT: false
+          NUGET_KEY: ${{secrets.NUGET_API_KEY}}

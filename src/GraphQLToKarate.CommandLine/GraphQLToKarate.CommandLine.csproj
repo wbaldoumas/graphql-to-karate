@@ -1,17 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Authors>William Baldoumas</Authors>
     <OutputType>Exe</OutputType>
+    <Version>0.0.5</Version>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>graphql-to-karate</AssemblyName>
-    <Version>0.0.4</Version>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
-    <PublishReadyToRun>true</PublishReadyToRun>
+    <PackageId>graphql-to-karate</PackageId>
+    <Description>A tool for converting GraphQL schemas to Karate API tests.</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackAsTool>true</PackAsTool>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/wbaldoumas/graphql-to-karate</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/wbaldoumas/graphql-to-karate</PackageProjectUrl>
+    <PackageTags>graphql;karate;test-automation;testing;test;api-test;api-testing;karate-framework;testing-tools;graphql-server;graphql-schema</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Copyright>Copyright ©2023 William Baldoumas</Copyright>
+    <Title>graphql-to-karate</Title>
+    <PackageIcon>icon.jpg</PackageIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,6 +59,23 @@
 
   <ItemGroup>
     <Content Include="..\..\CHANGELOG.md" Link="CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\README.md" Link="README.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\resources\icon.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
