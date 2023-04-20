@@ -1,0 +1,96 @@
+name: Publish and Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔨 set up .net 7
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+
+      - name: 👌 extract version
+        id: extract_version
+        shell: pwsh
+        run: |
+          $csprojPath = "src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj"
+          $csproj = [xml](Get-Content -Path $csprojPath)
+          $version = $csproj.Project.PropertyGroup.Version
+          echo "Version: $version"
+          echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: 🔎 check if version changed
+        id: version_changed
+        env:
+          PREVIOUS_VERSION: ${{ github.event.before }}
+        run: |
+          git fetch origin
+          VERSION_CHANGED=$(git diff "origin/$PREVIOUS_VERSION" -- "src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj" | grep -c "<Version>")
+          echo "VERSION_CHANGED=$VERSION_CHANGED" >> $GITHUB_ENV
+    
+      - name: 🔨 build and publish
+        if: env.VERSION_CHANGED == '1'
+        run: |
+          # Linux
+          dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/linux-x64 --self-contained true --runtime linux-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
+          zip -r ./publish/linux-x64.zip ./publish/linux-x64
+
+          # Windows
+          dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/win-x64 --self-contained true --runtime win-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
+          zip -r ./publish/win-x64.zip ./publish/win-x64
+
+          # MacOS
+          dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/osx-x64 --self-contained true --runtime osx-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
+          zip -r ./publish/osx-x64.zip ./publish/osx-x64
+
+      - name: 📑 create github release
+        if: env.VERSION_CHANGED == '1'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.extract_version.outputs.version }}
+          release_name: Release v${{ steps.extract_version.outputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: 🔼 upload linux artifacts
+        if: env.VERSION_CHANGED == '1'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/linux-x64.zip
+          asset_name: graphql-to-karate-${{ steps.extract_version.outputs.version }}-linux-x64.zip
+          asset_content_type: application/zip
+
+      - name: 🔼 upload windows artifacts
+        if: env.VERSION_CHANGED == '1'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/win-x64.zip
+          asset_name: graphql-to-karate-${{ steps.extract_version.outputs.version }}-win-x64.zip
+          asset_content_type: application/zip
+
+      - name: 🔼 upload macos artifacts
+        if: env.VERSION_CHANGED == '1'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/osx-x64.zip
+          asset_name: graphql-to-karate-${{ steps.extract_version.outputs.version }}-osx-x64.zip
+          asset_content_type: application/zip          
