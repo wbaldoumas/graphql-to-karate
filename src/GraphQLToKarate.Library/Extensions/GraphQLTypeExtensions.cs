@@ -44,4 +44,11 @@ internal static class GraphQLTypeExtensions
     /// <returns>Whether the given GraphQL type is a list type.</returns>
     public static bool IsListType(this GraphQLType graphQLType) =>
         graphQLType is GraphQLListType or GraphQLNonNullType { Type: GraphQLListType };
+
+    /// <summary>
+    ///    Return whether the given GraphQL type is a non-null type.
+    /// </summary>
+    /// <param name="graphQLType">The source GraphQL type to check.</param>
+    /// <returns>Whether the given GraphQL type is a non-null type.</returns>
+    public static bool IsNullType(this GraphQLType graphQLType) => graphQLType is not GraphQLNonNullType;
 }

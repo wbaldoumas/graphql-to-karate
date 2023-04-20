@@ -77,6 +77,13 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
             {
                 inputValueRelationships.RemoveEdge(edge);
 
+                if (graphQLInputValueDefinition.Type.IsNullType())
+                {
+                    // if the type is nullable, just skip it...
+                    continue;
+                }
+
+                // if the type is non-nullable, generate a placeholder value...
                 stringBuilder.Append(
                     graphQLInputValueDefinition.Type.IsListType()
                         ? $"\"{childInputValueName}\": [ <some {childInputValueDefinitionTypeName} value> ]{SchemaToken.Comma} "
