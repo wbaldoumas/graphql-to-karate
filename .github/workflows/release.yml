@@ -28,11 +28,9 @@ jobs:
 
       - name: 🔎 check if version changed
         id: version_changed
-        env:
-          PREVIOUS_VERSION: ${{ github.event.before }}
         run: |
           git fetch origin
-          VERSION_CHANGED=$(git diff "origin/$PREVIOUS_VERSION" -- "src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj" | grep -c "<Version>")
+          VERSION_CHANGED=$(git diff HEAD~1 -- "src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj" | grep -c "<Version>")
           echo "VERSION_CHANGED=$VERSION_CHANGED" >> $GITHUB_ENV
     
       - name: 🔨 build and publish
