@@ -32,7 +32,26 @@ jobs:
         id: version_changed
         run: |
           git fetch origin
-          VERSION_CHANGED=$(git diff HEAD~1 -- "src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj" | grep -c "<Version>")
+
+          CS_PROJ_FILE="src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj"
+
+          git show HEAD^:$CS_PROJ_FILE > old_csproj.xml
+
+          cp $CS_PROJ_FILE new_csproj.xml
+
+          OLD_VERSION=$(grep -oP '<Version>\K(.*?)(?=</Version>)' old_csproj.xml)
+          NEW_VERSION=$(grep -oP '<Version>\K(.*?)(?=</Version>)' new_csproj.xml)
+
+          VERSION_CHANGED=0
+
+          if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
+              echo "The <Version> tag has not changed."
+              VERSION_CHANGED=0
+          else
+              echo "The <Version> tag has changed from $OLD_VERSION to $NEW_VERSION."
+              VERSION_CHANGED=1
+          fi
+
           echo "VERSION_CHANGED=$VERSION_CHANGED" >> $GITHUB_ENV
     
       - name: 🔨 build and publish
