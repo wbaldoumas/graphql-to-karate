@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AssemblyName>graphql-to-karate</AssemblyName>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <PublishReadyToRun>true</PublishReadyToRun>
@@ -44,6 +44,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GraphQLToKarate.Library\GraphQLToKarate.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\CHANGELOG.md" Link="CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
