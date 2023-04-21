@@ -63,13 +63,13 @@ To use `graphql-to-karate`, simply invoke the `graphql-to-karate convert` comman
 graphql-to-karate convert my-schema.graphql
 ```
 
-By default, you will be walked through conversion in an interactive way within the CLI. 
+By default, you will be walked through conversion in an interactive way within the CLI.
 
 A `--non-interactive` option as well as [JSON configuration](https://github.com/wbaldoumas/graphql-to-karate/blob/main/configuration/schema/v1/schema.json) are also available (see full [Command Options](#📝-convert-command-options) below), which may be useful in CI/CD environments.
 
 ### 📖 Examples of Non-Interactive Invokation
 
-#### Using Command-Line Options:
+#### Using Command-Line Options
 
 ```sh
 graphql-to-karate convert my-schema.graphql \
@@ -82,7 +82,7 @@ graphql-to-karate convert my-schema.graphql \
 
 This flavor of `graphql-to-karate` usage is used within CI/CD validation for this repository, where a mock GraphQL server is spun up, `graphql-to-karate` converts the GraphQL schema to a Karate API test, and then the generated Karate API tests are run. Check it out [here](https://github.com/wbaldoumas/graphql-to-karate/blob/main/.github/workflows/integration-test.yml).
 
-#### Using a JSON configuration:
+#### Using a JSON configuration
 
 ```sh
 graphql-to-karate convert my-schema.graphql --non-interactive --configuration-file config.json
