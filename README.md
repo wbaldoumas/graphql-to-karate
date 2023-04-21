@@ -21,20 +21,20 @@
 
 ## 🎯 About The Project
 
-Automagically generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
+_Automagically_ generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
 
-## 📦 Installation
+## Installation
 
 ### 📥 Binary Releases
 
-Head over to [releases](https://github.com/wbaldoumas/graphql-to-karate/releases) and download the latest binary for your specific platform. If a binary for your platform is not available, see the [Package Manager](#package-manager) or [Building From Source](#building-from-source) sections below.
+Head over to [releases](https://github.com/wbaldoumas/graphql-to-karate/releases) and download the latest binary for your specific platform. If a binary for your platform is not available, see the [Package Manager](#📦-package-manager) or [Building From Source](#🔨-building-from-source) sections below.
 
 ### 📦 Package Manager
 
 `graphql-to-karate` is also available as a [NuGet](https://www.nuget.org/packages/graphql-to-karate) offering and can be installed with the following command:
 
 ```sh
-dotnet tool install --global graphql-to-karate --version 0.0.5
+dotnet tool install --global graphql-to-karate --version 0.0.6
 ```
 
 ### 🔨 Building From Source
@@ -63,7 +63,9 @@ To use `graphql-to-karate`, simply invoke the `graphql-to-karate convert` comman
 graphql-to-karate convert my-schema.graphql
 ```
 
-By default, you will be walked through conversion in an interactive way within the CLI. A `--non-interactive` option as well as [JSON configuration](https://github.com/wbaldoumas/graphql-to-karate/blob/main/configuration/schema/v1/schema.json) are also available (see full [Command Options](#command-options) below), which may be useful in CI/CD environments.
+By default, you will be walked through conversion in an interactive way within the CLI. 
+
+A `--non-interactive` option as well as [JSON configuration](https://github.com/wbaldoumas/graphql-to-karate/blob/main/configuration/schema/v1/schema.json) are also available (see full [Command Options](#📝-convert-command-options) below), which may be useful in CI/CD environments.
 
 ### 📖 Examples of Non-Interactive Invokation
 
@@ -117,7 +119,7 @@ Contributions are what make the open source community such an amazing place to l
 
 Distributed under the `MIT License` License. See [`LICENSE`](LICENSE) for more information.
 
-## 📞 Contact
+## Contact
 
 [@wbaldoumas](https://github.com/wbaldoumas)
 
