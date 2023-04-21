@@ -21,13 +21,13 @@
 
 ## 🎯 About The Project
 
-_Automagically_ generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
+Automagically generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
 
 ## Installation
 
 ### 📥 Binary Releases
 
-Head over to [releases](https://github.com/wbaldoumas/graphql-to-karate/releases) and download the latest binary for your specific platform. If a binary for your platform is not available, see the [Package Manager](#📦-package-manager) or [Building From Source](#🔨-building-from-source) sections below.
+Head over to [releases](https://github.com/wbaldoumas/graphql-to-karate/releases) and download the latest binary for your specific platform. If a binary for your platform is not available, see the [Package Manager](#-package-manager) or [Building From Source](#-building-from-source) sections below.
 
 ### 📦 Package Manager
 
@@ -65,7 +65,7 @@ graphql-to-karate convert my-schema.graphql
 
 By default, you will be walked through conversion in an interactive way within the CLI.
 
-A `--non-interactive` option as well as [JSON configuration](https://github.com/wbaldoumas/graphql-to-karate/blob/main/configuration/schema/v1/schema.json) are also available (see full [Command Options](#📝-convert-command-options) below), which may be useful in CI/CD environments.
+A `--non-interactive` option as well as [JSON configuration](https://github.com/wbaldoumas/graphql-to-karate/blob/main/configuration/schema/v1/schema.json) are also available (see full [Command Options](#-convert-command-options) below), which may be useful in CI/CD environments.
 
 ### 📖 Examples of Non-Interactive Invokation
 
