@@ -53,17 +53,11 @@ internal sealed class GraphQLListTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument());
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument(new List<ASTNode>()));
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.Boolean)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
@@ -74,13 +68,7 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.Float)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Float))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
@@ -91,13 +79,7 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.Int)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Int))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
@@ -108,13 +90,7 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.String)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(GraphQLToken.String))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
@@ -125,13 +101,7 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.Id)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Id))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
@@ -142,26 +112,16 @@ internal sealed class GraphQLListTypeConverterTests
 
             const string enumTypeName = "Color";
 
-            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument
-            {
-                Definitions = new List<ASTNode>
+            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument(
+                new List<ASTNode>
                 {
-                    new GraphQLEnumTypeDefinition
-                    {
-                        Name = new GraphQLName(enumTypeName)
-                    }
+                    new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName))
                 }
-            };
+            );
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(enumTypeName)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(enumTypeName))),
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateListType(
                     new KarateNullType(
@@ -172,30 +132,17 @@ internal sealed class GraphQLListTypeConverterTests
 
             const string customTypeName = "ToDo";
 
-            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument
-            {
-                Definitions = new List<ASTNode>
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument(
+                new List<ASTNode>
                 {
-                    new GraphQLEnumTypeDefinition
-                    {
-                        Name = new GraphQLName(enumTypeName)
-                    },
-                    new GraphQLObjectTypeDefinition
-                    {
-                        Name = new GraphQLName(customTypeName)
-                    }
+                    new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName)),
+                    new GraphQLObjectTypeDefinition(new GraphQLName(customTypeName))
                 }
-            };
+            );
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(customTypeName)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(customTypeName))),
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(
                     new KarateNullType(
@@ -206,56 +153,33 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Boolean)
-                        }
-                    }
-                },
+                new GraphQLListType(
+                    new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean)))
+                ),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.Boolean, testFieldName)
                     )
                 )
-            ).SetName("List of non-nullable Boolean GraphQL type is converted to list of non-nullable boolean Karate type.");
+            ).SetName(
+                "List of non-nullable Boolean GraphQL type is converted to list of non-nullable boolean Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Float)
-                        }
-                    }
-                },
+                new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Float)))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.Number, testFieldName)
                     )
                 )
-            ).SetName("List of non-nullable Float GraphQL type is converted to list of non-nullable number Karate type.");
+            ).SetName(
+                "List of non-nullable Float GraphQL type is converted to list of non-nullable number Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Int)
-                        }
-                    }
-                },
+                new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Int)))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
@@ -266,36 +190,19 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.String)
-                        }
-                    }
-                },
+                new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(GraphQLToken.String)))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.String, testFieldName)
                     )
                 )
-            ).SetName("List of non-nullable String GraphQL type is converted to list of non-nullable string Karate type.");
+            ).SetName(
+                "List of non-nullable String GraphQL type is converted to list of non-nullable string Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Id)
-                        }
-                    }
-                },
+                new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Id)))),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNonNullType(
@@ -306,59 +213,35 @@ internal sealed class GraphQLListTypeConverterTests
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(enumTypeName)
-                        }
-                    }
-                },
+                new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(enumTypeName)))),
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType(KarateToken.String, testFieldName)
                     )
                 )
-            ).SetName("List of non-nullable enum GraphQL type is converted to list of non-nullable string Karate type.");
+            ).SetName(
+                "List of non-nullable enum GraphQL type is converted to list of non-nullable string Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(customTypeName)
-                        }
-                    }
-                },
+                new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(customTypeName)))),
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateListType(
                     new KarateNonNullType(
                         new KarateType($"({customTypeName.FirstCharToLower()}Schema)", testFieldName)
                     )
                 )
-            ).SetName("List of non-nullable custom GraphQL type is converted to list of non-nullable custom Karate type.");
+            ).SetName(
+                "List of non-nullable custom GraphQL type is converted to list of non-nullable custom Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLListType
-                    {
-                        Type = new GraphQLNonNullType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName(GraphQLToken.Id)
-                            }
-                        }
-                    }
-                },
+                new GraphQLListType(
+                    new GraphQLListType(
+                        new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Id)))
+                    )
+                ),
                 emptyGraphQLDocumentAdapter,
                 new KarateListType(
                     new KarateNullType(
@@ -369,7 +252,8 @@ internal sealed class GraphQLListTypeConverterTests
                         )
                     )
                 )
-            ).SetName("List of nullable lists of non-nullable ID GraphQL type is converted to list of nullable lists of non-nullable string Karate type.");
+            ).SetName(
+                "List of nullable lists of non-nullable ID GraphQL type is converted to list of nullable lists of non-nullable string Karate type.");
         }
     }
 
@@ -379,10 +263,7 @@ internal sealed class GraphQLListTypeConverterTests
         // arrange
         var unsupportedGraphQLType = new UnsupportedGraphQLType();
 
-        var graphQLListType = new GraphQLListType
-        {
-            Type = unsupportedGraphQLType
-        };
+        var graphQLListType = new GraphQLListType(unsupportedGraphQLType);
 
         // act
         var act = () => _subjectUnderTest!.Convert(

@@ -53,117 +53,75 @@ internal sealed class GraphQLNullTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument());
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument(new List<ASTNode>()));
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(GraphQLToken.Boolean)
-                },
+                new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean)),
                 emptyGraphQLDocumentAdapter,
                 new KarateNullType(new KarateType(KarateToken.Boolean, testFieldName))
             ).SetName("Nullable Boolean GraphQL type is converted to nullable boolean Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(GraphQLToken.Float)
-                },
+                new GraphQLNamedType(new GraphQLName(GraphQLToken.Float)),
                 emptyGraphQLDocumentAdapter,
                 new KarateNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Nullable Float GraphQL type is converted to nullable number Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(GraphQLToken.Int)
-                },
+                new GraphQLNamedType(new GraphQLName(GraphQLToken.Int)),
                 emptyGraphQLDocumentAdapter,
                 new KarateNullType(new KarateType(KarateToken.Number, testFieldName))
             ).SetName("Nullable Int GraphQL type is converted to nullable number Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(GraphQLToken.String)
-                },
+                new GraphQLNamedType(new GraphQLName(GraphQLToken.String)),
                 emptyGraphQLDocumentAdapter,
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable String GraphQL type is converted to nullable string Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(GraphQLToken.Id)
-                },
+                new GraphQLNamedType(new GraphQLName(GraphQLToken.Id)),
                 emptyGraphQLDocumentAdapter,
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable ID GraphQL type is converted to nullable string Karate type.");
 
             const string enumTypeName = "Color";
 
-            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument
+            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument(new List<ASTNode>
             {
-                Definitions = new List<ASTNode>
-                {
-                    new GraphQLEnumTypeDefinition
-                    {
-                        Name = new GraphQLName(enumTypeName)
-                    }
-                }
-            };
+                new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName))
+            });
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(enumTypeName)
-                },
+                new GraphQLNamedType(new GraphQLName(enumTypeName)),
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumTypeDefinition),
                 new KarateNullType(new KarateType(KarateToken.String, testFieldName))
             ).SetName("Nullable enum GraphQL type is converted to nullable string Karate type.");
 
             const string customTypeName = "ToDo";
 
-            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument(new List<ASTNode>
             {
-                Definitions = new List<ASTNode>
-                {
-                    new GraphQLEnumTypeDefinition
-                    {
-                        Name = new GraphQLName(enumTypeName)
-                    },
-                    new GraphQLObjectTypeDefinition
-                    {
-                        Name = new GraphQLName(customTypeName)
-                    }
-                }
-            };
+                new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName)),
+                new GraphQLObjectTypeDefinition(new GraphQLName(customTypeName))
+            });
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(customTypeName)
-                },
+                new GraphQLNamedType(new GraphQLName(customTypeName)),
                 new GraphQLDocumentAdapter(graphQLDocumentWithEnumAndCustomTypeDefinition),
                 new KarateNullType(new KarateType($"({customTypeName.FirstCharToLower()}Schema)", testFieldName))
             ).SetName("Nullable custom GraphQL type is converted to nullable custom Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.Boolean)
-                    }
-                },
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean))),
                 emptyGraphQLDocumentAdapter,
                 new KarateNullType(
                     new KarateListType(

@@ -16,18 +16,17 @@ public class GraphQLFieldDefinitionExtensionsTests
     public void IsInaccessible_returns_expected_result(string directiveName, bool expected)
     {
         // arrange
-        var fieldDefinition = new GraphQLFieldDefinition
+        var fieldDefinition = new GraphQLFieldDefinition(
+            new GraphQLName("someName"),
+            new GraphQLNamedType(new GraphQLName("someType"))
+        )
         {
-            Directives = new GraphQLDirectives
-            {
-                Items = new List<GraphQLDirective>
+            Directives = new GraphQLDirectives(
+                new List<GraphQLDirective>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName(directiveName)
-                    }
+                    new(new GraphQLName(directiveName))
                 }
-            }
+            )
         };
 
         // act
@@ -44,18 +43,17 @@ public class GraphQLFieldDefinitionExtensionsTests
     public void IsExternal_returns_expected_result(string directiveName, bool expected)
     {
         // arrange
-        var fieldDefinition = new GraphQLFieldDefinition
+        var fieldDefinition = new GraphQLFieldDefinition(
+            new GraphQLName("someName"),
+            new GraphQLNamedType(new GraphQLName("someType"))
+        )
         {
-            Directives = new GraphQLDirectives
-            {
-                Items = new List<GraphQLDirective>
+            Directives = new GraphQLDirectives(
+                new List<GraphQLDirective>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName(directiveName)
-                    }
+                    new(new GraphQLName(directiveName))
                 }
-            }
+            )
         };
 
         // act
@@ -69,7 +67,10 @@ public class GraphQLFieldDefinitionExtensionsTests
     public void IsInaccessible_with_null_directives_returns_false()
     {
         // arrange
-        var fieldDefinition = new GraphQLFieldDefinition();
+        var fieldDefinition = new GraphQLFieldDefinition(
+            new GraphQLName("someName"),
+            new GraphQLNamedType(new GraphQLName("someType"))
+        );
 
         // act
         var result = fieldDefinition.IsInaccessible();
@@ -82,7 +83,10 @@ public class GraphQLFieldDefinitionExtensionsTests
     public void IsExternal_with_null_directives_returns_false()
     {
         // arrange
-        var fieldDefinition = new GraphQLFieldDefinition();
+        var fieldDefinition = new GraphQLFieldDefinition(
+            new GraphQLName("someName"),
+            new GraphQLNamedType(new GraphQLName("someType"))
+        );
 
         // act
         var result = fieldDefinition.IsExternal();

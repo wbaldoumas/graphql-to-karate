@@ -46,71 +46,46 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         get
         {
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Name = new GraphQLName("age"),
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName("Int")
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("age"),
+                    new GraphQLNamedType(new GraphQLName("Int"))
+                ),
                 typeof(GraphQLArgumentType),
                 "age",
                 "Int"
             ).SetName("With Named Type");
 
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Name = new GraphQLName("hobbies"),
-                    Type = new GraphQLListType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName("String")
-                        }
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("hobbies"),
+                    new GraphQLListType(new GraphQLNamedType(new GraphQLName("String")))
+                ),
                 typeof(GraphQLListArgumentType),
                 "hobbies",
                 "[String]"
             ).SetName("With List Type");
 
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Name = new GraphQLName("email"),
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName("String")
-                        }
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("email"),
+                    new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName("String")))
+                ),
                 typeof(GraphQLNonNullArgumentType),
                 "email",
                 "String!"
             ).SetName("With Non-Null Type");
 
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Name = new GraphQLName("address"),
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLListType
-                        {
-                            Type = new GraphQLNonNullType
-                            {
-                                Type = new GraphQLNamedType
-                                {
-                                    Name = new GraphQLName("String")
-                                }
-                            }
-                        }
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("address"),
+                    new GraphQLNonNullType(
+                        new GraphQLListType(
+                            new GraphQLNonNullType(
+                                new GraphQLNamedType(new GraphQLName("String"))
+                            )
+                        )
+                    )
+                ),
                 typeof(GraphQLNonNullArgumentType),
                 "address",
                 "[String!]!"
@@ -122,32 +97,20 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
     public void GetNonReservedVariableName_WithMultipleInputValueDefinitions_ReturnsUniqueVariableNames()
     {
         // arrange
-        var inputValueDefinition1 = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("age"),
-            Type = new GraphQLNamedType
-            {
-                Name = new GraphQLName("Int")
-            }
-        };
+        var inputValueDefinition1 = new GraphQLInputValueDefinition(
+            new GraphQLName("age"),
+            new GraphQLNamedType(new GraphQLName("Int"))
+        );
 
-        var inputValueDefinition2 = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("age"),
-            Type = new GraphQLNamedType
-            {
-                Name = new GraphQLName("Int")
-            }
-        };
+        var inputValueDefinition2 = new GraphQLInputValueDefinition(
+            new GraphQLName("age"),
+            new GraphQLNamedType(new GraphQLName("Int"))
+        );
 
-        var inputValueDefinition3 = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("age"),
-            Type = new GraphQLNamedType
-            {
-                Name = new GraphQLName("Int")
-            }
-        };
+        var inputValueDefinition3 = new GraphQLInputValueDefinition(
+            new GraphQLName("age"),
+            new GraphQLNamedType(new GraphQLName("Int"))
+        );
 
         // act
         var result1 = _subjectUnderTest!.Convert(inputValueDefinition1, _mockQLDocumentAdapter!);
@@ -166,11 +129,10 @@ internal sealed class GraphQLInputValueDefinitionConverterTests
         // arrange
         var unsupportedGraphQLType = new UnsupportedGraphQLType();
 
-        var graphQLInputValueDefinition = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("unsupported"),
-            Type = unsupportedGraphQLType
-        };
+        var graphQLInputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("unsupported"),
+            unsupportedGraphQLType
+        );
 
         // act
         var act = () => _subjectUnderTest!.Convert(graphQLInputValueDefinition, _mockQLDocumentAdapter!);

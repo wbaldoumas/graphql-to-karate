@@ -727,78 +727,64 @@ internal sealed class GraphQLToKarateConverterTests
     private static readonly KarateObject OtherTestKarateObject =
         new("OtherTestKarateObject", new List<KarateTypeBase>());
 
-    private static readonly GraphQLFieldDefinition TodoQueryFieldDefinition = new()
-    {
-        Name = new GraphQLName("todo")
-    };
+    private static readonly GraphQLFieldDefinition TodoQueryFieldDefinition = new(
+        new GraphQLName("todo"),
+        new GraphQLNamedType(new GraphQLName("foo"))
+    );
 
-    private static readonly GraphQLFieldDefinition TodosQueryFieldDefinition = new()
-    {
-        Name = new GraphQLName("todos")
-    };
+    private static readonly GraphQLFieldDefinition TodosQueryFieldDefinition = new(
+        new GraphQLName("todos"),
+        new GraphQLNamedType(new GraphQLName("foo"))
+    );
 
-    private static readonly GraphQLObjectTypeDefinition GraphQLObjectTypeDefinition = new()
-    {
-        Name = new GraphQLName("TestGraphQLObjectTypeDefinition")
-    };
+    private static readonly GraphQLObjectTypeDefinition GraphQLObjectTypeDefinition = new(
+        new GraphQLName("TestGraphQLObjectTypeDefinition")
+    );
 
-    private static readonly GraphQLInterfaceTypeDefinition GraphQLInterfaceTypeDefinition = new()
-    {
-        Name = new GraphQLName("TestGraphQLInterfaceTypeDefinition")
-    };
+    private static readonly GraphQLInterfaceTypeDefinition GraphQLInterfaceTypeDefinition = new(
+        new GraphQLName("TestGraphQLInterfaceTypeDefinition")
+    );
 
-    private static readonly GraphQLEnumTypeDefinition GraphQLEnumTypeDefinition = new()
-    {
-        Name = new GraphQLName("TestGraphQLEnumTypeDefinition")
-    };
+    private static readonly GraphQLEnumTypeDefinition GraphQLEnumTypeDefinition = new(
+        new GraphQLName("TestGraphQLEnumTypeDefinition")
+    );
 
-    private static readonly GraphQLObjectTypeDefinition GraphQLQuery = new()
+    private static readonly GraphQLObjectTypeDefinition GraphQLQuery = new(new GraphQLName(GraphQLToken.Query))
     {
-        Name = new GraphQLName(GraphQLToken.Query),
-        Fields = new GraphQLFieldsDefinition
+        Fields = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>
         {
-            Items = new List<GraphQLFieldDefinition>
-            {
-                TodoQueryFieldDefinition,
-                TodosQueryFieldDefinition
-            }
-        }
+            TodoQueryFieldDefinition,
+            TodosQueryFieldDefinition
+        })
     };
 
-    private static readonly GraphQLFieldDefinition TodosMutationFieldDefinition = new()
-    {
-        Name = new GraphQLName("todosMutation")
-    };
+    private static readonly GraphQLFieldDefinition TodosMutationFieldDefinition = new(
+        new GraphQLName("todosMutation"),
+        new GraphQLNamedType(new GraphQLName("foo"))
+    );
 
-    private static readonly GraphQLFieldDefinition TodoMutationFieldDefinition = new()
-    {
-        Name = new GraphQLName("todoMutation")
-    };
+    private static readonly GraphQLFieldDefinition TodoMutationFieldDefinition = new(
+        new GraphQLName("todoMutation"),
+        new GraphQLNamedType(new GraphQLName("foo"))
+    );
 
-    private static readonly GraphQLObjectTypeDefinition GraphQLMutation = new()
+    private static readonly GraphQLObjectTypeDefinition GraphQLMutation = new(new GraphQLName(GraphQLToken.Mutation))
     {
-        Name = new GraphQLName(GraphQLToken.Mutation),
-        Fields = new GraphQLFieldsDefinition
+        Fields = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>
         {
-            Items = new List<GraphQLFieldDefinition>
-            {
-                TodosMutationFieldDefinition,
-                TodoMutationFieldDefinition
-            }
-        }
+            TodosMutationFieldDefinition,
+            TodoMutationFieldDefinition
+        })
     };
 
-    private static readonly GraphQLDocument TestGraphQLDocument = new()
+    private static readonly GraphQLDocument TestGraphQLDocument = new(new List<ASTNode>
     {
-        Definitions = new List<ASTNode>
-        {
-            GraphQLObjectTypeDefinition,
-            GraphQLInterfaceTypeDefinition,
-            GraphQLEnumTypeDefinition,
-            GraphQLQuery,
-            GraphQLMutation
-        }
-    };
+        GraphQLObjectTypeDefinition,
+        GraphQLInterfaceTypeDefinition,
+        GraphQLEnumTypeDefinition,
+        GraphQLQuery,
+        GraphQLMutation
+    });
 
     private static readonly GraphQLOperation TodoOperation = new(TodoQueryFieldDefinition)
     {

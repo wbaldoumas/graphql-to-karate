@@ -21,37 +21,19 @@ internal sealed class GraphQLTypeExtensionsTests
         get
         {
             yield return new TestCaseData(
-                    new GraphQLNamedType
-                    {
-                        Name = new GraphQLName("NamedType")
-                    },
+                    new GraphQLNamedType(new GraphQLName("NamedType")),
                     "NamedType"
                 )
                 .SetName("GraphQLNamedType input");
 
             yield return new TestCaseData(
-                    new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName("NonNullType")
-                        }
-                    },
+                    new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName("NonNullType"))),
                     "NonNullType"
                 )
                 .SetName("GraphQLNonNullType input");
 
             yield return new TestCaseData(
-                    new GraphQLListType
-                    {
-                        Type = new GraphQLNonNullType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName("ListType")
-                            }
-                        }
-                    },
+                    new GraphQLListType(new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName("ListType")))),
                     "ListType"
                 )
                 .SetName("GraphQLListType input");
@@ -75,10 +57,7 @@ internal sealed class GraphQLTypeExtensionsTests
     public void NameValue_should_return_correct_name_value()
     {
         // arrange
-        var namedNode = new GraphQLNamedType
-        {
-            Name = new GraphQLName("NamedType")
-        };
+        var namedNode = new GraphQLNamedType(new GraphQLName("NamedType"));
 
         // act
         var result = namedNode.NameValue();
@@ -96,35 +75,25 @@ internal sealed class GraphQLTypeExtensionsTests
     {
         get
         {
+            var graphQLName = new GraphQLName("foo");
+
             yield return new TestCaseData(
-                new GraphQLNamedType(),
+                new GraphQLNamedType(graphQLName),
                 false
             );
 
             yield return new TestCaseData(
-                new GraphQLNonNullType
-                {
-                    Type = new GraphQLNamedType()
-                },
+                new GraphQLNonNullType(new GraphQLNamedType(graphQLName)),
                 false
             );
 
             yield return new TestCaseData(
-                new GraphQLListType
-                {
-                    Type = new GraphQLNamedType()
-                },
+                new GraphQLListType(new GraphQLNamedType(graphQLName)),
                 true
             );
 
             yield return new TestCaseData(
-                new GraphQLNonNullType
-                {
-                    Type = new GraphQLListType
-                    {
-                        Type = new GraphQLNamedType()
-                    }
-                },
+                new GraphQLNonNullType(new GraphQLListType(new GraphQLNamedType(graphQLName))),
                 true
             );
         }
@@ -139,16 +108,15 @@ internal sealed class GraphQLTypeExtensionsTests
     {
         get
         {
+            var graphQLName = new GraphQLName("foo");
+
             yield return new TestCaseData(
-                new GraphQLNamedType(),
+                new GraphQLNamedType(graphQLName),
                 true
             );
 
             yield return new TestCaseData(
-                new GraphQLNonNullType
-                {
-                    Type = new GraphQLNamedType()
-                },
+                new GraphQLNonNullType(new GraphQLNamedType(graphQLName)),
                 false
             );
         }
