@@ -23,6 +23,22 @@
 
 Automagically generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
 
+### ✨ Features
+
+Here are some features that this tool provides:
+
+- **Generate API tests from GraphQL schemas:** Karate API tests for both Query and Mutation operations are supported.
+- **Filterable Query and Mutation operations:** Allows you to filter Query and Mutation operations so that you can generate tests for a specific subset of target operations.
+- **Validates response codes and response shapes:** Validates response codes and uses Karate schema validation to ensure that the response shapes for each operation are valid.
+- **Supports all native GraphQL types:** Supports `scalar`, `object`, `interface`, `input`, `enum`, and `union` GraphQL types.
+- **Handles cyclical type relationships:** Prunes cyclical types to remove cycles as they are encountered.
+- **Supports custom scalar types:** Custom scalar types may be mapped to their corresponding Karate schema types.
+- **Supports union type validation:** Each possible type within union types is validated against its corresponding expected schema.
+- **Generates test data for arguments and input types:** Test data for query arguments and input types is generated automatically.
+- **Interactive and non-interactive CLI modes:** Supports both interactive and non-interactive CLI modes, as well as JSON configuration.
+
+See the full list of available options below for more information.
+
 ## Installation
 
 ### 📥 Binary Releases
@@ -113,11 +129,11 @@ See the [open issues](https://github.com/wbaldoumas/graphql-to-karate/issues) fo
 
 ## 🤝 Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. For detailed contributing guidelines, please see the [CONTRIBUTING](CONTRIBUTING.md) docs.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**. For detailed contributing guidelines, please see the [CONTRIBUTING](https://github.com/wbaldoumas/graphql-to-karate/blob/main/CONTRIBUTING.md) docs.
 
 ## 📜 License
 
-Distributed under the `MIT License` License. See [`LICENSE`](LICENSE) for more information.
+Distributed under the `MIT License` License. See [`LICENSE`](https://github.com/wbaldoumas/graphql-to-karate/blob/main/LICENSE) for more information.
 
 ## Contact
 
