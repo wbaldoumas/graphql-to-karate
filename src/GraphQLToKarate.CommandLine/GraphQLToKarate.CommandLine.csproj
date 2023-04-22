@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>William Baldoumas</Authors>
     <OutputType>Exe</OutputType>
-    <Version>0.0.6</Version>
+    <Version>0.0.7</Version>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meziantou.Analyzer" Version="2.0.35">
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.36">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
