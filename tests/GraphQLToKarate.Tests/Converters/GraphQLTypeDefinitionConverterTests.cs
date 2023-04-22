@@ -92,18 +92,16 @@ internal sealed class GraphQLTypeDefinitionConverterTests
         get
         {
             yield return new TestCaseData(
-                new GraphQLObjectTypeDefinition
+                new GraphQLObjectTypeDefinition(new GraphQLName("Test Object GraphQL Type"))
                 {
-                    Name = new GraphQLName("Test Object GraphQL Type"),
-                    Fields = new GraphQLFieldsDefinition
-                    {
-                        Items = new List<GraphQLFieldDefinition>
+                    Fields = new GraphQLFieldsDefinition(
+                        new List<GraphQLFieldDefinition>
                         {
                             NonNullGraphQLFieldDefinition,
                             NullGraphQLFieldDefinition,
                             ListGraphQLFieldDefinition
                         }
-                    }
+                    )
                 },
                 new Dictionary<string, KarateTypeBase>
                 {
@@ -138,30 +136,24 @@ internal sealed class GraphQLTypeDefinitionConverterTests
             ).SetName("Each GraphQLType is handled as expected and generates expected Karate object.");
 
             yield return new TestCaseData(
-                new GraphQLObjectTypeDefinition
-                {
-                    Name = new GraphQLName("Test Object GraphQL Type")
-                },
+                new GraphQLObjectTypeDefinition(new GraphQLName("Test Object GraphQL Type")),
                 new Dictionary<string, KarateTypeBase>()
             ).SetName("Empty GraphQL object generates empty Karate object.");
         }
     }
 
-    private static readonly GraphQLFieldDefinition NonNullGraphQLFieldDefinition = new()
-    {
-        Name = new GraphQLName("non_nullable_field"),
-        Type = new GraphQLNonNullType()
-    };
+    private static readonly GraphQLFieldDefinition NonNullGraphQLFieldDefinition = new(
+        new GraphQLName("non_nullable_field"),
+        new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName("foo")))
+    );
 
-    private static readonly GraphQLFieldDefinition ListGraphQLFieldDefinition = new()
-    {
-        Name = new GraphQLName("list_field"),
-        Type = new GraphQLListType()
-    };
+    private static readonly GraphQLFieldDefinition ListGraphQLFieldDefinition = new(
+        new GraphQLName("list_field"),
+        new GraphQLListType(new GraphQLNamedType(new GraphQLName("foo")))
+    );
 
-    private static readonly GraphQLFieldDefinition NullGraphQLFieldDefinition = new()
-    {
-        Name = new GraphQLName("nullable_field"),
-        Type = new GraphQLNamedType()
-    };
+    private static readonly GraphQLFieldDefinition NullGraphQLFieldDefinition = new(
+        new GraphQLName("nullable_field"),
+        new GraphQLNamedType(new GraphQLName("foo"))
+    );
 }

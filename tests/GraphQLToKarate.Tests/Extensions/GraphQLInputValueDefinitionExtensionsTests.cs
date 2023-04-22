@@ -13,7 +13,10 @@ public class GraphQLInputValueDefinitionExtensionsTests
     public void IsInaccessible_returns_false_when_directives_is_null()
     {
         // arrange
-        var inputValueDefinition = new GraphQLInputValueDefinition();
+        var inputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("foo"),
+            new GraphQLNamedType(new GraphQLName("bar"))
+        );
 
         // act
         var result = inputValueDefinition.IsInaccessible();
@@ -29,18 +32,17 @@ public class GraphQLInputValueDefinitionExtensionsTests
     public void IsInaccessible_returns_expected_result(string directiveName, bool expected)
     {
         // arrange
-        var inputValueDefinition = new GraphQLInputValueDefinition
+        var inputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("foo"),
+            new GraphQLNamedType(new GraphQLName("bar"))
+        )
         {
-            Directives = new GraphQLDirectives
-            {
-                Items = new List<GraphQLDirective>
+            Directives = new GraphQLDirectives(
+                new List<GraphQLDirective>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName(directiveName)
-                    }
+                    new(new GraphQLName(directiveName))
                 }
-            }
+            )
         };
 
         // act
@@ -54,7 +56,10 @@ public class GraphQLInputValueDefinitionExtensionsTests
     public void IsExternal_returns_false_when_directives_is_null()
     {
         // arrange
-        var inputValueDefinition = new GraphQLInputValueDefinition();
+        var inputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("foo"),
+            new GraphQLNamedType(new GraphQLName("bar"))
+        );
 
         // act
         var result = inputValueDefinition.IsExternal();
@@ -70,18 +75,15 @@ public class GraphQLInputValueDefinitionExtensionsTests
     public void IsExternal_returns_expected_result(string directiveName, bool expected)
     {
         // arrange
-        var inputValueDefinition = new GraphQLInputValueDefinition
+        var inputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("foo"),
+            new GraphQLNamedType(new GraphQLName("bar"))
+        )
         {
-            Directives = new GraphQLDirectives
+            Directives = new GraphQLDirectives(new List<GraphQLDirective>
             {
-                Items = new List<GraphQLDirective>
-                {
-                    new()
-                    {
-                        Name = new GraphQLName(directiveName)
-                    }
-                }
-            }
+                new(new GraphQLName(directiveName))
+            })
         };
 
         // act

@@ -32,10 +32,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_string_when_GraphQLType_is_String_or_Id(string graphQLTypeName)
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName(graphQLTypeName)
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName(graphQLTypeName));
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
@@ -48,13 +45,12 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     [Test]
     [TestCase(GraphQLToken.Int, "^\\d+$")]
     [TestCase(GraphQLToken.Float, "^\\d+\\.\\d+$")]
-    public void Convert_generates_number_when_GraphQLType_is_Int_or_Float(string graphQLTypeName, string expectedRegexMatch)
+    public void Convert_generates_number_when_GraphQLType_is_Int_or_Float(
+        string graphQLTypeName,
+        string expectedRegexMatch)
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName(graphQLTypeName)
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName(graphQLTypeName));
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
@@ -67,10 +63,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_boolean_when_GraphQLType_is_Boolean()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName(GraphQLToken.Boolean)
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean));
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(graphQLType, _mockGraphQLDocumentAdapter!);
@@ -83,28 +76,21 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_enum_when_GraphQLType_is_Enum()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyEnum")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyEnum"));
 
-        var graphQLEnumType = new GraphQLEnumTypeDefinition
+        var graphQLEnumType = new GraphQLEnumTypeDefinition(new GraphQLName("MyEnum"))
         {
-            Name = new GraphQLName("MyEnum"),
-            Values = new GraphQLEnumValuesDefinition
+            Values = new GraphQLEnumValuesDefinition(new List<GraphQLEnumValueDefinition>
             {
-                Items = new List<GraphQLEnumValueDefinition>
-                {
-                    new()
-                    {
-                        Name = new GraphQLName("Value1")
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("Value2")
-                    }
-                }
-            }
+                new(
+                    new GraphQLName("Value1"),
+                    new GraphQLEnumValue(new GraphQLName("one"))
+                ),
+                new(
+                    new GraphQLName("Value2"),
+                    new GraphQLEnumValue(new GraphQLName("two"))
+                )
+            })
         };
 
         _mockGraphQLDocumentAdapter!
@@ -126,10 +112,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_expected_example_value_from_custom_scalar_mapping_that_maps_to_number()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyCustomScalar")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyCustomScalar"));
 
         _mockCustomScalarMapping!
             .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
@@ -152,10 +135,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_expected_example_value_from_custom_scalar_mapping_that_maps_to_string()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyCustomScalar")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyCustomScalar"));
 
         _mockCustomScalarMapping!
             .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
@@ -178,10 +158,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_expected_example_value_from_custom_scalar_mapping_that_maps_to_boolean()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyCustomScalar")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyCustomScalar"));
 
         _mockCustomScalarMapping!
             .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
@@ -204,10 +181,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_generates_default_example_value_from_custom_scalar_mapping_that_maps_to_unknown_type()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyCustomScalar")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyCustomScalar"));
 
         _mockCustomScalarMapping!
             .TryGetKarateType(graphQLType.NameValue(), out Arg.Any<string>()!)
@@ -230,10 +204,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_throws_exception_when_enum_not_found()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyEnum")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyEnum"));
 
         _mockGraphQLDocumentAdapter!
             .IsGraphQLEnumTypeDefinition(graphQLType.NameValue())
@@ -254,14 +225,10 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_throws_exception_when_enum_values_are_empty()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyEnum")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyEnum"));
 
-        var graphQLEnumType = new GraphQLEnumTypeDefinition
+        var graphQLEnumType = new GraphQLEnumTypeDefinition(new GraphQLName("MyEnum"))
         {
-            Name = new GraphQLName("MyEnum"),
             Values = null
         };
 
@@ -284,10 +251,7 @@ internal sealed class GraphQLScalarToExampleValueConverterTests
     public void Convert_throws_exception_when_GraphQLType_is_not_a_scalar()
     {
         // arrange
-        var graphQLType = new GraphQLNamedType
-        {
-            Name = new GraphQLName("MyType")
-        };
+        var graphQLType = new GraphQLNamedType(new GraphQLName("MyType"));
 
         _mockGraphQLDocumentAdapter!
             .IsGraphQLEnumTypeDefinition(graphQLType.NameValue())

@@ -14,7 +14,7 @@ internal sealed class GraphQLDirectiveExtensionsTests
     [TestCase("otherDirective", false)]
     public void IsInaccessible_returns_expected_result(string directiveName, bool expectedResult)
     {
-        var directive = new GraphQLDirective { Name = new GraphQLName(directiveName) };
+        var directive = new GraphQLDirective(new GraphQLName(directiveName));
 
         var result = directive.IsInaccessible();
 
@@ -26,7 +26,7 @@ internal sealed class GraphQLDirectiveExtensionsTests
     [TestCase("otherDirective", false)]
     public void IsExternal_returns_expected_result(string directiveName, bool expectedResult)
     {
-        var directive = new GraphQLDirective { Name = new GraphQLName(directiveName) };
+        var directive = new GraphQLDirective(new GraphQLName(directiveName));
 
         var result = directive.IsExternal();
 

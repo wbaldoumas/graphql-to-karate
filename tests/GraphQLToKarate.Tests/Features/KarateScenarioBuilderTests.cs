@@ -62,14 +62,10 @@ internal sealed class KarateScenarioBuilderTests
     {
         get
         {
-            var graphQLFieldDefinition = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todo"),
-                Type = new GraphQLNamedType
-                {
-                    Name = new GraphQLName("Todo")
-                }
-            };
+            var graphQLFieldDefinition = new GraphQLFieldDefinition(
+                new GraphQLName("todo"),
+                new GraphQLNamedType(new GraphQLName("Todo"))
+            );
 
             yield return new TestCaseData(
                 new GraphQLOperation(graphQLFieldDefinition)
@@ -77,7 +73,7 @@ internal sealed class KarateScenarioBuilderTests
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
                     OperationString =
-                    """
+                        """
                     query TodoTest {
                       todo {
                         id
@@ -142,7 +138,7 @@ internal sealed class KarateScenarioBuilderTests
                         )
                     },
                     OperationString =
-                    """
+                        """
                     query TodoTest($id: String!, $isCompleted: Boolean, $filter: [Color!]!) {
                       todo(id: $id, isCompleted: $isCompleted) {
                         id
@@ -188,17 +184,10 @@ internal sealed class KarateScenarioBuilderTests
                 """"
             ).SetName("Simple query with arguments is generated as a valid scenario.");
 
-            var graphQLFieldDefinitionWithListReturn = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todo"),
-                Type = new GraphQLListType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName("Todo")
-                    }
-                }
-            };
+            var graphQLFieldDefinitionWithListReturn = new GraphQLFieldDefinition(
+                new GraphQLName("todo"),
+                new GraphQLListType(new GraphQLNamedType(new GraphQLName("Todo")))
+            );
 
             yield return new TestCaseData(
                 new GraphQLOperation(graphQLFieldDefinitionWithListReturn)
@@ -206,7 +195,7 @@ internal sealed class KarateScenarioBuilderTests
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
                     OperationString =
-                    """
+                        """
                     query TodoTest {
                       todo {
                         id
@@ -237,20 +226,10 @@ internal sealed class KarateScenarioBuilderTests
                 """"
             ).SetName("Simple query without arguments and list return is generated as a valid scenario.");
 
-            var graphQLFieldDefinitionWithNonNullListReturn = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todo"),
-                Type = new GraphQLNonNullType
-                {
-                    Type = new GraphQLListType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName("Todo")
-                        }
-                    }
-                }
-            };
+            var graphQLFieldDefinitionWithNonNullListReturn = new GraphQLFieldDefinition(
+                new GraphQLName("todo"),
+                new GraphQLNonNullType(new GraphQLListType(new GraphQLNamedType(new GraphQLName("Todo"))))
+            );
 
             yield return new TestCaseData(
                 new GraphQLOperation(graphQLFieldDefinitionWithNonNullListReturn)
@@ -258,7 +237,7 @@ internal sealed class KarateScenarioBuilderTests
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
                     OperationString =
-                    """
+                        """
                     query TodoTest {
                       todo {
                         id
@@ -289,17 +268,10 @@ internal sealed class KarateScenarioBuilderTests
                 """"
             ).SetName("Simple query without arguments and non-null list return is generated as a valid scenario.");
 
-            var graphQLFieldDefinitionWithUnionReturnType = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todoUnion"),
-                Type = new GraphQLNonNullType
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName("TodoUnion")
-                    }
-                }
-            };
+            var graphQLFieldDefinitionWithUnionReturnType = new GraphQLFieldDefinition(
+                new GraphQLName("todoUnion"),
+                new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName("TodoUnion")))
+            );
 
             yield return new TestCaseData(
                 new GraphQLOperation(graphQLFieldDefinitionWithUnionReturnType)
@@ -307,7 +279,7 @@ internal sealed class KarateScenarioBuilderTests
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
                     OperationString =
-                    """
+                        """
                     query TodoUnionTest {
                       todoUnion {
                         ... on Todo {
@@ -321,23 +293,15 @@ internal sealed class KarateScenarioBuilderTests
                     }
                     """
                 },
-                new GraphQLUnionTypeDefinition
+                new GraphQLUnionTypeDefinition(new GraphQLName("TodoUnion"))
                 {
-                    Name = new GraphQLName("TodoUnion"),
-                    Types = new GraphQLUnionMemberTypes
-                    {
-                        Items = new List<GraphQLNamedType>
+                    Types = new GraphQLUnionMemberTypes(
+                        new List<GraphQLNamedType>
                         {
-                            new()
-                            {
-                                Name = new GraphQLName("Todo")
-                            },
-                            new()
-                            {
-                                Name = new GraphQLName("TodoError")
-                            }
+                            new(new GraphQLName("Todo")),
+                            new(new GraphQLName("TodoError"))
                         }
-                    }
+                    )
                 },
                 false,
                 """"
@@ -372,20 +336,10 @@ internal sealed class KarateScenarioBuilderTests
                 """"
             ).SetName("Simple query with union return type is validated as expected.");
 
-            var graphQLFieldDefinitionWithListUnionReturnType = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todoUnion"),
-                Type = new GraphQLNonNullType
-                {
-                    Type = new GraphQLListType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName("TodoUnion")
-                        }
-                    }
-                }
-            };
+            var graphQLFieldDefinitionWithListUnionReturnType = new GraphQLFieldDefinition(
+                new GraphQLName("todoUnion"),
+                new GraphQLNonNullType(new GraphQLListType(new GraphQLNamedType(new GraphQLName("TodoUnion"))))
+            );
 
             yield return new TestCaseData(
                 new GraphQLOperation(graphQLFieldDefinitionWithListUnionReturnType)
@@ -393,7 +347,7 @@ internal sealed class KarateScenarioBuilderTests
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
                     OperationString =
-                    """
+                        """
                     query TodoUnionTest {
                       todoUnion {
                         ... on Todo {
@@ -407,23 +361,15 @@ internal sealed class KarateScenarioBuilderTests
                     }
                     """
                 },
-                new GraphQLUnionTypeDefinition
+                new GraphQLUnionTypeDefinition(new GraphQLName("TodoUnion"))
                 {
-                    Name = new GraphQLName("TodoUnion"),
-                    Types = new GraphQLUnionMemberTypes
-                    {
-                        Items = new List<GraphQLNamedType>
+                    Types = new GraphQLUnionMemberTypes(
+                        new List<GraphQLNamedType>
                         {
-                            new()
-                            {
-                                Name = new GraphQLName("Todo")
-                            },
-                            new()
-                            {
-                                Name = new GraphQLName("TodoError")
-                            }
+                            new(new GraphQLName("Todo")),
+                            new(new GraphQLName("TodoError"))
                         }
-                    }
+                    )
                 },
                 false,
                 """"
@@ -458,14 +404,10 @@ internal sealed class KarateScenarioBuilderTests
                 """"
             ).SetName("Simple query with list union return type is validated as expected.");
 
-            var graphQLFieldDefinitionWithScalarReturnType = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todoCount"),
-                Type = new GraphQLNamedType
-                {
-                    Name = new GraphQLName("Int")
-                }
-            };
+            var graphQLFieldDefinitionWithScalarReturnType = new GraphQLFieldDefinition(
+                new GraphQLName("todoCount"),
+                new GraphQLNamedType(new GraphQLName("Int"))
+            );
 
             yield return new TestCaseData(
                 new GraphQLOperation(graphQLFieldDefinitionWithScalarReturnType)
@@ -473,7 +415,7 @@ internal sealed class KarateScenarioBuilderTests
                     Type = GraphQLOperationType.Query,
                     Arguments = new List<GraphQLArgumentTypeBase>(),
                     OperationString =
-                    """
+                        """
                     query TodoCountTest {
                       todoCount
                     }

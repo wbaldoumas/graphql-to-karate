@@ -54,14 +54,10 @@ internal sealed class KarateFeatureBuilderTests
     {
         get
         {
-            var graphQLFieldDefinition = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("todo"),
-                Type = new GraphQLNamedType
-                {
-                    Name = new GraphQLName("Todo")
-                }
-            };
+            var graphQLFieldDefinition = new GraphQLFieldDefinition(
+                new GraphQLName("todo"),
+                new GraphQLNamedType(new GraphQLName("Todo"))
+            );
 
             const string baseUrl = "\"https://www.karate-feature-builder-tests/graphql\"";
 
@@ -158,14 +154,10 @@ internal sealed class KarateFeatureBuilderTests
                 """"
             ).SetName("Simple case with one Karate object schema and one query is handled as expected.");
 
-            var otherGraphQLFieldDefinition = new GraphQLFieldDefinition
-            {
-                Name = new GraphQLName("user"),
-                Type = new GraphQLNamedType
-                {
-                    Name = new GraphQLName("User")
-                }
-            };
+            var otherGraphQLFieldDefinition = new GraphQLFieldDefinition(
+                new GraphQLName("user"),
+                new GraphQLNamedType(new GraphQLName("User"))
+            );
 
             yield return new TestCaseData(
                 new List<KarateObject>

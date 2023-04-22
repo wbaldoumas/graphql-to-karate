@@ -16,18 +16,15 @@ public class GraphQLEnumValueDefinitionExtensionsTests
     public void IsInaccessible_returns_expected_result(string directiveName, bool expected)
     {
         // arrange
-        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition
+        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition(
+            new GraphQLName("someName"),
+            new GraphQLEnumValue(new GraphQLName("someValue"))
+        )
         {
-            Directives = new GraphQLDirectives
+            Directives = new GraphQLDirectives(new List<GraphQLDirective>
             {
-                Items = new List<GraphQLDirective>
-                {
-                    new()
-                    {
-                        Name = new GraphQLName(directiveName)
-                    }
-                }
-            }
+                new(new GraphQLName(directiveName))
+            })
         };
 
         // act
@@ -44,18 +41,15 @@ public class GraphQLEnumValueDefinitionExtensionsTests
     public void IsExternal_returns_expected_result(string directiveName, bool expected)
     {
         // arrange
-        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition
+        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition(
+            new GraphQLName("someName"),
+            new GraphQLEnumValue(new GraphQLName("someValue"))
+        )
         {
-            Directives = new GraphQLDirectives
+            Directives = new GraphQLDirectives(new List<GraphQLDirective>
             {
-                Items = new List<GraphQLDirective>
-                {
-                    new()
-                    {
-                        Name = new GraphQLName(directiveName)
-                    }
-                }
-            }
+                new(new GraphQLName(directiveName))
+            })
         };
 
         // act
@@ -69,7 +63,10 @@ public class GraphQLEnumValueDefinitionExtensionsTests
     public void IsInaccessible_returns_false_for_null_directives()
     {
         // arrange
-        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition
+        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition(
+            new GraphQLName("someName"),
+            new GraphQLEnumValue(new GraphQLName("someValue"))
+        )
         {
             Directives = null
         };
@@ -85,7 +82,10 @@ public class GraphQLEnumValueDefinitionExtensionsTests
     public void IsExternal_returns_false_for_null_directives()
     {
         // arrange
-        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition
+        var graphQLEnumValueDefinition = new GraphQLEnumValueDefinition(
+            new GraphQLName("someName"),
+            new GraphQLEnumValue(new GraphQLName("someValue"))
+        )
         {
             Directives = null
         };

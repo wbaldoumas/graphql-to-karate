@@ -181,10 +181,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     private static void ApplyDirectives<T>(T graphQLHasFieldsDefinitionType)
         where T : IHasFieldsDefinitionNode
     {
-        graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition
-        {
-            Items = new List<GraphQLFieldDefinition>()
-        };
+        graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>());
 
         var accessibleGraphQLFieldDefinitions = graphQLHasFieldsDefinitionType.Fields.Items.Where(
             graphQLFieldDefinition => !(graphQLFieldDefinition.IsInaccessible() ||
@@ -197,10 +194,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     private static void ApplyDirectives(
         GraphQLInputObjectTypeDefinition inputObjectTypeDefinition)
     {
-        inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition
-        {
-            Items = new List<GraphQLInputValueDefinition>()
-        };
+        inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition(new List<GraphQLInputValueDefinition>());
 
         var accessibleGraphQLInputValueDefinitions = inputObjectTypeDefinition.Fields.Items.Where(
             graphQLInputValueDefinition => !(graphQLInputValueDefinition.IsInaccessible() ||
@@ -212,10 +206,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
 
     private static void ApplyDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
     {
-        graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition
-        {
-            Items = new List<GraphQLEnumValueDefinition>()
-        };
+        graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition(new List<GraphQLEnumValueDefinition>());
 
         var accessibleGraphQLEnumValueDefinitions = graphQLEnumTypeDefinition.Values.Items.Where(
             graphQLEnumValueDefinition => !(graphQLEnumValueDefinition.IsInaccessible() ||

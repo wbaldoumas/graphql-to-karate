@@ -94,34 +94,25 @@ internal sealed class GraphQLCustomScalarTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument());
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument(new List<ASTNode>()));
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(CustomScalarNameLong)
-                },
+                new GraphQLNamedType(new GraphQLName(CustomScalarNameLong)),
                 emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.Number, testFieldName)
             ).SetName("Custom scalar present in the mapping returns expected mapped Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName(CustomScalarNameTime)
-                },
+                new GraphQLNamedType(new GraphQLName(CustomScalarNameTime)),
                 emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.String, testFieldName)
             ).SetName("Other custom scalar present in the mapping returns expected mapped Karate type.");
 
             yield return new TestCaseData(
                 testFieldName,
-                new GraphQLNamedType
-                {
-                    Name = new GraphQLName("SomeFunnyType")
-                },
+                new GraphQLNamedType(new GraphQLName("SomeFunnyType")),
                 emptyGraphQLDocumentAdapter,
                 new KarateType(KarateToken.Present, testFieldName)
             ).SetName("Custom type not present in the mapping returns expected Karate type from underlying GraphQLTypeConverter.");

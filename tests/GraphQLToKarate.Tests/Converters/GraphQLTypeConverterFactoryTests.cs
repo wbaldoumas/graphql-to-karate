@@ -31,12 +31,12 @@ internal sealed class GraphQLTypeConverterFactoryTests
         get
         {
             yield return new TestCaseData(
-                new GraphQLNonNullType(),
+                new GraphQLNonNullType(new GraphQLNamedType(new GraphQLName("foo"))),
                 typeof(GraphQLNonNullTypeConverter)
             ).SetName("Returns GraphQLNonNullTypeConverter for GraphQLNonNullType input");
 
             yield return new TestCaseData(
-                new GraphQLNamedType(),
+                new GraphQLNamedType(new GraphQLName("bar")),
                 typeof(GraphQLNullTypeConverter)
             ).SetName("Returns GraphQLNullTypeConverter for other GraphQLType input");
         }

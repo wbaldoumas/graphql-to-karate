@@ -44,10 +44,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         var graphQLDocument = _graphQLSchemaParser.Parse(schema);
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument, _graphQLToKarateSettings);
 
-        var defaultFieldsDefinitions = new GraphQLFieldsDefinition
-        {
-            Items = new List<GraphQLFieldDefinition>()
-        };
+        var defaultFieldsDefinitions = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>());
 
         foreach (var hasFieldsDefinition in graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields ?? defaultFieldsDefinitions)
         {

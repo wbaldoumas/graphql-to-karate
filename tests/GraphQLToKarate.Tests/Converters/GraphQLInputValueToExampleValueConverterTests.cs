@@ -59,43 +59,32 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
             const string exampleValue = "\"exampleValue\"";
 
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Type = new GraphQLNamedType
-                    {
-                        Name = new GraphQLName(GraphQLToken.String)
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("exampleValue"),
+                    new GraphQLNamedType(new GraphQLName(GraphQLToken.String))
+                ),
                 exampleValue,
                 exampleValue
             );
 
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Type = new GraphQLNonNullType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.String)
-                        }
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("exampleValue"),
+                    new GraphQLNonNullType(
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.String))
+                    )
+                ),
                 exampleValue,
                 exampleValue
             );
 
             yield return new TestCaseData(
-                new GraphQLInputValueDefinition
-                {
-                    Type = new GraphQLListType
-                    {
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.String)
-                        }
-                    }
-                },
+                new GraphQLInputValueDefinition(
+                    new GraphQLName("exampleValue"),
+                    new GraphQLListType(
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.String))
+                    )
+                ),
                 exampleValue,
                 $"[ {exampleValue} ]"
             );
@@ -106,101 +95,64 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
     public void Convert_returns_expected_example_value_for_input_type()
     {
         // arrange
-        var nestedGraphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
+        var nestedGraphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition(
+            new GraphQLName("TestNestedInputObjectTypeDefinition"))
         {
-            Name = new GraphQLName("TestNestedInputObjectTypeDefinition"),
-            Fields = new GraphQLInputFieldsDefinition
-            {
-                Items = new List<GraphQLInputValueDefinition>
+            Fields = new GraphQLInputFieldsDefinition(
+                new List<GraphQLInputValueDefinition>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName("nestedValue"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Int)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("nestedValue2"),
-                        Type = new GraphQLListType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName(GraphQLToken.Int)
-                            }
-                        }
-                    }
+                    new(
+                        new GraphQLName("nestedValue"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.Int))
+                    ),
+                    new(
+                        new GraphQLName("nestedValue2"),
+                        new GraphQLListType(
+                            new GraphQLNamedType(new GraphQLName(GraphQLToken.Int))
+                        )
+                    )
                 }
-            }
+            )
         };
 
-        var graphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
+        var graphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition(
+            new GraphQLName("TestInputObjectTypeDefinition"))
         {
-            Name = new GraphQLName("TestInputObjectTypeDefinition"),
-            Fields = new GraphQLInputFieldsDefinition
-            {
-                Items = new List<GraphQLInputValueDefinition>
+            Fields = new GraphQLInputFieldsDefinition(
+                new List<GraphQLInputValueDefinition>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.String)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue2"),
-                        Type = new GraphQLListType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName(GraphQLToken.Int)
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue3"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Float)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue4"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Boolean)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue5"),
-                        Type = new GraphQLNonNullType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName(nestedGraphQLInputObjectTypeDefinition.Name)
-                            }
-                        }
-                    }
+                    new(
+                        new GraphQLName("exampleValue"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.String))
+                    ),
+                    new(
+                        new GraphQLName("exampleValue2"),
+                        new GraphQLListType(
+                            new GraphQLNamedType(new GraphQLName(GraphQLToken.Int))
+                        )
+                    ),
+                    new(
+                        new GraphQLName("exampleValue3"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.Float))
+                    ),
+                    new(
+                        new GraphQLName("exampleValue4"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean))
+                    ),
+                    new(
+                        new GraphQLName("exampleValue5"),
+                        new GraphQLNonNullType(
+                            new GraphQLNamedType(new GraphQLName(nestedGraphQLInputObjectTypeDefinition.Name))
+                        )
+                    )
                 }
-            }
+            )
         };
 
-        var graphQLInputValueDefinition = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("exampleInput"),
-            Type = new GraphQLNamedType
-            {
-                Name = new GraphQLName(graphQLInputObjectTypeDefinition.NameValue())
-            }
-        };
+        var graphQLInputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("exampleInput"),
+            new GraphQLNamedType(new GraphQLName(graphQLInputObjectTypeDefinition.NameValue()))
+        );
 
         _mockGraphQLDocumentAdapter!
             .IsGraphQLInputObjectTypeDefinition(graphQLInputObjectTypeDefinition.NameValue())
@@ -254,7 +206,8 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
             )
             .Returns(exampleBooleanValue);
 
-        const string expectedExampleValue = $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"nestedValue2\": [ {exampleIntValue} ] }} }}";
+        const string expectedExampleValue =
+            $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"nestedValue2\": [ {exampleIntValue} ] }} }}";
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(
@@ -270,126 +223,78 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
     public void Convert_returns_expected_example_value_for_recursive_input_type()
     {
         // arrange
-        var nestedGraphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
+        var nestedGraphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition(
+            new GraphQLName("TestNestedInputObjectTypeDefinition"))
         {
-            Name = new GraphQLName("TestNestedInputObjectTypeDefinition"),
-            Fields = new GraphQLInputFieldsDefinition
-            {
-                Items = new List<GraphQLInputValueDefinition>
+            Fields = new GraphQLInputFieldsDefinition(
+                new List<GraphQLInputValueDefinition>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName("nestedValue"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Int)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("recursiveNestedValue"),
-                        Type = new GraphQLNonNullType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName("TestInputObjectTypeDefinition")
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("recursiveNestedListValue"),
-                        Type = new GraphQLListType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName("TestInputObjectTypeDefinition")
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("recursiveNestedNonNullListValue"),
-                        Type = new GraphQLNonNullType
-                        {
-                            Type = new GraphQLListType
-                            {
-                                Type = new GraphQLNamedType
-                                {
-                                    Name = new GraphQLName("TestInputObjectTypeDefinition")
-                                }
-                            }
-                        }
-                    }
+                    new(
+                        new GraphQLName("nestedValue"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.Int))
+                    ),
+                    new(
+                        new GraphQLName("recursiveNestedValue"),
+                        new GraphQLNonNullType(
+                            new GraphQLNamedType(new GraphQLName("TestInputObjectTypeDefinition"))
+                        )
+                    ),
+                    new(
+                        new GraphQLName("recursiveNestedListValue"),
+                        new GraphQLListType(
+                            new GraphQLNamedType(new GraphQLName("TestInputObjectTypeDefinition"))
+                        )
+                    ),
+                    new(
+                        new GraphQLName("recursiveNestedNonNullListValue"),
+                        new GraphQLNonNullType(
+                            new GraphQLListType(
+                                new GraphQLNamedType(new GraphQLName("TestInputObjectTypeDefinition"))
+                            )
+                        )
+                    )
                 }
-            }
+            )
         };
 
-        var graphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition
+        var graphQLInputObjectTypeDefinition = new GraphQLInputObjectTypeDefinition(
+            new GraphQLName("TestInputObjectTypeDefinition"))
         {
-            Name = new GraphQLName("TestInputObjectTypeDefinition"),
-            Fields = new GraphQLInputFieldsDefinition
-            {
-                Items = new List<GraphQLInputValueDefinition>
+            Fields = new GraphQLInputFieldsDefinition(
+                new List<GraphQLInputValueDefinition>
                 {
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.String)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue2"),
-                        Type = new GraphQLListType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName(GraphQLToken.Int)
-                            }
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue3"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Float)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue4"),
-                        Type = new GraphQLNamedType
-                        {
-                            Name = new GraphQLName(GraphQLToken.Boolean)
-                        }
-                    },
-                    new()
-                    {
-                        Name = new GraphQLName("exampleValue5"),
-                        Type = new GraphQLNonNullType
-                        {
-                            Type = new GraphQLNamedType
-                            {
-                                Name = new GraphQLName(nestedGraphQLInputObjectTypeDefinition.Name)
-                            }
-                        }
-                    }
+                    new(
+                        new GraphQLName("exampleValue"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.String))
+                    ),
+                    new(
+                        new GraphQLName("exampleValue2"),
+                        new GraphQLListType(
+                            new GraphQLNamedType(new GraphQLName(GraphQLToken.Int))
+                        )
+                    ),
+                    new(
+                        new GraphQLName("exampleValue3"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.Float))
+                    ),
+                    new(
+                        new GraphQLName("exampleValue4"),
+                        new GraphQLNamedType(new GraphQLName(GraphQLToken.Boolean))
+                    ),
+                    new(
+                        new GraphQLName("exampleValue5"),
+                        new GraphQLNonNullType(
+                            new GraphQLNamedType(new GraphQLName(nestedGraphQLInputObjectTypeDefinition.Name))
+                        )
+                    )
                 }
-            }
+            )
         };
 
-        var graphQLInputValueDefinition = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("exampleInput"),
-            Type = new GraphQLNamedType
-            {
-                Name = new GraphQLName(graphQLInputObjectTypeDefinition.NameValue())
-            }
-        };
+        var graphQLInputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("exampleInput"),
+            new GraphQLNamedType(new GraphQLName(graphQLInputObjectTypeDefinition.NameValue()))
+        );
 
         _mockGraphQLDocumentAdapter!
             .IsGraphQLInputObjectTypeDefinition(graphQLInputObjectTypeDefinition.NameValue())
@@ -443,7 +348,8 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
             )
             .Returns(exampleBooleanValue);
 
-        const string expectedExampleValue = $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"recursiveNestedValue\": <some TestInputObjectTypeDefinition value>, \"recursiveNestedNonNullListValue\": [ <some TestInputObjectTypeDefinition value> ] }} }}";
+        const string expectedExampleValue =
+            $"{{ \"exampleValue\": {exampleStringValue}, \"exampleValue2\": [ {exampleIntValue} ], \"exampleValue3\": {exampleFloatValue}, \"exampleValue4\": {exampleBooleanValue}, \"exampleValue5\": {{ \"nestedValue\": {exampleIntValue}, \"recursiveNestedValue\": <some TestInputObjectTypeDefinition value>, \"recursiveNestedNonNullListValue\": [ <some TestInputObjectTypeDefinition value> ] }} }}";
 
         // act
         var exampleValue = _subjectUnderTest!.Convert(
@@ -459,11 +365,10 @@ internal sealed class GraphQLInputValueToExampleValueConverterTests
     public void Convert_throws_exception_when_unsupported_GraphQLType_is_encountered()
     {
         // arrange
-        var graphQLInputValueDefinition = new GraphQLInputValueDefinition
-        {
-            Name = new GraphQLName("exampleInput"),
-            Type = new UnsupportedGraphQLType()
-        };
+        var graphQLInputValueDefinition = new GraphQLInputValueDefinition(
+            new GraphQLName("exampleInput"),
+            new UnsupportedGraphQLType()
+        );
 
         _mockGraphQLDocumentAdapter!
             .IsGraphQLInputObjectTypeDefinition(Arg.Any<string>())
