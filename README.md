@@ -23,6 +23,10 @@
 
 Automagically generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
 
+## Demonstration
+
+https://user-images.githubusercontent.com/45316999/233817666-81deda2e-f1e5-4376-8614-c2cafc956a1c.mp4
+
 ### ✨ Features
 
 Here are some features that this tool provides:
