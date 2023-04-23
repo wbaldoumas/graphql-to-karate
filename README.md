@@ -23,7 +23,7 @@
 
 Automagically generate Karate API tests from your GraphQL schemas. Useful for test-driven development, change validation in CI/CD, and more.
 
-## Demonstration
+## 📢 Demonstration
 
 https://user-images.githubusercontent.com/45316999/233817666-81deda2e-f1e5-4376-8614-c2cafc956a1c.mp4
 
@@ -31,13 +31,11 @@ https://user-images.githubusercontent.com/45316999/233817666-81deda2e-f1e5-4376-
 
 Here are some features that this tool provides:
 
-- **Generate API tests from GraphQL schemas:** Karate API tests for both Query and Mutation operations are supported.
-- **Filterable Query and Mutation operations:** Allows you to filter Query and Mutation operations so that you can generate tests for a specific subset of target operations.
-- **Validates response codes and response shapes:** Validates response codes and uses Karate schema validation to ensure that the response shapes for each operation are valid.
-- **Supports all native GraphQL types:** Supports `scalar`, `object`, `interface`, `input`, `enum`, and `union` GraphQL types.
+- **Generate API tests from GraphQL schemas:** Karate API test generation for both Query and Mutation operations is supported.
+- **Filterable Query and Mutation operations:** Allows you to filter down and generate tests for a specific subset of target operations.
+- **Validate response codes and response shapes:** Validates response codes and response schemas using Karate [schema validation](https://github.com/karatelabs/karate#schema-validation).
 - **Handles cyclical type relationships:** Prunes cyclical types to remove cycles as they are encountered.
-- **Supports custom scalar types:** Custom scalar types may be mapped to their corresponding Karate schema types.
-- **Supports union type validation:** Each possible type within union types is validated against its corresponding expected schema.
+- **Supports custom scalar types:** Custom scalar types may be optionally mapped to their corresponding Karate schema types.
 - **Generates test data for arguments and input types:** Test data for query arguments and input types is generated automatically.
 - **Interactive and non-interactive CLI modes:** Supports both interactive and non-interactive CLI modes, as well as JSON configuration.
 
@@ -57,7 +55,7 @@ Head over to [releases](https://github.com/wbaldoumas/graphql-to-karate/releases
 dotnet tool install --global graphql-to-karate --version 0.0.6
 ```
 
-### 🔨 Building From Source
+### 🛠️ Building From Source
 
 To build from source, clone the repository locally and run some flavor of the following command. Be sure to update `<runtime identifier>` to your target platform. A catalog of available runtime identifiers can be viewed [here](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog).
 
@@ -75,7 +73,7 @@ dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.cspro
 
 Once published, you can move the binary to your preferred install location to use.
 
-## 🛠️ Usage
+## 🌌 Usage
 
 To use `graphql-to-karate`, simply invoke the `graphql-to-karate convert` command, passing your GraphQL schema file as an argument:
 
