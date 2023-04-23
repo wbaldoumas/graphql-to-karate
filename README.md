@@ -25,7 +25,7 @@ Automagically generate Karate API tests from your GraphQL schemas. Useful for te
 
 ## 📢 Demonstration
 
-https://user-images.githubusercontent.com/45316999/233817666-81deda2e-f1e5-4376-8614-c2cafc956a1c.mp4
+https://user-images.githubusercontent.com/45316999/233819219-5149e02d-649f-4c3d-a3fd-844a231cf515.mp4
 
 ### ✨ Features
 
