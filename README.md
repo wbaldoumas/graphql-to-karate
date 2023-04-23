@@ -1,6 +1,6 @@
 # graphql-to-karate 🚀
 
-**Project Status**: Testing
+**Project Status**: v0.1.0 release. To report a bug, please open an [issue](https://github.com/wbaldoumas/graphql-to-karate/issues).
 
 [![Build][github-checks-shield]][github-checks-url]
 [![Coverage][coverage-shield]][coverage-url]
@@ -52,7 +52,7 @@ Head over to [releases](https://github.com/wbaldoumas/graphql-to-karate/releases
 `graphql-to-karate` is also available as a [NuGet](https://www.nuget.org/packages/graphql-to-karate) offering and can be installed with the following command:
 
 ```sh
-dotnet tool install --global graphql-to-karate --version 0.0.6
+dotnet tool install --global graphql-to-karate --version 0.1.0
 ```
 
 ### 🛠️ Building From Source
