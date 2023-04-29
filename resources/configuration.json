@@ -1,5 +1,15 @@
 {
     "$schema": "https://raw.githubusercontent.com/wbaldoumas/graphql-to-karate/main/configuration/schema/v1/schema.json",
-    "outputFile": "configured-contries.feature",
-    "baseUrl": "\"https://countries.trevorblades.com\""
+    "outputFile": "blog.feature",
+    "baseUrl": "\"http://localhost:9001\"",
+    "excludeQueries": false,
+    "includeMutations": true,
+    "queryName": "Query",
+    "mutationName": "Mutation",
+    "typeFilter": [],
+    "queryOperationFilter": [],
+    "mutationOperationFilter": [],
+    "customScalarMapping": {
+        "DateTime": "string"
+    }
 }
