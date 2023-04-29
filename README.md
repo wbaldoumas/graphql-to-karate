@@ -1,6 +1,6 @@
 # graphql-to-karate 🚀
 
-**Project Status**: v0.1.0 release. To report a bug, please open an [issue](https://github.com/wbaldoumas/graphql-to-karate/issues).
+**Project Status**: v0.1.0 release. The project is still in its early stages. To report a bug, feel free to open an [issue](https://github.com/wbaldoumas/graphql-to-karate/issues).
 
 [![Build][github-checks-shield]][github-checks-url]
 [![Coverage][coverage-shield]][coverage-url]
@@ -38,10 +38,11 @@ Here are some features that this tool provides:
 - **Supports custom scalar types:** Custom scalar types may be optionally mapped to their corresponding Karate schema types.
 - **Generates test data for arguments and input types:** Test data for query arguments and input types is generated automatically.
 - **Interactive and non-interactive CLI modes:** Supports both interactive and non-interactive CLI modes, as well as JSON configuration.
+- **Federation-specific directives:** Supports some [federation-specific directives](https://www.apollographql.com/docs/federation/federated-types/federated-directives/), like `@inaccessible` and `@external`.
 
 See the full list of available options below for more information.
 
-## Installation
+## 🤖 Installation
 
 ### 📥 Binary Releases
 
