@@ -68,6 +68,17 @@ jobs:
           dotnet publish src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj --configuration Release --output ./publish/osx-x64 --self-contained true --runtime osx-x64 --force /p:PublishReadyToRun=true /p:PublishSingleFile=true /p:DebugType=None /p:DebugSymbols=false /p:GenerateDocumentationFile=false /p:TreatWarningsAsErrors=false
           zip -j -r ./publish/osx-x64.zip ./publish/osx-x64/*
 
+      - name: 🔨 set up python
+        if: env.VERSION_CHANGED == '1'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: 📢 extract release notes
+        if: env.VERSION_CHANGED == '1'
+        run: |
+          python scripts/extract_changelog.py CHANGELOG.md latest_release.md
+
       - name: 📑 create github release
         if: env.VERSION_CHANGED == '1'
         id: create_release
@@ -79,6 +90,7 @@ jobs:
           release_name: Release v${{ env.VERSION }}
           draft: false
           prerelease: false
+          body_path: latest_release.md
 
       - name: 🔼 upload linux artifacts
         if: env.VERSION_CHANGED == '1'
