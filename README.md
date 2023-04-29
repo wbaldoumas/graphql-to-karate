@@ -1,6 +1,6 @@
 # graphql-to-karate 🚀
 
-**Project Status**: v0.1.0 release. To report a bug, please open an [issue](https://github.com/wbaldoumas/graphql-to-karate/issues).
+**Project Status**: v0.1.0 release. The project is still in its early stages. To report a bug, feel free to open an [issue](https://github.com/wbaldoumas/graphql-to-karate/issues).
 
 [![Build][github-checks-shield]][github-checks-url]
 [![Coverage][coverage-shield]][coverage-url]
