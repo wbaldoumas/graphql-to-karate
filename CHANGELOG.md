@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Example JSON Configuration ([#105](https://github.com/wbaldoumas/graphql-to-karate/pull/105)) 
+- Example JSON Configuration ([#105](https://github.com/wbaldoumas/graphql-to-karate/pull/105))
 
 ### Changed
 
