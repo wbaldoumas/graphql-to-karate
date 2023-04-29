@@ -19,7 +19,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: 🥋 generate karate feature
-      run: dotnet run --project src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj convert resources/blog.graphql --non-interactive --configuration resources/configuration.json
+      run: dotnet run --project src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj convert resources/blog.graphql --non-interactive --configuration-file resources/configuration.json
 
     - name: 💨 run integration api
       run: dotnet run --project tests/GraphQLToKarate.Integration.Api/GraphQLToKarate.Integration.Api.csproj --urls http://localhost:9001/ &
