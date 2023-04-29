@@ -15,7 +15,8 @@ builder.Services
     .AddType<PageInfo>()
     .AddType<UserConnection>()
     .AddType<BlogPostConnection>()
-    .AddType<CommentConnection>();
+    .AddType<CommentConnection>()
+    .AddTypeExtension<BlogPostExtensions>();
 
 var app = builder.Build();
 

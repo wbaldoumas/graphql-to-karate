@@ -88,7 +88,7 @@ public sealed class GraphQLCyclicToAcyclicConverter : IGraphQLCyclicToAcyclicCon
 
             fieldRelationshipsGraph.AddEdge(edge);
 
-            if (fieldRelationshipsGraph.IsCyclic())
+            if (fieldRelationshipsGraph.IsCyclicGraph())
             {
                 typesCausingCycles.Add(unwrappedChildTypeName);
                 fieldRelationshipsGraph.RemoveEdge(edge);

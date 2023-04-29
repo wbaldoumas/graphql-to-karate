@@ -73,7 +73,7 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
             inputValueRelationships.AddEdge(edge);
 
             // If adding the edge generates a cycle, remove it and generate a placeholder value to prevent infinite recursion...
-            if (inputValueRelationships.IsCyclic())
+            if (inputValueRelationships.IsCyclicGraph())
             {
                 inputValueRelationships.RemoveEdge(edge);
 

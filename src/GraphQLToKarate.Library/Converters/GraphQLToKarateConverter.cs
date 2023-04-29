@@ -44,6 +44,69 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         var graphQLDocument = _graphQLSchemaParser.Parse(schema);
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument, _graphQLToKarateSettings);
 
+        RemoveTypeCycles(graphQLDocumentAdapter);
+
+        var karateObjects = GenerateKarateObjects(graphQLDocumentAdapter);
+        IEnumerable<GraphQLOperation> graphQLOperations = new List<GraphQLOperation>();
+
+        if (!_graphQLToKarateSettings.ExcludeQueries)
+        {
+            if (graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields is null)
+            {
+                _logger.LogWarning(
+                    message: """Unable to find query type by the name of "{queryName}". If your query type exists and is named something other than "{queryName}", you will need to set the correct {queryNameOption} option for correct Karate scenario generation.""",
+                    _graphQLToKarateSettings.QueryName,
+                    _graphQLToKarateSettings.QueryName,
+                    "--query-name"
+                );
+            }
+            else
+            {
+                graphQLOperations = graphQLOperations.Concat(
+                    GenerateGraphQLOperations(
+                        graphQLDocumentAdapter,
+                        graphQLDocumentAdapter.GraphQLQueryTypeDefinition.Fields,
+                        _graphQLToKarateSettings.QueryOperationFilter,
+                        GraphQLOperationType.Query
+                    )
+                );
+            }
+        }
+
+        // ReSharper disable once InvertIf - this is easier to read.
+        if (_graphQLToKarateSettings.IncludeMutations)
+        {
+            if (graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields is null)
+            {
+                _logger.LogWarning(
+                    message: """Unable to find mutation type by the name of "{mutationName}". If your mutation type exists and is named something other than "{mutationName}", you will need to set the correct {mutationNameOption} option for correct Karate scenario generation.""",
+                    _graphQLToKarateSettings.MutationName,
+                    _graphQLToKarateSettings.MutationName,
+                    "--mutation-name"
+                );
+            }
+            else
+            {
+                graphQLOperations = graphQLOperations.Concat(
+                    GenerateGraphQLOperations(
+                        graphQLDocumentAdapter,
+                        graphQLDocumentAdapter.GraphQLMutationTypeDefinition.Fields,
+                        _graphQLToKarateSettings.MutationOperationFilter,
+                        GraphQLOperationType.Mutation
+                    )
+                );
+            }
+        }
+
+        return _karateFeatureBuilder.Build(
+            karateObjects,
+            graphQLOperations,
+            graphQLDocumentAdapter
+        );
+    }
+
+    private void RemoveTypeCycles(IGraphQLDocumentAdapter graphQLDocumentAdapter)
+    {
         var defaultFieldsDefinitions = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>());
 
         foreach (var hasFieldsDefinition in graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields ?? defaultFieldsDefinitions)
@@ -55,8 +118,10 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         {
             _graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
         }
+    }
 
-        var karateObjects = graphQLDocumentAdapter.GraphQLObjectTypeDefinitions.Select(
+    private IEnumerable<KarateObject> GenerateKarateObjects(IGraphQLDocumentAdapter graphQLDocumentAdapter) =>
+        graphQLDocumentAdapter.GraphQLObjectTypeDefinitions.Select(
             graphQLObjectTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
                 graphQLObjectTypeDefinition,
                 graphQLDocumentAdapter
@@ -70,59 +135,14 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
             )
         );
 
-        if (graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields is null)
-        {
-            _logger.LogWarning(
-                message: """Unable to find query type by the name of "{queryName}". If your query type exists and is named something other than "{queryName}", you will need to set the correct {queryNameOption} option for correct Karate scenario generation.""",
-                _graphQLToKarateSettings.QueryName,
-                _graphQLToKarateSettings.QueryName,
-                "--query-name"
+    private IEnumerable<GraphQLOperation> GenerateGraphQLOperations(
+        IGraphQLDocumentAdapter graphQLDocumentAdapter,
+        GraphQLFieldsDefinition graphQLFieldsDefinition,
+        ICollection<string> operationFilter,
+        GraphQLOperationType operationType) =>
+        graphQLFieldsDefinition
+            .Where(definition => operationFilter.NoneOrContains(definition.NameValue()))
+            .Select(definition =>
+                _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, operationType)
             );
-        }
-
-        if (graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields is null)
-        {
-            _logger.LogWarning(
-                message: """Unable to find mutation type by the name of "{mutationName}". If your mutation type exists and is named something other than "{mutationName}", you will need to set the correct {mutationNameOption} option for correct Karate scenario generation.""",
-                _graphQLToKarateSettings.MutationName,
-                _graphQLToKarateSettings.MutationName,
-                "--mutation-name"
-            );
-        }
-
-        var graphQLOperations = new List<GraphQLOperation>();
-
-        if (!_graphQLToKarateSettings.ExcludeQueries)
-        {
-            var graphQLQueryOperations = graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields?
-                .Where(definition =>
-                    _graphQLToKarateSettings.QueryOperationFilter.NoneOrContains(definition.NameValue())
-                )
-                .Select(definition =>
-                    _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, GraphQLOperationType.Query)
-                ) ?? new List<GraphQLOperation>();
-
-            graphQLOperations = graphQLOperations.Concat(graphQLQueryOperations).ToList();
-        }
-
-        // ReSharper disable once InvertIf - this is easier to read.
-        if (_graphQLToKarateSettings.IncludeMutations)
-        {
-            var graphQLMutationOperations = graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields?
-                .Where(definition =>
-                    _graphQLToKarateSettings.MutationOperationFilter.NoneOrContains(definition.NameValue())
-                )
-                .Select(definition =>
-                    _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, GraphQLOperationType.Mutation)
-                ) ?? new List<GraphQLOperation>();
-
-            graphQLOperations = graphQLOperations.Concat(graphQLMutationOperations).ToList();
-        }
-
-        return _karateFeatureBuilder.Build(
-            karateObjects,
-            graphQLOperations,
-            graphQLDocumentAdapter
-        );
-    }
 }
