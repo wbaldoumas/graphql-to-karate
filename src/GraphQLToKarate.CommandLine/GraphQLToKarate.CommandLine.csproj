@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>William Baldoumas</Authors>
     <OutputType>Exe</OutputType>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
