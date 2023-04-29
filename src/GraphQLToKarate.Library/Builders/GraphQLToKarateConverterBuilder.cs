@@ -17,6 +17,8 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private readonly IGraphQLCyclicToAcyclicConverter _graphQLCyclicToAcyclicConverter;
 
+    private readonly IGraphQLSchemaParser _graphQLSchemaParser;
+
     private IGraphQLTypeConverter _graphQLTypeConverter = new GraphQLTypeConverter();
 
     private bool _excludeQueriesSetting;
@@ -37,15 +39,20 @@ public sealed class GraphQLToKarateConverterBuilder :
 
     private ICustomScalarMapping _customScalarMapping = new CustomScalarMapping();
 
-    public GraphQLToKarateConverterBuilder(ILogger<GraphQLToKarateConverter> graphQLToKarateConverterLogger, IGraphQLCyclicToAcyclicConverter graphQLCyclicToAcyclicConverter)
+    public GraphQLToKarateConverterBuilder(
+        ILogger<GraphQLToKarateConverter> graphQLToKarateConverterLogger,
+        IGraphQLCyclicToAcyclicConverter graphQLCyclicToAcyclicConverter,
+        IGraphQLSchemaParser graphQLSchemaParser)
     {
         _graphQLToKarateConverterLogger = graphQLToKarateConverterLogger;
         _graphQLCyclicToAcyclicConverter = graphQLCyclicToAcyclicConverter;
+        _graphQLSchemaParser = graphQLSchemaParser;
     }
 
     public IConfigurableGraphQLToKarateConverterBuilder Configure() => new GraphQLToKarateConverterBuilder(
         _graphQLToKarateConverterLogger,
-        _graphQLCyclicToAcyclicConverter
+        _graphQLCyclicToAcyclicConverter,
+        _graphQLSchemaParser
     );
 
     public IConfigurableGraphQLToKarateConverterBuilder WithCustomScalarMapping(
@@ -121,7 +128,7 @@ public sealed class GraphQLToKarateConverterBuilder :
         var graphQLTypeConverterFactory = new GraphQLTypeConverterFactory(_graphQLTypeConverter);
 
         return new GraphQLToKarateConverter(
-            new GraphQLSchemaParser(),
+            _graphQLSchemaParser,
             new GraphQLTypeDefinitionConverter(graphQLTypeConverterFactory),
             new GraphQLFieldDefinitionConverter(
                 new GraphQLInputValueDefinitionConverterFactory(
