@@ -197,7 +197,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
             fieldRelationshipsGraph.AddEdge(edge);
 
             // if adding the child field creates a cyclic graph, remove it and skip it.
-            if (fieldRelationshipsGraph.IsCyclic())
+            if (fieldRelationshipsGraph.IsCyclicGraph())
             {
                 fieldRelationshipsGraph.RemoveEdge(edge);
 
@@ -307,7 +307,7 @@ public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionCon
 
         operationStringBuilder.AppendLine($"{SchemaToken.Space}{SchemaToken.OpenBrace}");
 
-        stringBuilder.Insert(0, operationStringBuilder.ToString());
+        stringBuilder.Insert(0, operationStringBuilder);
         stringBuilder.Append(SchemaToken.CloseBrace);
     }
 }

@@ -15,6 +15,6 @@ internal static class AdjacencyGraphExtensions
     /// <typeparam name="TEdge">The edge type.</typeparam>
     /// <param name="adjacencyGraph">The <see cref="AdjacencyGraph{TVertex,TEdge}"/> to check.</param>
     /// <returns><c>true</c> if the given <see cref="AdjacencyGraph{TVertex,TEdge}"/> is cyclic; otherwise, <c>false</c>.</returns>
-    public static bool IsCyclic<TVertex, TEdge>(this AdjacencyGraph<TVertex, TEdge> adjacencyGraph)
+    public static bool IsCyclicGraph<TVertex, TEdge>(this AdjacencyGraph<TVertex, TEdge> adjacencyGraph)
         where TEdge : IEdge<TVertex> => !adjacencyGraph.IsDirectedAcyclicGraph();
 }

@@ -1,4 +1,5 @@
 scalar DateTime
+scalar URL
 
 type Query {
   userById(id: ID!): User!
@@ -43,6 +44,10 @@ type BlogPost implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   id: ID!
+}
+
+extend type BlogPost {
+  uri: URL!
 }
 
 type Comment implements Node {

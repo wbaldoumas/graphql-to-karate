@@ -9,8 +9,8 @@ namespace GraphQLToKarate.Tests.Extensions;
 internal sealed class AdjacencyGraphExtensionsTests
 {
     [TestCaseSource(nameof(IsCyclicTestCases))]
-    public void IsCyclic_should_return_expected_result(AdjacencyGraph<int, Edge<int>> graph, bool expectedResult) =>
-        graph.IsCyclic().Should().Be(expectedResult);
+    public void IsCyclicGraph_should_return_expected_result(AdjacencyGraph<int, Edge<int>> graph, bool expectedResult) =>
+        graph.IsCyclicGraph().Should().Be(expectedResult);
 
     private static IEnumerable<TestCaseData> IsCyclicTestCases
     {

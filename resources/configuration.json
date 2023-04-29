@@ -10,6 +10,7 @@
     "queryOperationFilter": [],
     "mutationOperationFilter": [],
     "customScalarMapping": {
-        "DateTime": "string"
+        "DateTime": "string",
+        "URL": "string"
     }
 }

@@ -5,6 +5,9 @@ dotnet_diagnostic.SA1000.severity = none
 dotnet_diagnostic.SA1009.severity = none
 dotnet_diagnostic.SA1111.severity = none
 
+# add trailing commas
+dotnet_diagnostic.MA0007.severity = none
+
 # format provider is missing
 dotnet_diagnostic.MA0011.severity = none
 
