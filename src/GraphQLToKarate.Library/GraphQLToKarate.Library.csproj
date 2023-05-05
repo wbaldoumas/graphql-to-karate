@@ -10,13 +10,13 @@
 
   <ItemGroup>
     <PackageReference Include="GraphQL-Parser" Version="9.1.0" />
-    <PackageReference Include="Meziantou.Analyzer" Version="2.0.43">
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.45">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0" />
     <PackageReference Include="QuikGraph" Version="2.5.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="19.2.18" />
+    <PackageReference Include="System.IO.Abstractions" Version="19.2.22" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
