@@ -126,7 +126,7 @@ jobs:
           asset_content_type: application/zip          
 
       - name: 💌 publish nuget
-        uses: alirezanet/publish-nuget@v3.0.4
+        uses: alirezanet/publish-nuget@v3.0.5
         with:
           PROJECT_FILE_PATH: src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj
           TAG_COMMIT: false
