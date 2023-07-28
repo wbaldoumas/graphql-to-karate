@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GraphQL-Parser" Version="9.1.0" />
-    <PackageReference Include="Meziantou.Analyzer" Version="2.0.68">
+    <PackageReference Include="GraphQL-Parser" Version="9.2.0" />
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.77">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
