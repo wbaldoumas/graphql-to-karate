@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] 2023-07-29
+
+### Changed
+
+Dependency updates:
+| Library | Current Version | New Version |
+|---------|-----------------|-------------|
+| GraphQL-Parser | 9.1.0 | 9.2.0 |
+| Microsoft.Extensions.Logging.Abstractions | 7.0.0 | 7.0.1 |
+| Serilog.Extensions.Hosting | 5.0.1 | 7.0.0 |
+| Spectre.Console | 0.46.0 | 0.47.0 |
+| Spectre.Console.Analyzer | 0.46.0 | 0.47.0 |
+| Spectre.Console.Cli | 0.46.0 | 0.47.0 |
+| System.IO.Abstractions | 19.2.22 | 19.2.29 |
+
 ## [0.1.2] 2023-05-07
 
 ### Changed
