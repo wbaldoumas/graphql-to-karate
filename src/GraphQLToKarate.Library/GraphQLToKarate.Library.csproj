@@ -16,7 +16,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
     <PackageReference Include="QuikGraph" Version="2.5.0" />
-    <PackageReference Include="System.IO.Abstractions" Version="19.2.51" />
+    <PackageReference Include="System.IO.Abstractions" Version="19.2.64" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
