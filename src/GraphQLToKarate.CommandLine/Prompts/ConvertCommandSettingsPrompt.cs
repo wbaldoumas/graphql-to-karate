@@ -185,7 +185,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
 
     private bool PromptForExcludeQueriesChoice(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
         _ansiConsole.Prompt(
-            new ConfirmationPromptWithStyling("Exclude queries from the generated Karate feature?")
+            new ConfirmationPrompt("Exclude queries from the generated Karate feature?")
             {
                 DefaultValue = initialLoadedConvertCommandSettings.ExcludeQueries,
                 DefaultValueStyle = InfoStyle,
@@ -195,7 +195,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
 
     private bool PromptForIncludeMutationsChoice(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
         _ansiConsole.Prompt(
-            new ConfirmationPromptWithStyling("Include mutations in the generated Karate feature?")
+            new ConfirmationPrompt("Include mutations in the generated Karate feature?")
             {
                 DefaultValue = initialLoadedConvertCommandSettings.IncludeMutations,
                 DefaultValueStyle = InfoStyle,
