@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using Spectre.Console.Cli;
+using Spectre.Console.Cli.Help;
 using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Tests.Infrastructure;
@@ -62,6 +63,12 @@ internal sealed class CommandAppConfiguratorTests
 
         _mockTypeResolver!.Resolve(typeof(ConvertCommandSettings)).Returns(_mockConvertCommandSettings);
         _mockTypeResolver.Resolve(typeof(ConvertCommand)).Returns(_mockConvertCommand);
+        _mockTypeResolver.Resolve(typeof(IEnumerable<IHelpProvider>)).Returns(
+            new List<IHelpProvider>
+            {
+                Substitute.For<IHelpProvider>()
+            }
+        );
 
         _mockTypeRegistrar!
             .Build()
