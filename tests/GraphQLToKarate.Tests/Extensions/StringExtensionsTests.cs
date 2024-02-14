@@ -15,8 +15,8 @@ internal sealed class StringExtensionsTests
     [TestCase("% has symbols", "% has symbols")]
     [TestCase(null, "")]
     [TestCase("", "")]
-    public void FirstCharToLowerTest(string input, string expectedOutput) =>
-        input.FirstCharToLower().Should().Be(expectedOutput);
+    public void FirstCharToLowerTest(string? input, string expectedOutput) =>
+        input?.FirstCharToLower().Should().Be(expectedOutput);
 
     [Test]
     [TestCase("all lowercase", "All lowercase")]
@@ -26,8 +26,8 @@ internal sealed class StringExtensionsTests
     [TestCase("% has symbols", "% has symbols")]
     [TestCase(null, "")]
     [TestCase("", "")]
-    public void FirstCharToUpperTest(string input, string expectedOutput) =>
-        input.FirstCharToUpper().Should().Be(expectedOutput);
+    public void FirstCharToUpperTest(string? input, string expectedOutput) =>
+        input?.FirstCharToUpper().Should().Be(expectedOutput);
 
     [Test]
     [TestCase("foo", 1, " foo")]
