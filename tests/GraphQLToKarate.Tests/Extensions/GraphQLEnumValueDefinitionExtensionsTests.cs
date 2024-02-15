@@ -21,10 +21,7 @@ public class GraphQLEnumValueDefinitionExtensionsTests
             new GraphQLEnumValue(new GraphQLName("someValue"))
         )
         {
-            Directives = new GraphQLDirectives(new List<GraphQLDirective>
-            {
-                new(new GraphQLName(directiveName))
-            })
+            Directives = new GraphQLDirectives([new GraphQLDirective(new GraphQLName(directiveName))])
         };
 
         // act
@@ -46,10 +43,7 @@ public class GraphQLEnumValueDefinitionExtensionsTests
             new GraphQLEnumValue(new GraphQLName("someValue"))
         )
         {
-            Directives = new GraphQLDirectives(new List<GraphQLDirective>
-            {
-                new(new GraphQLName(directiveName))
-            })
+            Directives = new GraphQLDirectives([new GraphQLDirective(new GraphQLName(directiveName))])
         };
 
         // act

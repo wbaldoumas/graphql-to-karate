@@ -1,6 +1,7 @@
 ﻿using GraphQLParser.AST;
 using GraphQLToKarate.Library.Extensions;
 using GraphQLToKarate.Library.Settings;
+#pragma warning disable SA1010
 
 namespace GraphQLToKarate.Library.Adapters;
 
@@ -40,7 +41,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
 
         // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
         // this actually can be null, but the GraphQLParser library doesn't mark it as nullable
-        graphQLDocument.Definitions ??= new List<ASTNode>();
+        graphQLDocument.Definitions ??= [];
 
         GraphQLObjectTypeDefinitions = graphQLDocument.Definitions
             .OfType<GraphQLObjectTypeDefinition>()
@@ -181,7 +182,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     private static void ApplyDirectives<T>(T graphQLHasFieldsDefinitionType)
         where T : IHasFieldsDefinitionNode
     {
-        graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>());
+        graphQLHasFieldsDefinitionType.Fields ??= new GraphQLFieldsDefinition([]);
 
         var accessibleGraphQLFieldDefinitions = graphQLHasFieldsDefinitionType.Fields.Items.Where(
             graphQLFieldDefinition => !(graphQLFieldDefinition.IsInaccessible() ||
@@ -194,7 +195,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
     private static void ApplyDirectives(
         GraphQLInputObjectTypeDefinition inputObjectTypeDefinition)
     {
-        inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition(new List<GraphQLInputValueDefinition>());
+        inputObjectTypeDefinition.Fields ??= new GraphQLInputFieldsDefinition([]);
 
         var accessibleGraphQLInputValueDefinitions = inputObjectTypeDefinition.Fields.Items.Where(
             graphQLInputValueDefinition => !(graphQLInputValueDefinition.IsInaccessible() ||
@@ -206,7 +207,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
 
     private static void ApplyDirectives(GraphQLEnumTypeDefinition graphQLEnumTypeDefinition)
     {
-        graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition(new List<GraphQLEnumValueDefinition>());
+        graphQLEnumTypeDefinition.Values ??= new GraphQLEnumValuesDefinition([]);
 
         var accessibleGraphQLEnumValueDefinitions = graphQLEnumTypeDefinition.Values.Items.Where(
             graphQLEnumValueDefinition => !(graphQLEnumValueDefinition.IsInaccessible() ||
@@ -251,7 +252,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             return;
         }
 
-        foreach (var field in graphQLTypeExtension.Fields?.Items ?? new List<GraphQLFieldDefinition>())
+        foreach (var field in graphQLTypeExtension.Fields?.Items ?? [])
         {
             hasFieldsDefinition.Fields.Items.Add(field);
         }
@@ -266,7 +267,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             return;
         }
 
-        foreach (var value in graphQLEnumTypeExtension.Values?.Items ?? new List<GraphQLEnumValueDefinition>())
+        foreach (var value in graphQLEnumTypeExtension.Values?.Items ?? [])
         {
             graphQLEnumTypeDefinition.Values.Items.Add(value);
         }
@@ -281,7 +282,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             return;
         }
 
-        foreach (var type in graphQLUnionTypeExtension.Types?.Items ?? new List<GraphQLNamedType>())
+        foreach (var type in graphQLUnionTypeExtension.Types?.Items ?? [])
         {
             graphQLUnionTypeDefinition.Types.Items.Add(type);
         }
@@ -298,7 +299,7 @@ public sealed class GraphQLDocumentAdapter : IGraphQLDocumentAdapter
             return;
         }
 
-        foreach (var field in graphQLInputObjectTypeExtension.Fields?.Items ?? new List<GraphQLInputValueDefinition>())
+        foreach (var field in graphQLInputObjectTypeExtension.Fields?.Items ?? [])
         {
             graphQLInputObjectTypeDefinition.Fields.Items.Add(field);
         }

@@ -22,10 +22,7 @@ public class GraphQLFieldDefinitionExtensionsTests
         )
         {
             Directives = new GraphQLDirectives(
-                new List<GraphQLDirective>
-                {
-                    new(new GraphQLName(directiveName))
-                }
+                [new GraphQLDirective(new GraphQLName(directiveName))]
             )
         };
 
@@ -49,10 +46,7 @@ public class GraphQLFieldDefinitionExtensionsTests
         )
         {
             Directives = new GraphQLDirectives(
-                new List<GraphQLDirective>
-                {
-                    new(new GraphQLName(directiveName))
-                }
+                [new GraphQLDirective(new GraphQLName(directiveName))]
             )
         };
 

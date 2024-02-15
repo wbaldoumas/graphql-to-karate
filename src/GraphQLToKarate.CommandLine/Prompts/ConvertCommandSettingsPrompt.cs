@@ -10,7 +10,11 @@ namespace GraphQLToKarate.CommandLine.Prompts;
 
 /// <inheritdoc cref="IConvertCommandSettingsPrompt"/>
 [ExcludeFromCodeCoverage]
-internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
+internal class ConvertCommandSettingsPrompt(
+    IGraphQLSchemaParser graphQLSchemaParser,
+    ICustomScalarMappingLoader customScalarMappingLoader,
+    IAnsiConsole ansiConsole)
+    : IConvertCommandSettingsPrompt
 {
     private const string MoreChoicesText = "[grey](Move up and down to reveal more operations)[/]";
     private const string InstructionsText = $"[grey](Press [{InstructionsColorRgb}]<space>[/] to toggle an operation, [{InfoColorRgb}]<enter>[/] to accept)[/]";
@@ -26,62 +30,48 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
     private static readonly Style InfoStyle = new(InfoColor);
     private static readonly Style InstructionsStyle = new(new Color(58, 150, 221));
 
-    private readonly IGraphQLSchemaParser _graphQLSchemaParser;
-    private readonly ICustomScalarMappingLoader _customScalarMappingLoader;
-    private readonly IAnsiConsole _ansiConsole;
-
-    public ConvertCommandSettingsPrompt(
-        IGraphQLSchemaParser graphQLSchemaParser,
-        ICustomScalarMappingLoader customScalarMappingLoader,
-        IAnsiConsole ansiConsole)
-    {
-        _graphQLSchemaParser = graphQLSchemaParser;
-        _customScalarMappingLoader = customScalarMappingLoader;
-        _ansiConsole = ansiConsole;
-    }
-
     public async Task<LoadedConvertCommandSettings> PromptAsync(
         LoadedConvertCommandSettings initialLoadedConvertCommandSettings)
     {
-        _ansiConsole.Write(
+        ansiConsole.Write(
             new Panel(
                 new FigletText("graphql-to-karate").Color(InfoColor)
             ).RoundedBorder().DoubleBorder().BorderColor(InfoColor)
         );
 
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
-        if (!_ansiConsole.Profile.Capabilities.Interactive)
+        if (!ansiConsole.Profile.Capabilities.Interactive)
         {
-            _ansiConsole.MarkupLine($"[{ErrorColorRgb}]Current environment does not support interaction.[/] Continuing with default settings. Use a console which supports interaction or use the [{InstructionsColorRgb}]{Options.NonInteractiveOptionName}[/] option to specify settings.");
-            _ansiConsole.Write(new Padder(new Rule { Style = InfoStyle }).PadLeft(1).PadRight(1));
+            ansiConsole.MarkupLine($"[{ErrorColorRgb}]Current environment does not support interaction.[/] Continuing with default settings. Use a console which supports interaction or use the [{InstructionsColorRgb}]{Options.NonInteractiveOptionName}[/] option to specify settings.");
+            ansiConsole.Write(new Padder(new Rule { Style = InfoStyle }).PadLeft(1).PadRight(1));
 
             return initialLoadedConvertCommandSettings;
         }
 
         var outputFile = PromptForOutputFile(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var queryName = PromptForQueryName(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var mutationName = PromptForMutationName(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var excludeQueries = PromptForExcludeQueriesChoice(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var includeMutations = PromptForIncludeMutationsChoice(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var baseUrl = PromptForBaseUrl(initialLoadedConvertCommandSettings);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var customScalarMapping = await PromptForCustomScalarMappingAsync().ConfigureAwait(false);
-        _ansiConsole.WriteLine();
+        ansiConsole.WriteLine();
 
         var graphQLDocumentAdapter = new GraphQLDocumentAdapter(
-            _graphQLSchemaParser.Parse(initialLoadedConvertCommandSettings.GraphQLSchema),
+            graphQLSchemaParser.Parse(initialLoadedConvertCommandSettings.GraphQLSchema),
             new GraphQLToKarateSettings
             {
                 QueryName = queryName,
@@ -111,8 +101,8 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
 
         WriteCapturedOptions(loadedConvertCommandSettings);
 
-        _ansiConsole.MarkupLine($"Non-interactive command: [{InstructionsColorRgb}]{loadedConvertCommandSettings.ToCommandLineCommand()}[/]");
-        _ansiConsole.WriteLine();
+        ansiConsole.MarkupLine($"Non-interactive command: [{InstructionsColorRgb}]{loadedConvertCommandSettings.ToCommandLineCommand()}[/]");
+        ansiConsole.WriteLine();
 
         return loadedConvertCommandSettings;
     }
@@ -153,11 +143,11 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
             table.AddRow($"[{InstructionsColorRgb}]{Options.TypeFilterOptionName}[/]", string.Join(',', loadedConvertCommandSettings.TypeFilter));
         }
 
-        _ansiConsole.Write(new Padder(table).PadLeft(1).PadRight(1));
+        ansiConsole.Write(new Padder(table).PadLeft(1).PadRight(1));
     }
 
     private string PromptForOutputFile(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
-        _ansiConsole.Prompt(
+        ansiConsole.Prompt(
             new TextPrompt<string>($"Enter the [{InstructionsColorRgb}]path and file name[/] for the generated Karate feature file:")
             {
                 AllowEmpty = false,
@@ -166,7 +156,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         );
 
     private string PromptForQueryName(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
-        _ansiConsole.Prompt(
+        ansiConsole.Prompt(
             new TextPrompt<string>($"Enter the name of the [{InstructionsColorRgb}]GraphQL query type[/]:")
             {
                 AllowEmpty = false,
@@ -175,7 +165,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         );
 
     private string PromptForMutationName(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
-        _ansiConsole.Prompt(
+        ansiConsole.Prompt(
             new TextPrompt<string>($"Enter the name of the [{InstructionsColorRgb}]GraphQL mutation type[/]:")
             {
                 AllowEmpty = false,
@@ -184,7 +174,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         );
 
     private bool PromptForExcludeQueriesChoice(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
-        _ansiConsole.Prompt(
+        ansiConsole.Prompt(
             new ConfirmationPrompt("Exclude queries from the generated Karate feature?")
             {
                 DefaultValue = initialLoadedConvertCommandSettings.ExcludeQueries,
@@ -194,7 +184,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         );
 
     private bool PromptForIncludeMutationsChoice(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
-        _ansiConsole.Prompt(
+        ansiConsole.Prompt(
             new ConfirmationPrompt("Include mutations in the generated Karate feature?")
             {
                 DefaultValue = initialLoadedConvertCommandSettings.IncludeMutations,
@@ -204,7 +194,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         );
 
     private string PromptForBaseUrl(LoadedConvertCommandSettings initialLoadedConvertCommandSettings) =>
-        _ansiConsole.Prompt(
+        ansiConsole.Prompt(
             new TextPrompt<string>($"Enter the [{InstructionsColorRgb}]base URL[/] to be used in the Karate feature:")
             {
                 AllowEmpty = false,
@@ -224,7 +214,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
 
         if (graphQLQueryType is null)
         {
-            _ansiConsole.MarkupLine($"[{WarnColorRgb}]No query type found in the GraphQL schema. Skipping query operation filter selection.[/]{Environment.NewLine}");
+            ansiConsole.MarkupLine($"[{WarnColorRgb}]No query type found in the GraphQL schema. Skipping query operation filter selection.[/]{Environment.NewLine}");
 
             return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
@@ -233,7 +223,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
             graphQLFieldDefinition => graphQLFieldDefinition.Name.StringValue
         );
 
-        return _ansiConsole.Prompt(
+        return ansiConsole.Prompt(
             new MultiSelectionPrompt<string>()
                 .PageSize(10)
                 .Required(false)
@@ -256,7 +246,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
 
         if (graphQLMutationType is null)
         {
-            _ansiConsole.MarkupLine($"[{WarnColorRgb}]No mutation type found in the GraphQL schema. Skipping mutation operation filter selection.[/]{Environment.NewLine}");
+            ansiConsole.MarkupLine($"[{WarnColorRgb}]No mutation type found in the GraphQL schema. Skipping mutation operation filter selection.[/]{Environment.NewLine}");
 
             return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
@@ -265,7 +255,7 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
             graphQLFieldDefinition => graphQLFieldDefinition.Name.StringValue
         );
 
-        return _ansiConsole.Prompt(
+        return ansiConsole.Prompt(
             new MultiSelectionPrompt<string>()
                 .PageSize(10)
                 .Required(false)
@@ -292,12 +282,12 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
         // ReSharper disable once InvertIf - this is easier to read
         if (!graphQLTypes.Any())
         {
-            _ansiConsole.MarkupLine($"[{WarnColorRgb}]No types found in the GraphQL schema. Skipping type filter selection.[/]");
+            ansiConsole.MarkupLine($"[{WarnColorRgb}]No types found in the GraphQL schema. Skipping type filter selection.[/]");
 
             return new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         }
 
-        return _ansiConsole.Prompt(
+        return ansiConsole.Prompt(
             new MultiSelectionPrompt<string>()
                 .PageSize(10)
                 .Required(false)
@@ -311,17 +301,17 @@ internal class ConvertCommandSettingsPrompt : IConvertCommandSettingsPrompt
 
     private async Task<ICustomScalarMapping> PromptForCustomScalarMappingAsync()
     {
-        var customScalarMappingSource = _ansiConsole.Prompt(
+        var customScalarMappingSource = ansiConsole.Prompt(
             new TextPrompt<string>($"Enter the [{InstructionsColorRgb}]custom scalar mapping[/] (raw mapping value or path to file) {OptionalPrompt}:")
             {
                 AllowEmpty = true,
                 DefaultValueStyle = InfoStyle
             }.Validate(
-                _customScalarMappingLoader.IsValid,
+                customScalarMappingLoader.IsValid,
                 $"{Environment.NewLine}[{ErrorColorRgb}]Invalid custom scalar mapping.[/] Please provide either a raw mapping value (e.g. [{InstructionsColorRgb}]\"DateTime:string,Long:number\"[/] etc.) or a [{InstructionsColorRgb}]path to a custom scalar mapping file[/] (containing a JSON or comma-separated mapping).{Environment.NewLine}"
             )
         );
 
-        return await _customScalarMappingLoader.LoadAsync(customScalarMappingSource).ConfigureAwait(false);
+        return await customScalarMappingLoader.LoadAsync(customScalarMappingSource).ConfigureAwait(false);
     }
 }

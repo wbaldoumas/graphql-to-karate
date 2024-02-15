@@ -9,14 +9,8 @@ using System.Text;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLInputValueToExampleValueConverter"/>
-internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputValueToExampleValueConverter
+internal sealed class GraphQLInputValueToExampleValueConverter(IGraphQLScalarToExampleValueConverter graphQLScalarToExampleValueConverter) : IGraphQLInputValueToExampleValueConverter
 {
-    private readonly IGraphQLScalarToExampleValueConverter _graphQLScalarToExampleValueConverter;
-
-    public GraphQLInputValueToExampleValueConverter(
-        IGraphQLScalarToExampleValueConverter graphQLScalarToExampleValueConverter
-    ) => _graphQLScalarToExampleValueConverter = graphQLScalarToExampleValueConverter;
-
     public string Convert(
         GraphQLInputValueDefinition graphQLInputValueDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter
@@ -41,7 +35,7 @@ internal sealed class GraphQLInputValueToExampleValueConverter : IGraphQLInputVa
                 graphQLDocumentAdapter,
                 inputValueRelationships ?? new AdjacencyGraph<string, Edge<string>>()
             ),
-        GraphQLNamedType graphQLNamedType => _graphQLScalarToExampleValueConverter.Convert(
+        GraphQLNamedType graphQLNamedType => graphQLScalarToExampleValueConverter.Convert(
             graphQLNamedType,
             graphQLDocumentAdapter
         ),

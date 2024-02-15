@@ -6,13 +6,8 @@ using GraphQLToKarate.Library.Types;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLTypeDefinitionConverter"/>
-public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConverter
+public sealed class GraphQLTypeDefinitionConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) : IGraphQLTypeDefinitionConverter
 {
-    private readonly IGraphQLTypeConverterFactory _graphQLTypeConverterFactory;
-
-    public GraphQLTypeDefinitionConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) =>
-        _graphQLTypeConverterFactory = graphQLTypeConverterFactory;
-
     public KarateObject Convert<T>(
         T graphQLTypeDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
@@ -25,7 +20,7 @@ public sealed class GraphQLTypeDefinitionConverter : IGraphQLTypeDefinitionConve
 
         var karateTypes =
             from graphQLFieldDefinition in graphQLTypeDefinition.Fields
-            let converter = _graphQLTypeConverterFactory.CreateGraphQLTypeConverter(graphQLFieldDefinition.Type)
+            let converter = graphQLTypeConverterFactory.CreateGraphQLTypeConverter(graphQLFieldDefinition.Type)
             select converter.Convert(
                 graphQLFieldDefinition.NameValue(),
                 graphQLFieldDefinition.Type,

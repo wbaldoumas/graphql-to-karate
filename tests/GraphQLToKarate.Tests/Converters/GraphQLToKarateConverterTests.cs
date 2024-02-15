@@ -751,11 +751,10 @@ internal sealed class GraphQLToKarateConverterTests
 
     private static readonly GraphQLObjectTypeDefinition GraphQLQuery = new(new GraphQLName(GraphQLToken.Query))
     {
-        Fields = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>
-        {
+        Fields = new GraphQLFieldsDefinition([
             TodoQueryFieldDefinition,
             TodosQueryFieldDefinition
-        })
+        ])
     };
 
     private static readonly GraphQLFieldDefinition TodosMutationFieldDefinition = new(
@@ -770,21 +769,19 @@ internal sealed class GraphQLToKarateConverterTests
 
     private static readonly GraphQLObjectTypeDefinition GraphQLMutation = new(new GraphQLName(GraphQLToken.Mutation))
     {
-        Fields = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>
-        {
+        Fields = new GraphQLFieldsDefinition([
             TodosMutationFieldDefinition,
             TodoMutationFieldDefinition
-        })
+        ])
     };
 
-    private static readonly GraphQLDocument TestGraphQLDocument = new(new List<ASTNode>
-    {
+    private static readonly GraphQLDocument TestGraphQLDocument = new([
         GraphQLObjectTypeDefinition,
         GraphQLInterfaceTypeDefinition,
         GraphQLEnumTypeDefinition,
         GraphQLQuery,
         GraphQLMutation
-    });
+    ]);
 
     private static readonly GraphQLOperation TodoOperation = new(TodoQueryFieldDefinition)
     {

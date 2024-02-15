@@ -9,20 +9,15 @@ namespace GraphQLToKarate.CommandLine.Infrastructure;
 /// </summary>
 internal sealed class LogLevelVerbosityConverter : TypeConverter
 {
-    private readonly Dictionary<string, LogEventLevel> _logLevelLookup;
-
-    public LogLevelVerbosityConverter()
+    private readonly Dictionary<string, LogEventLevel> _logLevelLookup = new(StringComparer.OrdinalIgnoreCase)
     {
-        _logLevelLookup = new Dictionary<string, LogEventLevel>(StringComparer.OrdinalIgnoreCase)
-        {
-            { "verbose", LogEventLevel.Verbose },
-            { "debug", LogEventLevel.Debug },
-            { "information", LogEventLevel.Information },
-            { "warning", LogEventLevel.Warning },
-            { "error", LogEventLevel.Error },
-            { "fatal", LogEventLevel.Fatal }
-        };
-    }
+        { "verbose", LogEventLevel.Verbose },
+        { "debug", LogEventLevel.Debug },
+        { "information", LogEventLevel.Information },
+        { "warning", LogEventLevel.Warning },
+        { "error", LogEventLevel.Error },
+        { "fatal", LogEventLevel.Fatal }
+    };
 
     public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
     {

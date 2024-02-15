@@ -71,3 +71,9 @@ dotnet_diagnostic.SA1118.severity = none
 
 # ordering rules - disabling these since it's nice to group test data
 dotnet_diagnostic.SA1203.severity = none
+
+# opening square brackets should not be preceded by a space
+dotnet_diagnostic.SA1010.severity = none
+
+# closing brace must be followed by a blank line
+dotnet_diagnostic.SA1513.severity = none

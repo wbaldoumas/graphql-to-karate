@@ -38,10 +38,7 @@ public class GraphQLInputValueDefinitionExtensionsTests
         )
         {
             Directives = new GraphQLDirectives(
-                new List<GraphQLDirective>
-                {
-                    new(new GraphQLName(directiveName))
-                }
+                [new GraphQLDirective(new GraphQLName(directiveName))]
             )
         };
 
@@ -80,10 +77,7 @@ public class GraphQLInputValueDefinitionExtensionsTests
             new GraphQLNamedType(new GraphQLName("bar"))
         )
         {
-            Directives = new GraphQLDirectives(new List<GraphQLDirective>
-            {
-                new(new GraphQLName(directiveName))
-            })
+            Directives = new GraphQLDirectives([new GraphQLDirective(new GraphQLName(directiveName))])
         };
 
         // act

@@ -6,12 +6,9 @@ using System.Text.RegularExpressions;
 namespace GraphQLToKarate.Library.Mappings;
 
 /// <inheritdoc cref="ICustomScalarMappingLoader"/>
-public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
+public sealed class CustomScalarMappingLoader(IFile file) : ICustomScalarMappingLoader
 {
     private readonly Regex _regex = new(@"^([\w\s]+:[\w\s]+(?:,\s*|$))*[\w\s]+:[\w\s]+(?:,\s*)?$", RegexOptions.Compiled | RegexOptions.ExplicitCapture, TimeSpan.FromSeconds(1));
-    private readonly IFile _file;
-
-    public CustomScalarMappingLoader(IFile file) => _file = file;
 
     public async Task<ICustomScalarMapping> LoadAsync(string? customScalarMappingSource) => customScalarMappingSource switch
     {
@@ -28,12 +25,12 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
     public bool IsFileLoadable(string filePath)
     {
-        if (!_file.Exists(filePath))
+        if (!file.Exists(filePath))
         {
             return false;
         }
 
-        var fileContent = _file.ReadAllText(filePath);
+        var fileContent = file.ReadAllText(filePath);
 
         if (string.IsNullOrWhiteSpace(fileContent))
         {
@@ -47,7 +44,7 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
 
         try
         {
-            var _ = JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent);
+            _ = JsonSerializer.Deserialize<IDictionary<string, string>>(fileContent);
         }
         catch (JsonException)
         {
@@ -60,7 +57,7 @@ public sealed class CustomScalarMappingLoader : ICustomScalarMappingLoader
     public bool IsTextLoadable(string text) => _regex.IsMatch(text);
 
     public async Task<ICustomScalarMapping> LoadFromFileAsync(string filePath) =>
-        DeserializeFileContent(await _file.ReadAllTextAsync(filePath).ConfigureAwait(false));
+        DeserializeFileContent(await file.ReadAllTextAsync(filePath).ConfigureAwait(false));
 
     public ICustomScalarMapping LoadFromText(string text) => new CustomScalarMapping(
         text.Split(SchemaToken.Comma, StringSplitOptions.TrimEntries)

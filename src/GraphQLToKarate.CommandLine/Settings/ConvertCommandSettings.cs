@@ -6,18 +6,8 @@ using System.IO.Abstractions;
 
 namespace GraphQLToKarate.CommandLine.Settings;
 
-internal sealed class ConvertCommandSettings : LogCommandSettings
+internal sealed class ConvertCommandSettings(IFile file, ICustomScalarMappingValidator customScalarMappingValidator) : LogCommandSettings
 {
-    private readonly IFile _file;
-
-    private readonly ICustomScalarMappingValidator _customScalarMappingValidator;
-
-    public ConvertCommandSettings(IFile file, ICustomScalarMappingValidator customScalarMappingValidator)
-    {
-        _file = file;
-        _customScalarMappingValidator = customScalarMappingValidator;
-    }
-
     [CommandArgument(0, "<GraphQL Schema File>")]
     [Description("The path of the GraphQL schema file to convert")]
     public string? InputFile { get; set; }
@@ -92,13 +82,13 @@ internal sealed class ConvertCommandSettings : LogCommandSettings
             return ValidationResult.Error("Please provide a valid file path and filename for the GraphQL schema to convert.");
         }
 
-        if (!_file.Exists(InputFile))
+        if (!file.Exists(InputFile))
         {
             return ValidationResult.Error("GraphQL schema file does not exist. Please provide a valid file path and filename for the GraphQL schema to convert.");
         }
 
         // ReSharper disable once ConvertIfStatementToReturnStatement - this is easier to read
-        if (!_customScalarMappingValidator.IsValid(CustomScalarMapping))
+        if (!customScalarMappingValidator.IsValid(CustomScalarMapping))
         {
             return ValidationResult.Error($"The {Options.CustomScalarMappingOptionName} option value is invalid. Please provide either a valid file path or valid custom scalar mapping value.");
         }

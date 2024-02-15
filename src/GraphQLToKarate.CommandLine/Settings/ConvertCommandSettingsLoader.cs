@@ -8,28 +8,16 @@ using System.Text.Json;
 namespace GraphQLToKarate.CommandLine.Settings;
 
 /// <inheritdoc cref="IConvertCommandSettingsLoader"/>
-internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoader
+internal sealed class ConvertCommandSettingsLoader(
+    IFile file,
+    ICustomScalarMappingLoader customScalarMappingLoader,
+    IGraphQLToKarateUserConfigurationMapper graphQLToKarateUserConfigurationMapper,
+    ILogger<ConvertCommandSettingsLoader> logger)
+    : IConvertCommandSettingsLoader
 {
-    private readonly IFile _file;
-    private readonly ICustomScalarMappingLoader _customScalarMappingLoader;
-    private readonly IGraphQLToKarateUserConfigurationMapper _graphQLToKarateUserConfigurationMapper;
-    private readonly ILogger<ConvertCommandSettingsLoader> _logger;
-
-    public ConvertCommandSettingsLoader(
-        IFile file,
-        ICustomScalarMappingLoader customScalarMappingLoader,
-        IGraphQLToKarateUserConfigurationMapper graphQLToKarateUserConfigurationMapper,
-        ILogger<ConvertCommandSettingsLoader> logger)
-    {
-        _file = file;
-        _customScalarMappingLoader = customScalarMappingLoader;
-        _logger = logger;
-        _graphQLToKarateUserConfigurationMapper = graphQLToKarateUserConfigurationMapper;
-    }
-
     public async Task<LoadedConvertCommandSettings> LoadAsync(ConvertCommandSettings convertCommandSettings)
     {
-        var graphQLSchema = await _file.ReadAllTextAsync(convertCommandSettings.InputFile!).ConfigureAwait(false);
+        var graphQLSchema = await file.ReadAllTextAsync(convertCommandSettings.InputFile!).ConfigureAwait(false);
 
         if (!string.IsNullOrEmpty(convertCommandSettings.ConfigurationFile))
         {
@@ -40,7 +28,7 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
             ).ConfigureAwait(false);
         }
 
-        var customScalarMapping = await _customScalarMappingLoader.LoadAsync(
+        var customScalarMapping = await customScalarMappingLoader.LoadAsync(
             convertCommandSettings.CustomScalarMapping
         ).ConfigureAwait(false);
 
@@ -68,7 +56,7 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
     {
         try
         {
-            var configurationFileContent = await _file.ReadAllTextAsync(configurationFile).ConfigureAwait(false);
+            var configurationFileContent = await file.ReadAllTextAsync(configurationFile).ConfigureAwait(false);
 
             var graphQLToKarateUserConfiguration = JsonSerializer.Deserialize<GraphQLToKarateUserConfiguration>(
                 configurationFileContent,
@@ -86,11 +74,11 @@ internal sealed class ConvertCommandSettingsLoader : IConvertCommandSettingsLoad
             graphQLToKarateUserConfiguration.GraphQLSchema = graphQLSchema;
             graphQLToKarateUserConfiguration.InputFile = inputFile;
 
-            return _graphQLToKarateUserConfigurationMapper.Map(graphQLToKarateUserConfiguration);
+            return graphQLToKarateUserConfigurationMapper.Map(graphQLToKarateUserConfiguration);
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, GraphQLToKarateConfigurationException.DefaultMessage);
+            logger.LogError(exception, GraphQLToKarateConfigurationException.DefaultMessage);
 
             throw new GraphQLToKarateConfigurationException(
                 GraphQLToKarateConfigurationException.DefaultMessage,

@@ -42,7 +42,7 @@ internal sealed class GraphQLTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument(new List<ASTNode>()));
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument([]));
 
             yield return new TestCaseData(
                 testFieldName,
@@ -81,10 +81,7 @@ internal sealed class GraphQLTypeConverterTests
 
             const string enumTypeName = "Color";
 
-            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument(new List<ASTNode>
-            {
-                new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName))
-            });
+            var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument([new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName))]);
 
             yield return new TestCaseData(
                 testFieldName,
@@ -95,11 +92,10 @@ internal sealed class GraphQLTypeConverterTests
 
             const string customTypeName = "ToDo";
 
-            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument(new List<ASTNode>
-            {
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument([
                 new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName)),
                 new GraphQLObjectTypeDefinition(new GraphQLName(customTypeName))
-            });
+            ]);
 
             yield return new TestCaseData(
                 testFieldName,
@@ -112,13 +108,12 @@ internal sealed class GraphQLTypeConverterTests
 
             const string unionTypeName = "TodoUnion";
 
-            var populatedGraphQLDocument = new GraphQLDocument(new List<ASTNode>
-            {
+            var populatedGraphQLDocument = new GraphQLDocument([
                 new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName)),
                 new GraphQLObjectTypeDefinition(new GraphQLName(customTypeName)),
                 new GraphQLInterfaceTypeDefinition(new GraphQLName(interfaceTypeName)),
                 new GraphQLUnionTypeDefinition(new GraphQLName(unionTypeName))
-            });
+            ]);
 
             var populatedGraphQLDocumentAdapter = new GraphQLDocumentAdapter(populatedGraphQLDocument);
 

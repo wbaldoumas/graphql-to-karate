@@ -11,52 +11,34 @@ using Microsoft.Extensions.Logging;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLToKarateConverter"/>
-public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
+public sealed class GraphQLToKarateConverter(
+    IGraphQLSchemaParser graphQLSchemaParser,
+    IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
+    IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter,
+    IKarateFeatureBuilder karateFeatureBuilder,
+    IGraphQLCyclicToAcyclicConverter graphQLCyclicToAcyclicConverter,
+    ILogger<GraphQLToKarateConverter> logger,
+    GraphQLToKarateSettings graphQLToKarateSettings)
+    : IGraphQLToKarateConverter
 {
-    private readonly IGraphQLSchemaParser _graphQLSchemaParser;
-    private readonly IGraphQLTypeDefinitionConverter _graphQLTypeDefinitionConverter;
-    private readonly IGraphQLFieldDefinitionConverter _graphQLFieldDefinitionConverter;
-    private readonly IKarateFeatureBuilder _karateFeatureBuilder;
-    private readonly IGraphQLCyclicToAcyclicConverter _graphQLCyclicToAcyclicConverter;
-    private readonly ILogger<GraphQLToKarateConverter> _logger;
-    private readonly GraphQLToKarateSettings _graphQLToKarateSettings;
-
-    public GraphQLToKarateConverter(
-        IGraphQLSchemaParser graphQLSchemaParser,
-        IGraphQLTypeDefinitionConverter graphQLTypeDefinitionConverter,
-        IGraphQLFieldDefinitionConverter graphQLFieldDefinitionConverter,
-        IKarateFeatureBuilder karateFeatureBuilder,
-        IGraphQLCyclicToAcyclicConverter graphQLCyclicToAcyclicConverter,
-        ILogger<GraphQLToKarateConverter> logger,
-        GraphQLToKarateSettings graphQLToKarateSettings)
-    {
-        _graphQLSchemaParser = graphQLSchemaParser;
-        _graphQLTypeDefinitionConverter = graphQLTypeDefinitionConverter;
-        _graphQLFieldDefinitionConverter = graphQLFieldDefinitionConverter;
-        _karateFeatureBuilder = karateFeatureBuilder;
-        _graphQLCyclicToAcyclicConverter = graphQLCyclicToAcyclicConverter;
-        _logger = logger;
-        _graphQLToKarateSettings = graphQLToKarateSettings;
-    }
-
     public string Convert(string schema)
     {
-        var graphQLDocument = _graphQLSchemaParser.Parse(schema);
-        var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument, _graphQLToKarateSettings);
+        var graphQLDocument = graphQLSchemaParser.Parse(schema);
+        var graphQLDocumentAdapter = new GraphQLDocumentAdapter(graphQLDocument, graphQLToKarateSettings);
 
         RemoveTypeCycles(graphQLDocumentAdapter);
 
         var karateObjects = GenerateKarateObjects(graphQLDocumentAdapter);
         IEnumerable<GraphQLOperation> graphQLOperations = new List<GraphQLOperation>();
 
-        if (!_graphQLToKarateSettings.ExcludeQueries)
+        if (!graphQLToKarateSettings.ExcludeQueries)
         {
             if (graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields is null)
             {
-                _logger.LogWarning(
+                logger.LogWarning(
                     message: """Unable to find query type by the name of "{queryName}". If your query type exists and is named something other than "{queryName}", you will need to set the correct {queryNameOption} option for correct Karate scenario generation.""",
-                    _graphQLToKarateSettings.QueryName,
-                    _graphQLToKarateSettings.QueryName,
+                    graphQLToKarateSettings.QueryName,
+                    graphQLToKarateSettings.QueryName,
                     "--query-name"
                 );
             }
@@ -66,7 +48,7 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                     GenerateGraphQLOperations(
                         graphQLDocumentAdapter,
                         graphQLDocumentAdapter.GraphQLQueryTypeDefinition.Fields,
-                        _graphQLToKarateSettings.QueryOperationFilter,
+                        graphQLToKarateSettings.QueryOperationFilter,
                         GraphQLOperationType.Query
                     )
                 );
@@ -74,14 +56,14 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         }
 
         // ReSharper disable once InvertIf - this is easier to read.
-        if (_graphQLToKarateSettings.IncludeMutations)
+        if (graphQLToKarateSettings.IncludeMutations)
         {
             if (graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields is null)
             {
-                _logger.LogWarning(
+                logger.LogWarning(
                     message: """Unable to find mutation type by the name of "{mutationName}". If your mutation type exists and is named something other than "{mutationName}", you will need to set the correct {mutationNameOption} option for correct Karate scenario generation.""",
-                    _graphQLToKarateSettings.MutationName,
-                    _graphQLToKarateSettings.MutationName,
+                    graphQLToKarateSettings.MutationName,
+                    graphQLToKarateSettings.MutationName,
                     "--mutation-name"
                 );
             }
@@ -91,14 +73,14 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
                     GenerateGraphQLOperations(
                         graphQLDocumentAdapter,
                         graphQLDocumentAdapter.GraphQLMutationTypeDefinition.Fields,
-                        _graphQLToKarateSettings.MutationOperationFilter,
+                        graphQLToKarateSettings.MutationOperationFilter,
                         GraphQLOperationType.Mutation
                     )
                 );
             }
         }
 
-        return _karateFeatureBuilder.Build(
+        return karateFeatureBuilder.Build(
             karateObjects,
             graphQLOperations,
             graphQLDocumentAdapter
@@ -107,28 +89,28 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
 
     private void RemoveTypeCycles(IGraphQLDocumentAdapter graphQLDocumentAdapter)
     {
-        var defaultFieldsDefinitions = new GraphQLFieldsDefinition(new List<GraphQLFieldDefinition>());
+        var defaultFieldsDefinitions = new GraphQLFieldsDefinition([]);
 
         foreach (var hasFieldsDefinition in graphQLDocumentAdapter.GraphQLQueryTypeDefinition?.Fields ?? defaultFieldsDefinitions)
         {
-            _graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
+            graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
         }
 
         foreach (var hasFieldsDefinition in graphQLDocumentAdapter.GraphQLMutationTypeDefinition?.Fields ?? defaultFieldsDefinitions)
         {
-            _graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
+            graphQLCyclicToAcyclicConverter.Convert(hasFieldsDefinition, graphQLDocumentAdapter);
         }
     }
 
     private IEnumerable<KarateObject> GenerateKarateObjects(IGraphQLDocumentAdapter graphQLDocumentAdapter) =>
         graphQLDocumentAdapter.GraphQLObjectTypeDefinitions.Select(
-            graphQLObjectTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
+            graphQLObjectTypeDefinition => graphQLTypeDefinitionConverter.Convert(
                 graphQLObjectTypeDefinition,
                 graphQLDocumentAdapter
             )
         ).Concat(
             graphQLDocumentAdapter.GraphQLInterfaceTypeDefinitions.Select(
-                graphQLInterfaceTypeDefinition => _graphQLTypeDefinitionConverter.Convert(
+                graphQLInterfaceTypeDefinition => graphQLTypeDefinitionConverter.Convert(
                     graphQLInterfaceTypeDefinition,
                     graphQLDocumentAdapter
                 )
@@ -143,6 +125,6 @@ public sealed class GraphQLToKarateConverter : IGraphQLToKarateConverter
         graphQLFieldsDefinition
             .Where(definition => operationFilter.NoneOrContains(definition.NameValue()))
             .Select(definition =>
-                _graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, operationType)
+                graphQLFieldDefinitionConverter.Convert(definition, graphQLDocumentAdapter, operationType)
             );
 }

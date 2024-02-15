@@ -8,7 +8,7 @@ using GraphQLToKarate.Library.Tokens;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLScalarToExampleValueConverter"/>
-internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExampleValueConverter
+internal sealed class GraphQLScalarToExampleValueConverter(ICustomScalarMapping customScalarMapping) : IGraphQLScalarToExampleValueConverter
 {
     private const int MinRandomIntValue = 100;
 
@@ -18,15 +18,7 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExa
 
     private const double MaxRandomFloatValue = 1000.0;
 
-    private readonly Random _random;
-
-    private readonly ICustomScalarMapping _customScalarMapping;
-
-    public GraphQLScalarToExampleValueConverter(ICustomScalarMapping customScalarMapping)
-    {
-        _customScalarMapping = customScalarMapping;
-        _random = new Random();
-    }
+    private readonly Random _random = new();
 
     public string Convert(GraphQLType graphQLType, IGraphQLDocumentAdapter graphQLDocumentAdapter) => graphQLType.GetUnwrappedTypeName() switch
     {
@@ -36,7 +28,7 @@ internal sealed class GraphQLScalarToExampleValueConverter : IGraphQLScalarToExa
         GraphQLToken.Float => GenerateRandomFloat(),
         GraphQLToken.Boolean => GenerateRandomBoolean(),
         { } graphQLTypeName when graphQLDocumentAdapter.IsGraphQLEnumTypeDefinition(graphQLTypeName) => GenerateRandomEnumValue(graphQLTypeName, graphQLDocumentAdapter),
-        { } graphQLTypeName when _customScalarMapping.TryGetKarateType(graphQLTypeName, out var karateType) => GenerateRandomValueFromKarateType(karateType),
+        { } graphQLTypeName when customScalarMapping.TryGetKarateType(graphQLTypeName, out var karateType) => GenerateRandomValueFromKarateType(karateType),
         _ => "<some value>"
     };
 

@@ -2,20 +2,13 @@
 
 namespace GraphQLToKarate.Library.Types;
 
-internal sealed class GraphQLNonNullArgumentType : GraphQLArgumentTypeBase
+internal sealed class GraphQLNonNullArgumentType(GraphQLArgumentTypeBase innerType) : GraphQLArgumentTypeBase
 {
-    private readonly GraphQLArgumentTypeBase _innerType;
+    public override string ArgumentName => innerType.ArgumentName;
 
-    public GraphQLNonNullArgumentType(GraphQLArgumentTypeBase innerType)
-    {
-        _innerType = innerType;
-    }
+    public override string VariableName => innerType.VariableName;
 
-    public override string ArgumentName => _innerType.ArgumentName;
+    public override string VariableTypeName => $"{innerType.VariableTypeName}{GraphQLToken.NonNull}";
 
-    public override string VariableName => _innerType.VariableName;
-
-    public override string VariableTypeName => $"{_innerType.VariableTypeName}{GraphQLToken.NonNull}";
-
-    public override string ExampleValue => _innerType.ExampleValue;
+    public override string ExampleValue => innerType.ExampleValue;
 }

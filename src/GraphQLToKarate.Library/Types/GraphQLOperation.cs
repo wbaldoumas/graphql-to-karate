@@ -4,25 +4,21 @@ using GraphQLToKarate.Library.Extensions;
 
 namespace GraphQLToKarate.Library.Types;
 
-public sealed class GraphQLOperation
+public sealed class GraphQLOperation(GraphQLFieldDefinition graphQLFieldDefinition)
 {
-    private readonly GraphQLFieldDefinition _graphQLFieldDefinition;
-
-    public string Name => _graphQLFieldDefinition.NameValue();
+    public string Name => graphQLFieldDefinition.NameValue();
 
     public string OperationName => $"{Name.FirstCharToUpper()}Test";
 
-    public GraphQLType ReturnType => _graphQLFieldDefinition.Type;
+    public GraphQLType ReturnType => graphQLFieldDefinition.Type;
 
-    public string ReturnTypeName => _graphQLFieldDefinition.Type.GetUnwrappedTypeName();
+    public string ReturnTypeName => graphQLFieldDefinition.Type.GetUnwrappedTypeName();
 
-    public bool IsListReturnType => _graphQLFieldDefinition.Type.IsListType();
+    public bool IsListReturnType => graphQLFieldDefinition.Type.IsListType();
 
     public required string OperationString { get; init; }
 
     public required GraphQLOperationType Type { get; init; }
 
     public required ICollection<GraphQLArgumentTypeBase> Arguments { get; init; }
-
-    public GraphQLOperation(GraphQLFieldDefinition graphQLFieldDefinition) => _graphQLFieldDefinition = graphQLFieldDefinition;
 }

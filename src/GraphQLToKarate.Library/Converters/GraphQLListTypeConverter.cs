@@ -6,12 +6,8 @@ using GraphQLToKarate.Library.Types;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLTypeConverter"/>
-internal sealed class GraphQLListTypeConverter : IGraphQLTypeConverter
+internal sealed class GraphQLListTypeConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) : IGraphQLTypeConverter
 {
-    private readonly IGraphQLTypeConverterFactory _graphQLTypeConverterFactory;
-
-    public GraphQLListTypeConverter(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) => _graphQLTypeConverterFactory = graphQLTypeConverterFactory;
-
     public KarateTypeBase Convert(
         string graphQLFieldName,
         GraphQLType graphQLType,
@@ -22,9 +18,9 @@ internal sealed class GraphQLListTypeConverter : IGraphQLTypeConverter
 
         var graphQLTypeConverter = graphQLInnerType switch
         {
-            GraphQLNonNullType => _graphQLTypeConverterFactory.CreateGraphQLNonNullTypeConverter(),
-            GraphQLNamedType => _graphQLTypeConverterFactory.CreateGraphQLNullTypeConverter(),
-            GraphQLListType => _graphQLTypeConverterFactory.CreateGraphQLNullTypeConverter(),
+            GraphQLNonNullType => graphQLTypeConverterFactory.CreateGraphQLNonNullTypeConverter(),
+            GraphQLNamedType => graphQLTypeConverterFactory.CreateGraphQLNullTypeConverter(),
+            GraphQLListType => graphQLTypeConverterFactory.CreateGraphQLNullTypeConverter(),
             _ => throw new InvalidGraphQLTypeException()
         };
 
