@@ -16,7 +16,4 @@ internal sealed class GraphQLToKarateConfigurationException : Exception
 
     public GraphQLToKarateConfigurationException(string? message, Exception? innerException)
         : base(message, innerException) { }
-
-    public GraphQLToKarateConfigurationException(SerializationInfo info, StreamingContext context)
-        : base(info, context) { }
 }

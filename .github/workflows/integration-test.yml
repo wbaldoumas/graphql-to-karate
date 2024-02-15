@@ -16,7 +16,7 @@ jobs:
     - name: 🔨 set up .net 7
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
 
     - name: 🥋 generate karate feature
       run: dotnet run --project src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj convert resources/blog.graphql --non-interactive --configuration-file resources/configuration.json
