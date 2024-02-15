@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changes
 
-No feature changes, but potential for performance improvements due to internal upgrades
+No feature changes, but potential for performance improvements due to internal upgrades.
 
 - Upgrade to .NET 8.0
 - Leverage newer C# language features for cleaner code
