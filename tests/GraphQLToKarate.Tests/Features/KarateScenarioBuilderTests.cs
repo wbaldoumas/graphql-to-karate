@@ -296,11 +296,10 @@ internal sealed class KarateScenarioBuilderTests
                 new GraphQLUnionTypeDefinition(new GraphQLName("TodoUnion"))
                 {
                     Types = new GraphQLUnionMemberTypes(
-                        new List<GraphQLNamedType>
-                        {
-                            new(new GraphQLName("Todo")),
-                            new(new GraphQLName("TodoError"))
-                        }
+                        [
+                            new GraphQLNamedType(new GraphQLName("Todo")),
+                            new GraphQLNamedType(new GraphQLName("TodoError"))
+                        ]
                     )
                 },
                 false,
@@ -364,11 +363,10 @@ internal sealed class KarateScenarioBuilderTests
                 new GraphQLUnionTypeDefinition(new GraphQLName("TodoUnion"))
                 {
                     Types = new GraphQLUnionMemberTypes(
-                        new List<GraphQLNamedType>
-                        {
-                            new(new GraphQLName("Todo")),
-                            new(new GraphQLName("TodoError"))
-                        }
+                        [
+                            new GraphQLNamedType(new GraphQLName("Todo")),
+                            new GraphQLNamedType(new GraphQLName("TodoError"))
+                        ]
                     )
                 },
                 false,

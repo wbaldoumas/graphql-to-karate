@@ -2,20 +2,13 @@
 
 namespace GraphQLToKarate.Library.Types;
 
-internal sealed class GraphQLListArgumentType : GraphQLArgumentTypeBase
+internal sealed class GraphQLListArgumentType(GraphQLArgumentTypeBase innerType) : GraphQLArgumentTypeBase
 {
-    private readonly GraphQLArgumentTypeBase _innerType;
+    public override string ArgumentName => innerType.ArgumentName;
 
-    public GraphQLListArgumentType(GraphQLArgumentTypeBase innerType)
-    {
-        _innerType = innerType;
-    }
+    public override string VariableName => innerType.VariableName;
 
-    public override string ArgumentName => _innerType.ArgumentName;
+    public override string VariableTypeName => $"{SchemaToken.OpenBracket}{innerType.VariableTypeName}{SchemaToken.CloseBracket}";
 
-    public override string VariableName => _innerType.VariableName;
-
-    public override string VariableTypeName => $"{SchemaToken.OpenBracket}{_innerType.VariableTypeName}{SchemaToken.CloseBracket}";
-
-    public override string ExampleValue => _innerType.ExampleValue;
+    public override string ExampleValue => innerType.ExampleValue;
 }

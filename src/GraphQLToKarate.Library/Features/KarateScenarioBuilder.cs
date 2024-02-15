@@ -8,13 +8,8 @@ using System.Text;
 namespace GraphQLToKarate.Library.Features;
 
 /// <inheritdoc cref="IKarateScenarioBuilder"/>
-public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
+public sealed class KarateScenarioBuilder(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) : IKarateScenarioBuilder
 {
-    private readonly IGraphQLTypeConverterFactory _graphQLTypeConverterFactory;
-
-    public KarateScenarioBuilder(IGraphQLTypeConverterFactory graphQLTypeConverterFactory) =>
-        _graphQLTypeConverterFactory = graphQLTypeConverterFactory;
-
     public string Build(
         GraphQLOperation graphQLOperation,
         IGraphQLDocumentAdapter graphQLDocumentAdapter)
@@ -130,7 +125,7 @@ public sealed class KarateScenarioBuilder : IKarateScenarioBuilder
         }
         else
         {
-            var karateType = _graphQLTypeConverterFactory
+            var karateType = graphQLTypeConverterFactory
                 .CreateGraphQLTypeConverter(graphQLOperation.ReturnType)
                 .Convert(graphQLOperation.Name, graphQLOperation.ReturnType, graphQLDocumentAdapter);
 

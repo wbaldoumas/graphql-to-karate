@@ -127,14 +127,14 @@ public sealed class Query
 
     public UserConnection GetUsers([GraphQLType(typeof(PageInfoInput))] PageInfoInput? pageInfo) => new()
     {
-        Nodes = new[]
-        {
+        Nodes =
+        [
             GetUserById(Guid.NewGuid().ToString()),
             GetUserById(Guid.NewGuid().ToString()),
             GetUserById(Guid.NewGuid().ToString()),
             GetUserById(Guid.NewGuid().ToString()),
             GetUserById(Guid.NewGuid().ToString())
-        },
+        ],
         PageInfo = new PageInfo
         {
             HasNextPage = true,
@@ -145,14 +145,14 @@ public sealed class Query
 
     public BlogPostConnection GetBlogPosts([GraphQLType(typeof(PageInfoInput))] PageInfoInput? pageInfo) => new()
     {
-        Nodes = new[]
-        {
+        Nodes =
+        [
             GetBlogPostById(Guid.NewGuid().ToString()),
             GetBlogPostById(Guid.NewGuid().ToString()),
             GetBlogPostById(Guid.NewGuid().ToString()),
             GetBlogPostById(Guid.NewGuid().ToString()),
-            GetBlogPostById(Guid.NewGuid().ToString()),
-        },
+            GetBlogPostById(Guid.NewGuid().ToString())
+        ],
         PageInfo = new PageInfo
         {
             HasNextPage = true,
@@ -163,14 +163,14 @@ public sealed class Query
 
     public CommentConnection GetComments([GraphQLType(typeof(PageInfoInput))] PageInfoInput? pageInfo) => new()
     {
-        Nodes = new[]
-        {
+        Nodes =
+        [
             GetCommentById(Guid.NewGuid().ToString()),
             GetCommentById(Guid.NewGuid().ToString()),
             GetCommentById(Guid.NewGuid().ToString()),
             GetCommentById(Guid.NewGuid().ToString()),
             GetCommentById(Guid.NewGuid().ToString())
-        },
+        ],
         PageInfo = new PageInfo
         {
             HasNextPage = true,
@@ -179,10 +179,10 @@ public sealed class Query
         }
     };
 
-    public ISearchResult[] Search(string query) => new ISearchResult[]
-    {
+    public ISearchResult[] Search(string query) =>
+    [
         GetUserById(Guid.NewGuid().ToString()),
         GetBlogPostById(Guid.NewGuid().ToString()),
         GetCommentById(Guid.NewGuid().ToString())
-    };
+    ];
 }

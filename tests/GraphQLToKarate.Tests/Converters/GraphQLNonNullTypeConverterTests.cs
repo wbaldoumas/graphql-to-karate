@@ -54,7 +54,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument(new List<ASTNode>()));
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument([]));
 
             yield return new TestCaseData(
                 testFieldName,
@@ -94,10 +94,7 @@ internal sealed class GraphQLNonNullTypeConverterTests
             const string enumTypeName = "Color";
 
             var graphQLDocumentWithEnumTypeDefinition = new GraphQLDocument(
-                new List<ASTNode>
-                {
-                    new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName))
-                }
+                [new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName))]
             );
 
             yield return new TestCaseData(
@@ -109,11 +106,10 @@ internal sealed class GraphQLNonNullTypeConverterTests
 
             const string customTypeName = "ToDo";
 
-            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument(new List<ASTNode>
-                {
+            var graphQLDocumentWithEnumAndCustomTypeDefinition = new GraphQLDocument([
                     new GraphQLEnumTypeDefinition(new GraphQLName(enumTypeName)),
                     new GraphQLObjectTypeDefinition(new GraphQLName(customTypeName))
-                }
+                ]
             );
 
             yield return new TestCaseData(

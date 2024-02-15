@@ -7,15 +7,10 @@ using GraphQLToKarate.Library.Types;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLInputValueDefinitionConverter"/>
-internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueDefinitionConverter
+internal sealed class GraphQLInputValueDefinitionConverter(IGraphQLInputValueToExampleValueConverter graphQLInputValueToExampleValue) : IGraphQLInputValueDefinitionConverter
 {
     private readonly ICollection<GraphQLArgumentTypeBase> _graphQLVariableTypes = new List<GraphQLArgumentTypeBase>();
     private readonly ISet<string> _reservedVariableNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-    private readonly IGraphQLInputValueToExampleValueConverter _graphQLInputValueToExampleValue;
-
-    public GraphQLInputValueDefinitionConverter(
-        IGraphQLInputValueToExampleValueConverter graphQLInputValueToExampleValue
-    ) => _graphQLInputValueToExampleValue = graphQLInputValueToExampleValue;
 
     public GraphQLArgumentTypeBase Convert(
         GraphQLInputValueDefinition graphQLInputValueDefinition,
@@ -23,7 +18,7 @@ internal sealed class GraphQLInputValueDefinitionConverter : IGraphQLInputValueD
     {
         var graphQLArgumentName = graphQLInputValueDefinition.NameValue();
         var graphQLVariableName = GetNonReservedVariableName(graphQLArgumentName);
-        var exampleValue = _graphQLInputValueToExampleValue.Convert(graphQLInputValueDefinition, graphQLDocumentAdapter);
+        var exampleValue = graphQLInputValueToExampleValue.Convert(graphQLInputValueDefinition, graphQLDocumentAdapter);
 
         var graphQLArgument = Convert(
             graphQLInputValueDefinition,

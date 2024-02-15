@@ -94,7 +94,7 @@ internal sealed class GraphQLCustomScalarTypeConverterTests
         {
             const string testFieldName = "Test";
 
-            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument(new List<ASTNode>()));
+            var emptyGraphQLDocumentAdapter = new GraphQLDocumentAdapter(new GraphQLDocument([]));
 
             yield return new TestCaseData(
                 testFieldName,

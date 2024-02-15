@@ -3,19 +3,15 @@
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLTypeConverterFactory"/>
-public sealed class GraphQLTypeConverterFactory : IGraphQLTypeConverterFactory
+public sealed class GraphQLTypeConverterFactory(IGraphQLTypeConverter graphQLTypeConverter) : IGraphQLTypeConverterFactory
 {
-    private readonly IGraphQLTypeConverter _graphQLTypeConverter;
-
     private IGraphQLTypeConverter? _graphQLListTypeConverter;
 
     private IGraphQLTypeConverter? _graphQLNonNullTypeConverter;
 
     private IGraphQLTypeConverter? _graphQLNullTypeConverter;
 
-    public GraphQLTypeConverterFactory(IGraphQLTypeConverter graphQLTypeConverter) => _graphQLTypeConverter = graphQLTypeConverter;
-
-    public IGraphQLTypeConverter CreateGraphQLTypeConverter() => _graphQLTypeConverter;
+    public IGraphQLTypeConverter CreateGraphQLTypeConverter() => graphQLTypeConverter;
 
     public IGraphQLTypeConverter CreateGraphQLListTypeConverter() => _graphQLListTypeConverter ??= new GraphQLListTypeConverter(this);
 

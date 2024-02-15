@@ -21,8 +21,8 @@ public interface IGraphQLInputValueDefinitionConverter
     );
 
     /// <summary>
-    ///     Get all of the previously converted <see cref="GraphQLArgumentTypeBase"/> types.
+    ///     Get all the previously converted <see cref="GraphQLArgumentTypeBase"/> types.
     /// </summary>
-    /// <returns>All of the previously converted <see cref="GraphQLArgumentTypeBase"/> types.</returns>
+    /// <returns>All the previously converted <see cref="GraphQLArgumentTypeBase"/> types.</returns>
     ICollection<GraphQLArgumentTypeBase> GetAllConverted();
 }

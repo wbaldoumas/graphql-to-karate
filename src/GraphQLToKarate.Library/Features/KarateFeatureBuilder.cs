@@ -8,19 +8,11 @@ using System.Text;
 namespace GraphQLToKarate.Library.Features;
 
 /// <inheritdoc cref="IKarateFeatureBuilder"/>
-public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
+public sealed class KarateFeatureBuilder(
+    IKarateScenarioBuilder karateScenarioBuilder,
+    KarateFeatureBuilderSettings karateFeatureBuilderSettings)
+    : IKarateFeatureBuilder
 {
-    private readonly IKarateScenarioBuilder _karateScenarioBuilder;
-    private readonly KarateFeatureBuilderSettings _karateFeatureBuilderSettings;
-
-    public KarateFeatureBuilder(
-        IKarateScenarioBuilder karateScenarioBuilder,
-        KarateFeatureBuilderSettings karateFeatureBuilderSettings)
-    {
-        _karateScenarioBuilder = karateScenarioBuilder;
-        _karateFeatureBuilderSettings = karateFeatureBuilderSettings;
-    }
-
     public string Build(
         IEnumerable<KarateObject> karateObjects,
         IEnumerable<GraphQLOperation> graphQLOperations,
@@ -31,13 +23,13 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
             "Feature: Test GraphQL Endpoint with Karate",
             string.Empty,
             "Background: Base URL and Schemas",
-            $"* url {_karateFeatureBuilderSettings.BaseUrl}".Indent(Indent.Single),
+            $"* url {karateFeatureBuilderSettings.BaseUrl}".Indent(Indent.Single),
             string.Empty
         };
 
         lines.AddRange(BuildKarateObjects(karateObjects));
 
-        if (!_karateFeatureBuilderSettings.ExcludeQueries)
+        if (!karateFeatureBuilderSettings.ExcludeQueries)
         {
             lines.AddRange(BuildGraphQLOperations(graphQLOperations, graphQLDocumentAdapter));
         }
@@ -66,7 +58,7 @@ public sealed class KarateFeatureBuilder : IKarateFeatureBuilder
     {
         foreach (var graphQLQueryField in graphQLOperations)
         {
-            yield return _karateScenarioBuilder.Build(graphQLQueryField, graphQLDocumentAdapter);
+            yield return karateScenarioBuilder.Build(graphQLQueryField, graphQLDocumentAdapter);
             yield return string.Empty;
         }
     }

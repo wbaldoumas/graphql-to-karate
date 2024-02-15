@@ -95,12 +95,11 @@ internal sealed class GraphQLTypeDefinitionConverterTests
                 new GraphQLObjectTypeDefinition(new GraphQLName("Test Object GraphQL Type"))
                 {
                     Fields = new GraphQLFieldsDefinition(
-                        new List<GraphQLFieldDefinition>
-                        {
+                        [
                             NonNullGraphQLFieldDefinition,
                             NullGraphQLFieldDefinition,
                             ListGraphQLFieldDefinition
-                        }
+                        ]
                     )
                 },
                 new Dictionary<string, KarateTypeBase>

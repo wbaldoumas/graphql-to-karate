@@ -10,20 +10,14 @@ using System.Text;
 namespace GraphQLToKarate.Library.Converters;
 
 /// <inheritdoc cref="IGraphQLFieldDefinitionConverter"/>
-public sealed class GraphQLFieldDefinitionConverter : IGraphQLFieldDefinitionConverter
+public sealed class GraphQLFieldDefinitionConverter(IGraphQLInputValueDefinitionConverterFactory graphQLInputValueDefinitionConverterFactory) : IGraphQLFieldDefinitionConverter
 {
-    private readonly IGraphQLInputValueDefinitionConverterFactory _graphQLInputValueDefinitionConverterFactory;
-
-    public GraphQLFieldDefinitionConverter(
-        IGraphQLInputValueDefinitionConverterFactory graphQLInputValueDefinitionConverterFactory
-    ) => _graphQLInputValueDefinitionConverterFactory = graphQLInputValueDefinitionConverterFactory;
-
     public GraphQLOperation Convert(
         GraphQLFieldDefinition graphQLFieldDefinition,
         IGraphQLDocumentAdapter graphQLDocumentAdapter,
         GraphQLOperationType graphQLOperationType)
     {
-        var graphQLInputValueDefinitionConverter = _graphQLInputValueDefinitionConverterFactory.Create();
+        var graphQLInputValueDefinitionConverter = graphQLInputValueDefinitionConverterFactory.Create();
         var fieldRelationshipsGraph = new AdjacencyGraph<string, Edge<string>>();
 
         return new GraphQLOperation(graphQLFieldDefinition)

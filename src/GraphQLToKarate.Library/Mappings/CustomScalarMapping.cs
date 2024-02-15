@@ -1,14 +1,14 @@
 ﻿namespace GraphQLToKarate.Library.Mappings;
 
 /// <inheritdoc cref="ICustomScalarMapping"/>
-public sealed class CustomScalarMapping : ICustomScalarMapping
+public sealed class CustomScalarMapping(IDictionary<string, string> mappings) : ICustomScalarMapping
 {
-    public IDictionary<string, string> Mappings { get; }
+    public IDictionary<string, string> Mappings { get; } = mappings;
 
-    public CustomScalarMapping() => Mappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
-    public CustomScalarMapping(IDictionary<string, string> mappings) =>
-        Mappings = mappings;
+    public CustomScalarMapping()
+        : this(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase))
+    {
+    }
 
     public bool TryGetKarateType(string graphQLType, out string karateType) =>
         Mappings.TryGetValue(graphQLType, out karateType!);

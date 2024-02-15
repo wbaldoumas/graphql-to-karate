@@ -5,19 +5,15 @@ using Spectre.Console.Cli;
 namespace GraphQLToKarate.CommandLine.Infrastructure;
 
 /// <inheritdoc cref="ITypeRegistrar"/>
-internal sealed class TypeRegistrar : ITypeRegistrar
+internal sealed class TypeRegistrar(IHostBuilder hostBuilder) : ITypeRegistrar
 {
-    private readonly IHostBuilder _hostBuilder;
+    public ITypeResolver Build() => new TypeResolver(hostBuilder.Build());
 
-    public TypeRegistrar(IHostBuilder hostBuilder) => _hostBuilder = hostBuilder;
-
-    public ITypeResolver Build() => new TypeResolver(_hostBuilder.Build());
-
-    public void Register(Type serviceType, Type implementationType) => _hostBuilder.ConfigureServices(
+    public void Register(Type serviceType, Type implementationType) => hostBuilder.ConfigureServices(
         (_, serviceCollection) => serviceCollection.AddSingleton(serviceType, implementationType)
     );
 
-    public void RegisterInstance(Type serviceType, object implementation) => _hostBuilder.ConfigureServices(
+    public void RegisterInstance(Type serviceType, object implementation) => hostBuilder.ConfigureServices(
         (_, serviceCollection) => serviceCollection.AddSingleton(serviceType, implementation)
     );
 
@@ -28,6 +24,6 @@ internal sealed class TypeRegistrar : ITypeRegistrar
             throw new ArgumentNullException(nameof(implementationFactory));
         }
 
-        _hostBuilder.ConfigureServices((_, serviceCollection) => serviceCollection.AddSingleton(serviceType, _ => implementationFactory()));
+        hostBuilder.ConfigureServices((_, serviceCollection) => serviceCollection.AddSingleton(serviceType, _ => implementationFactory()));
     }
 }
