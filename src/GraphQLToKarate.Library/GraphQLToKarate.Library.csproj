@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="GraphQL-Parser" Version="9.3.1" />
-    <PackageReference Include="Meziantou.Analyzer" Version="2.0.147">
+    <PackageReference Include="Meziantou.Analyzer" Version="2.0.149">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

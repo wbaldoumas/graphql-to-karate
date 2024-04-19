@@ -11,7 +11,7 @@
 
   <ItemGroup>
    <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.0" />
-   <PackageReference Include="Meziantou.Analyzer" Version="2.0.147">
+   <PackageReference Include="Meziantou.Analyzer" Version="2.0.149">
      <PrivateAssets>all</PrivateAssets>
      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
    </PackageReference>
