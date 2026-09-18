@@ -15,7 +15,7 @@ jobs:
     - name: 🔨 set up .net 7
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
 
     - name: ⚗ restore dependencies
       run: dotnet restore src
