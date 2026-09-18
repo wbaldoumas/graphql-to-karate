@@ -16,7 +16,7 @@ jobs:
     - name: 🔨 set up .net 7
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 10.0.x
 
     - name: 🥋 generate karate feature
       run: dotnet run --project src/GraphQLToKarate.CommandLine/GraphQLToKarate.CommandLine.csproj convert resources/blog.graphql --non-interactive --configuration-file resources/configuration.json
@@ -31,7 +31,7 @@ jobs:
       uses: actions/setup-java@v6
       with:
         distribution: 'temurin'
-        java-version: '17'
+        java-version: '25'
 
     - name: 📩 download karate
       run: curl -L -o karate.jar https://github.com/karatelabs/karate/releases/download/v1.4.0/karate-1.4.0.jar
